@@ -1,0 +1,16 @@
+<foreach name="lists" item="good">
+    <li>
+        <a href="{:U('Mobile/Goods/goodsInfo',array('id'=>$good['goods_id']))}">
+            <div class="goods">
+                <img class="goods_Img" src="{$good.goods_id|goods_thum_images=200,200}"/>
+                <div class="goods_name ma-to-24 pa-0-30">
+                    {$good.goods_name}
+                </div>
+                <div class="goods_price pa-0-30">
+                    <em>￥</em>
+                    <span>{$good.shop_price}</span>
+                </div>
+            </div>
+        </a>
+    </li>
+</foreach>

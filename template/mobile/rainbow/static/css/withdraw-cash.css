@@ -1,0 +1,515 @@
+/*关联手机号*/
+input,select,option,textarea{outline: none;}
+#withdraw-cash-view{
+	width: 16rem;
+}
+/*支付宝提现 s*/
+/*头部s*/
+.withdraw-header-wrap{
+	width: 16rem;
+	height: 7.68rem;
+	position: relative;
+}
+.withdraw-header-wrap .withdraw-heade{
+	width: 100%;
+	height: 1.856rem;
+	position: absolute;
+	left: 0;
+	top: 0;
+	z-index: 9;
+	background-color: #fff;
+	border-bottom: 1px solid #dddddd;
+}
+.withdraw-header-wrap .withdraw-heade-cont{
+	position: relative;
+	text-align: center;
+	height: 1.856rem;
+}
+.withdraw-heade-cont .withdraw-left-icon{
+	width: 0.4266rem;
+	height: 0.6826rem;
+	left: 0.64rem;
+	top: 0.64rem;
+	display: block;
+	position: absolute;
+	background: url(../images/withdraw-left.png) no-repeat;
+	background-size: 100% 100%;
+}
+.withdraw-heade-cont h5{
+	font-size: 0.768rem;
+	height: 1.856rem;
+	line-height: 1.856rem;
+	font-weight: 500;
+	color: #333333;
+}
+/*头部 e*/
+/*支付方式 s*/
+.withdraw-select{
+	padding: 0.8533rem 0.64rem 0.96rem 0.64rem;
+}
+.withdraw-select .withdraw-select-p{
+	height: 0.7466rem;
+	line-height: 0.7466rem;
+	font-size: 0.64rem;
+	color: #333333;
+}
+ .withdraw-select-dl{
+	margin-top: 0.96rem;
+}
+.withdraw-select-dl dd{
+	width: 33%;
+	height: 1.6rem;
+	line-height: 1.6rem;
+	padding-left: 0.2133rem;
+	border: 1px solid transparent;
+}
+.withdraw-select-dl-color{
+	border: 1px solid #2194ff !important;
+	border-radius:3% ; 
+}
+.withdraw-select-dl dd span{
+	font-size: 0.512rem;
+	margin-left: 0.32rem;
+}
+.withdraw-select label{
+	  width: 0.256rem;
+    height: 0.256rem;
+}
+.withdraw-select b{
+	width: 1.1306rem;
+	height: 1.1733rem;
+	display: inline-block;
+}
+.withdraw-select b img{
+	width: 100%;
+	height: 100%;
+}
+.withdraw-select label {
+    display: inline-block;
+    vertical-align: middle;
+    width: 0.6826rem;
+    height: 0.6826rem;
+    margin-right: 0.256rem;
+    border-radius: 50%;
+    border: 1px solid #cdcdcd;
+    cursor: pointer;
+}
+.withdraw-select-labels {
+    background:url(../images/tixian-chengs.png) no-repeat 0.1636rem 0.1636rem ;
+    background-size:50% 50% ;
+}
+
+.withdraw-border16{
+	border-top: 18px solid #f3f3f3;
+}
+.withdraw-cont-wrap{
+	padding: 0 0.64rem 0 0.64rem;
+}
+.withdraw-cont-wrap .withdraw-cont-p1{
+	margin-top: 1.173rem;
+	height: 0.6826rem;
+	color: #4c4c4c;
+	font-size: 0.5546rem;
+	margin-bottom: 0.256rem;
+}
+.withdraw-cont-wrap .withdrawimg1{
+	width: 1.1093rem;
+	height: 1.1093rem;
+}
+.withdraw-cont-wrap .withdrawimg1 img{
+	width: 100%;
+	height: 100%;
+}
+ .withdrawimg3{
+	width: 1.553rem  !important;
+	height: 1.1093rem;
+}
+.withdraw-cont-wrap .withdrawimg3 img{
+	width: 100%;
+}
+.withdraw-cont-ul li{
+	border-bottom:1px solid #e0e0e0;
+	position: relative;
+	height: 2.66rem;
+}
+.withdraw-cont-ul .withdraw-cont-ul-name{
+	font-size: 0.64rem;
+	display: block;
+	height: 2.7373rem;
+    line-height: 2.7373rem;
+	color: #333333;
+}
+.withdraw-cont-ul .withdraw-cont-input{
+	height: 2.56rem;
+	margin-left: 0.704rem;
+}
+.withdraw-cont-ul .withdraw-cont-input input{
+	
+	height: 2.7373rem;
+    line-height: 2.7373rem;
+	border: 0px;
+	font-size: 0.64rem;
+	color: #666;
+}
+.withdraw-cont-ul .withdraw-cont-input input::-webkit-input-placeholder { /* WebKit browsers */ 
+  	color: #adadad;
+} 
+.withdraw-cont-ul .withdraw-cont-input input:-moz-placeholder { /* Mozilla Firefox 4 to 18 */ 
+	  color: #adadad;
+} 
+.withdraw-cont-ul .withdraw-cont-input input::-moz-placeholder { /* Mozilla Firefox 19+ */ 
+		color: #adadad; 
+} 
+.withdraw-cont-ul .withdraw-cont-input input:-ms-input-placeholder { /* Internet Explorer 10+ */ 
+	  color: #adadad;
+} 
+.withdraw-cont-ul .withdraw-gode{
+	position: absolute;
+    right: 0;
+    top: 0.7893rem;
+}
+.withdraw-cont-ul .withdraw-gode input{
+	width: 3.2rem;
+    height: 1.024rem;
+    line-height: 1.024rem;
+    border: 1px solid #e73223;
+    border-radius:45px;
+    color: #e73223;
+    background-color: #ffffff;
+}
+ .withdraw-cont-btn{
+	margin: 6.2933rem 0 2rem 0;
+	
+}
+.withdraw-cont-btn input{
+	width: 100%;
+	height: 1.8773rem;
+	color: #ffffff;
+	background-color: #e73223;
+	border: 0;
+	font-size: 0.64rem;
+	border-radius:7px;
+}
+
+/*支付方式 e*/
+/*支付宝提现 e*/
+/*添加支付账户 s*/
+#withdraw-cash-view .AddAccount-head-wrap{
+	height: 1.856rem;
+}
+#withdraw-cash-view .AddAccount-cont-wrap{
+	border-top: 0px;
+}
+#withdraw-cash-view .AddAccount-cont-wrap .withdraw-cont-ul .withdraw-cont-btn{
+	margin-top: 16.5466rem;
+}
+#withdraw-cash-view .withdraw-heade-cont .withdraw-right-icon{
+	width: 0.768rem;
+	height: 0.768rem;
+	display: block;
+	position: absolute;
+	right: 0.64rem;
+	top: 0.5973rem;
+	background: url(../images/withdraw-add-pay.png) no-repeat;
+	background-size: 100% 100%;
+}
+/*添加支付账户 e*/
+/*选择支付宝账号s*/
+
+.withdraw-cont-ul li{
+	height: 2.8373rem;
+}
+ .withdraw-cont-ul .withdraw-cont-ul-name2{
+	width: 1.1093rem;
+	height: 1.1093rem;
+	display: inline-block;
+	margin-top: 1.024rem;
+}
+ .withdraw-cont-ul .withdraw-cont-ul-name2 img{
+	width: 100%;
+	height: 100%;
+}
+ .withdraw-cont-ul .withdraw-conts{
+	margin-left: 1.1733rem;
+	margin-top:1.192rem;
+}
+.withdraw-cont-ul .withdraw-conts p{
+	font-size: 0.6826rem;
+	line-height: 0.8533rem;
+	color: #333333;
+	display:inline-block;
+}
+ .withdraw-cont-ul .withdraw-conts .withdraw-conts-p{
+	line-height: 3.2rem;
+	margin-top: 0;
+}
+.withdraw-cont-ul .withdraw-conts i{
+	color: #8c8c8c;
+	font-size: 0.512rem;
+	line-height: 0.64rem;
+	margin-top: 0.2986rem;
+}
+.withdraw-cont-ul .withdraw-cheng{
+	position: absolute;
+	right: 0px;
+	top: 1.28rem;
+}
+.withdraw-cont-ul .withdraw-cheng i{
+	width: 0.96rem;
+	height: 0.7466rem;
+	display: block;
+}
+ .withdraw-cont-ul .withdraw-cheng .icon-rigths{
+	width: 0.4053rem;
+    height: 0.704rem;
+}
+.withdraw-cont-ul .withdraw-cheng i img{
+	width: 100%;
+	height: 100%;
+}
+.withdraw-select-tx {
+	padding-bottom: 0;
+}
+.withdraw-select-tx .withdraw-cont-ul li{
+	margin-top: .5rem;
+}
+/*选择支付宝账号e*/
+/*选择支付方式时选择账号s*/
+#withdraw-cash-view .withdraw-bg-color{
+	background-color: #ff594a;
+}
+#withdraw-cash-view .withdraw-heade-money{
+	padding: 3.093rem 0.64rem 0 0.64rem;
+
+}
+.heade-money .heade-money-span{
+	display: block;
+	width: 0.7466rem;
+	height: 0.74666rem;
+	border: 1px solid #FFFFFF;
+	text-align: center;
+	line-height: 0.7466rem;
+	font-size: 0.4693rem;
+	color: #FFFFFF;
+	font-weight: 500;
+	border-radius: 50%;
+}
+.heade-money .heade-money-name{
+	font-size: 0.5973rem;
+	color: #FFFFFF;
+	height: 0.7466rem;
+	line-height: 0.7466rem;
+	font-weight: 500;
+	margin-left: 0.384rem;
+}
+.heade-money .heade-money-num{
+	font-size: 0.512rem;
+	color: #FFFFFF;
+	font-weight: 300;
+	height: 0.7466rem;
+	line-height: 0.7466rem;
+}
+.heade-money2{
+	height: 1.1946rem;
+	line-height: 1.1946rem;
+	margin-top: 1.4293rem;
+}
+.heade-money2 .heade-money2-span{
+	font-size: 0.512rem;
+	color: #FFFFFF;
+	display: block;
+	height: 1.1946rem;
+	line-height: 1.7066rem;
+}
+.heade-money2 .heade-money2-name{
+	margin-left: 0.32rem;
+	line-height: 1.1946rem;
+	font-size: 1.536rem;
+	color: #FFFFFF;
+}
+.withdraw-cont-ul .withdraw-cheng2{
+	position: absolute;
+	right: 0;
+	top: 1.1733rem;
+}
+.withdraw-cont-ul .withdraw-cheng2 a{
+	height: 0.7466rem;
+	width: 0.4266rem;
+	display: block;
+	background: url(../images/withdraw-right.png)no-repeat;
+	background-size:100% 100% ;
+}
+.withdraw-cont-wrap .withdraw-moneys-one{
+	height: 2.3466rem;
+}
+.withdraw-cont-wrap .withdraw-moneys-one .withdraw-moneys-icons{
+	font-size: 0.768rem;
+	height: 2.3466rem;
+	line-height: 2.7453rem;
+	color: #333333;
+	display: block;
+	font-weight: 500;
+}
+.withdraw-cont-wrap .withdraw-moneys-one .withdraw-moneys-cont{
+	height: 2.3466rem;
+	line-height: 2.3466rem;
+	font-size: 1.28rem;
+	width: 13.2rem;
+	margin-left: 0.6rem;
+	border-bottom: 1px solid #dcdcdc;
+	margin-bottom: 1px;
+}
+.withdraw-cont-wrap .withdraw-moneys-two {
+	height: 1.92rem;
+	line-height: 1.4933rem;
+}
+.withdraw-cont-wrap .withdraw-moneys-two .withdraw-moneys-cont{
+	font-size: 0.5546rem;
+	color: #8c8c8c;
+	margin-left: 1.3866rem;
+}
+.withdraw-cont-wrap .withdraw-moneys-two .withdraw-moneys-cont i{
+	margin-left: 0.32rem;
+}
+.withdraw-moneys-cont input{
+	width: 12rem;
+	border: 0;
+}
+.withdraw-cont-wrap .withdraw-moneys-two .withdraw-moneys-btn input{
+	border: 0px;
+	background: #fff;
+	color: #ff594a;
+	font-size: 0.5546rem;
+	height: 1.92rem;
+	line-height: 1.4933rem;
+}
+.withdraw-cont-wrap  .withdraw-cont-pwd{
+	height: 1.6rem;
+	line-height: 1.6rem;
+}
+.withdraw-cont-wrap  .withdraw-cont-pwd .withdraw-pwd-span{
+	font-size: 0.5546rem;
+	color: #b2b2b2;
+	margin-right: 0.4266rem;
+}
+.withdraw-cont-wrap  .withdraw-cont-pwd .withdraw-pwd-btn input{
+	font-size: 0.5546rem;
+	color: #ff594a;
+	border: 0px;
+	background: #fff;
+		height: 1.6rem;
+	line-height: 1.6rem;
+}
+.withdraw-cont-wrap .cont-btn-two{
+	margin-top: 1.6rem;
+}
+.withdraw-foot-wrap{
+	padding: 1.6rem 0.64rem 1.7066rem 0.64rem;
+}
+.withdraw-foot-wrap .withdraw-foot-p{
+	font-size: 0.512rem;
+	color: #666;
+}
+.withdraw-foot-wrap .withdraw-foot-dl dd{
+	padding-top: 0.256rem;
+	font-size: 0.512rem;
+	color: #666;
+}
+
+/*选择支付方式时选择账号e*/
+/*银行卡提现 s*/
+.withdraw-cont-wrap .withdraw-top60{
+	margin-top: 1.28rem !important;
+}
+/*银行卡提现 e*/
+/*银行卡选择账号 s*/
+.AddAccount-cont-wrap2 .withdraw-cont-ul .withdraw-cont-span-name2{
+	width: 1.6213rem;
+	height: 1.1093rem;
+	display: inline-block;
+	margin-top: 1.024rem;
+}
+.AddAccount-cont-wrap2 .withdraw-cont-ul .withdraw-cont-span-name2 img{
+	width: 100%;
+}
+/*银行卡选择账号 e*/
+/*银行卡添加账号 s*/
+.withdraw-cont-wrap .withdraw-cont-ul .withdraw-top395{
+	margin-top: 395px !important;
+}
+/*银行卡添加账号 e*/
+/*银行卡绑定已有账号选择s*/
+
+/*银行卡绑定已有账号选择e*/
+/*提现成功弹窗s*/
+.withdraw-bg-opacity{
+/*	display: none; */
+    position: fixed;
+    max-width: 16rem;
+    margin: 0 auto;
+    width: 100%;
+    left: 0; 
+    right: 0; 
+    top: 0;
+    bottom: 0;  
+    z-index: 12;
+    background: rgba(0,0,0,0.4);
+}
+.withdraw-pop{
+	width: 16rem;
+	position: fixed;    
+	overflow-x: hidden;
+    background-color: white;
+    width: 16rem;
+    height: 14.933rem;
+    bottom: 0;
+    z-index: 999;
+    padding: 0 0.64rem 0 0.64rem;
+}
+.withdraw-pop .withdraw-pop-cheng{
+	width: 2.4533rem;
+	height: 2.4533rem;
+	border: 3px solid #01a7ee;
+	border-radius: 50%;
+	text-align: center;
+	margin: 0 auto;
+    margin-top: 1.92rem;
+}
+.withdraw-pop .withdraw-pop-icon{
+	display: inline-block;
+	width: 1.28rem;
+	height: 1.0026rem;
+	margin-top: 0.7466rem;
+	background: url(../images/withdraw-cheng.png) no-repeat;
+	background-size: 100% 100%;
+}
+.withdraw-pop-p{
+	font-weight: 600;
+	color: #333333;
+	font-size: 0.768rem;
+	text-align: center;
+	margin-top: 1.066rem;
+}
+.withdraw-pop-span{
+	display: inline-block;
+	font-size: 0.5546rem;
+	text-align: center;
+	padding: 0.5973rem 0.8533rem 0 0.8533rem;
+	line-height: 0.896rem;
+}
+.withdraw-pop-btn{
+	margin-top: 1.92rem;
+	width: 100%;
+}
+.withdraw-pop-btn .withdraw-pop-a{
+	width: 100%;
+	height: 1.92rem;
+	line-height: 1.92rem;
+	background-color: #e73223;
+	text-align: center;
+	display: block;
+	color: #FFFFFF;
+	font-size: 0.64rem;
+	border-radius: 5px;
+}
+/*提现成功弹窗e*/

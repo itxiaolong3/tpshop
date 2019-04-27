@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>个人信息</title>
+		<link rel="stylesheet" type="text/css" href="__STATIC__/css/tpshop.css" />
+		<link rel="stylesheet" type="text/css" href="__STATIC__/css/myaccount.css" />
+		<script src="__STATIC__/js/jquery-1.11.3.min.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript" src="__ROOT__/Public/static/js/layer/laydate/laydate.js"></script>
+	</head>
+	<body class="bg-f5">
+	<include file="user/header"/>
+		<div class="home-index-middle">
+			<div class="w1224">
+				<div class="g-crumbs">
+			       	<a href="{:U('Home/User/index')}">我的商城</a>
+			       	<i class="litt-xyb"></i>
+			       	<span>个人信息</span>
+			    </div>
+			    <div class="home-main">
+					<include file="user/menu"/>
+			    	<div class="ri-menu fr">
+						<div class="menumain p">
+							<div class="goodpiece">
+								<h1>个人信息</h1>
+								<!--<a href=""><span class="co_blue">帮助</span></a>-->
+							</div>
+							<div class="personerinfro">
+								<form action="" method="post">
+									<ul class="hend_jz">
+										<li class="infor_wi_le"><a href="javascript:void(0);">头像：</a></li>
+										<li class="infor_img">
+											<a href="javascript:void(0);">
+												<img id="preview" src="{$user.head_pic|default='__STATIC__/images/headPic.jpg'}" onClick="GetUploadify2(1,'head_pic','head_pic','add_img')"/>
+											</a>
+											<input type="hidden" name="head_pic" id="head_pic" value="{$user.head_pic}">
+										</li>
+									</ul>
+									<ul class="name_jz">
+										<li class="infor_wi_le"><a href="javascript:void(0);">昵称：</a></li>
+										<li><a href="javascript:void(0);"><input class="name_zjxs" type="text" name="nickname" id="nickname" value="{$user.nickname}" maxlength="20" /></a></li>
+									</ul>
+									<!--<ul class="name_jz">-->
+										<!--<li class="infor_wi_le"><a href="javascript:void(0);">真实姓名：</a></li>-->
+										<!--<li><a href="javascript:void(0);"><input class="name_zjxs" type="text" name="" id="" value="" /></a></li>-->
+									<!--</ul>-->
+									<ul class="sex_jz">
+										<li class="infor_wi_le"><a href="javascript:void(0);">性别：</a></li>
+										<li>
+											<a href="javascript:void(0);">
+												<input type="radio" name="sex" id="secret" <if condition="$user['sex'] eq '0'">checked</if> value="0"/><label for="secret">保密</label>
+												<input type="radio" name="sex" id="man" <if condition="$user['sex'] eq '1'">checked</if> value="1"/><label for="man">男</label>
+												<input type="radio" name="sex" id="woman" <if condition="$user['sex'] eq '2'">checked</if> value="2"/><label for="woman">女</label>
+											</a>
+										</li>
+									</ul>
+									<ul class="name_jz">
+										<li class="infor_wi_le"><a href="javascript:void(0);">生日：</a></li>
+										<li>
+											<input type="text" name="birthday" id="birthday" value="{$user.birthday|date='Y-m-d',###}" />
+										</li>
+									</ul>
+									<ul class="hobby_jz">
+										<li class="infor_wi_le"></li>
+										<li class="infor_wi_ri">
+											<div class="pcews">
+												<span><i class="ph_c"></i>手机</span>
+												<span class="<if condition='$user[mobile_validated] eq 0'>change_e<else/>change_p</if>"><a href="{:U('Home/User/mobile_validate',array('type'=>'mobile','step'=>1))}" style="cursor:pointer;"><if condition="$user['mobile_validated'] eq 0">未绑定<else/>更换绑定</if></a></span>
+												<span><i class="em_c"></i>邮箱</span>
+												<span class="<if condition='$user[email_validated] eq 0'>change_e<else/>change_p</if>"><a href="{:U('Home/User/email_validate',array('type'=>'email','step'=>1))}" style="cursor:pointer;"><if condition="$user['email_validated'] eq 0">未绑定<else/>更换绑定</if></a></span>
+											</div>
+											<div class="careful">
+												<span class="fir_sen">注：修改密码、手机等信息到</span>
+												<span class="co_blue"><a href="{:U('Home/User/safety_settings')}" style="cursor:pointer;">安全设置</a></span>
+											</div>
+											<div class="save_s">
+												<input class="save" type="submit" id="" name="" value="确认保存" />
+											</div>
+										</li>
+									</ul>
+								</form>
+							</div>
+						</div>
+			    	</div>
+			    </div>
+			</div>
+		</div>
+		<!--footer-s-->
+		<div class="footer p"><include file="public/footer" /> </div>
+		<!--footer-e-->
+	<script>$(document).ready(function(){ $('#birthday').layDate();});</script>
+		<script type="text/javascript">
+            laydate.render({
+                elem: '#birthday',//绑定元素
+                theme: 'molv', //主题
+                format: 'yyyy-MM-dd', //自定义格式
+                calendar: true, //显示公历节日
+                min: '1970-01-01', //最小日期
+                max: '2099-12-31', //最大日期
+                // value: new Date(),//默认当前时间
+                isInitValue: true,
+                position : 'fixed', //定位方式
+                zIndex: 99999999, //css z-index
+            });
+			$(function(){
+				$('.choice_hobby').click(function(){
+					$(this).toggleClass('red');
+				})
+			})
+			function delimg(file,t){
+				$.get(
+						"/index.php?m=Admin&c=Uploadify&a=delupload",{action:"del", filename:file},function(){}
+				);
+				$('#head_pic').val('');
+				$('#preview').attr('src','');
+				$(t).remove();
+			}
+			function add_img(str){
+				var head_pic = $('#head_pic').val();
+				$('#head_pic').val(str);
+				$('#preview').attr('src',str);
+				$('img[class="headpic"]').attr('src',str);
+
+			}
+		</script>
+	</body>
+</html>

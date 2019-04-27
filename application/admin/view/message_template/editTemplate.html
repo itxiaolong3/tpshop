@@ -1,0 +1,310 @@
+<include file="public/layout" />
+<body style="background-color: #FFF; overflow: auto;">
+<div id="toolTipLayer" style="position: absolute; z-index: 9999; display: none; visibility: visible; left: 95px; top: 573px;"></div>
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+<div class="page">
+  <div class="fixed-bar">
+    <div class="item-title"><a class="back" href="javascript:history.back();" title="返回列表"><i class="fa fa-arrow-circle-o-left"></i></a>
+      <div class="subject">
+    <empty name="Think.get.mmt_name">
+        <h3>消息通知 - 添加 </h3>
+    <else />
+        <h3>消息通知 - 编辑消息模板“{$Think.get.mmt_name}”</h3>
+    </empty>
+        <h5>商城对商家及用户消息类发送设定</h5>
+      </div>
+    </div>
+  </div>
+  <!-- 操作说明 -->
+  <div class="explanation" id="explanation">
+    <div class="title" id="checkZoom"><i class="fa fa-lightbulb-o"></i>
+      <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+      <span id="explanationZoom" title="收起提示"></span> </div>
+    <ul>
+      <li>平台可给商家提供站内信、短消息、邮件三种通知方式。平台可以选择开启一种或多种通知方式供商家选择。</li>
+      <li>消息模板输入项不能为空。</li>
+      <li>短消息、邮件需要商家设置正确号码后才能正常接收。</li>
+    </ul>
+  </div>
+  <div class="homepage-focus" nctype="sellerTplContent">
+    <div class="title">
+      <h3>消息模板切换选择</h3>
+      <ul class="tab-base nc-row">
+        <li><a href="javascript:void(0);" class="current">站内信模板</a></li>
+        <li><a href="javascript:void(0);">手机短信模板</a></li>
+        <li><a href="javascript:void(0);">邮件模板</a></li>
+      </ul>
+    </div>
+      <div class="ncap-form-default" id="form_1">
+        <input type="hidden" name="act" value="{$Think.get.act}" id="act" />
+        <dl class="row">
+            <dt class="tit">
+                <label for="mmt_name"><em>*</em>模板名称</label>
+            </dt>
+            <dd class="opt">
+                <input type="text" value="{$arr['mmt_name']}" name="mmt_name" id="mmt_name" class="input-txt ">
+                <span id="err_mmt_name" class="err" style="display:none;"></span>
+                <p class="notic"></p>
+            </dd>
+        </dl>
+        <dl class="row">
+            <dt class="tit">
+                <label for="mmt_code"><em>*</em>模板编号</label>
+            </dt>
+            <dd class="opt">
+                <input type="text" value="{$arr['mmt_code']}" name="mmt_code" id="mmt_code" class="input-txt ">
+                <span id="err_mmt_code" class="err" style="display:none;"></span>
+                <p class="notic"></p>
+            </dd>
+        </dl>    
+      </div>
+    <!-- 站内信 S -->
+    <form class="tab-content" method="post" name="message_form" id="form_2">
+      <div class="ncap-form-default">
+        <dl class="row">
+          <dt class="tit">
+            <label>站内信开关</label>
+          </dt>
+          <dd class="opt">
+            <div class="onoff">
+                <if condition="$arr['mmt_message_switch'] eq 1 ">
+                <label for="message_switch1" class="cb-enable selected">开启</label>
+                <label for="message_switch0" class="cb-disable ">关闭</label>
+                <input id="message_switch1" name="mmt_message_switch" checked="checked" value="1" type="radio">
+                <input id="message_switch0" name="mmt_message_switch"  value="0" type="radio">
+                    <else />
+        
+                <label for="message_switch1" class="cb-enable ">开启</label>
+                <label for="message_switch0" class="cb-disable selected">关闭</label>
+                <input id="message_switch1" name="mmt_message_switch"  value="1" type="radio">
+                <input id="message_switch0" name="mmt_message_switch" checked="checked" value="0" type="radio" >
+                </if>
+
+              
+            </div>
+            <p class="notic"> </p>
+          </dd>
+        </dl>
+        <dl class="row">
+          <dt class="tit">
+            <label><em>*</em>消息内容</label>
+          </dt>
+          <dd class="opt">
+            <textarea name="mmt_message_content" rows="6" class="tarea">{$arr['mmt_message_content']}</textarea>
+            <span class="err" id="err_mmt_message_content"></span>
+            <p class="notic"> </p>
+          </dd>
+        </dl>
+        <div class="bot"> <a href="JavaScript:void(0);" onclick="msgForm(2)" class="ncap-btn-big ncap-btn-green">确认提交</a></div>
+      </div>
+    </form>
+    <!-- 站内信 E --> 
+    <!-- 短消息 S -->
+    <form class="tab-content" method="post" name="short_name" id="form_3" style="display:none;">
+      <div class="ncap-form-default">
+        <dl class="row">
+          <dt class="tit">
+            <label>手机短信开关</label>
+          </dt>
+          <dd class="opt">
+            <div class="onoff">
+                <if condition="$arr['mmt_short_switch'] eq 1 ">
+                <label for="short_switch1" class="cb-enable selected">开启</label>
+                <label for="short_switch0" class="cb-disable ">关闭</label>
+                <input id="short_switch1" name="mmt_short_switch" checked="checked" value="1" type="radio">
+                <input id="short_switch0" name="mmt_short_switch"  value="0" type="radio">
+                    <else />
+        
+                <label for="short_switch1" class="cb-enable ">开启</label>
+                <label for="short_switch0" class="cb-disable selected">关闭</label>
+                <input id="short_switch1" name="mmt_short_switch"  value="1" type="radio">
+                <input id="short_switch0" name="mmt_short_switch" checked="checked" value="0" type="radio">
+                </if>
+
+            </div>
+            <p class="notic"> </p>
+          </dd>
+        </dl>
+        <dl class="row">
+            <dt class="tit">
+                <label for="mmt_name"><em>*</em>短信签名</label>
+            </dt>
+            <dd class="opt">
+                <input type="text" value="{$arr['mmt_short_sign']}" name="mmt_short_sign" id="mmt_short_sign" class="input-txt ">
+                <span id="err_mmt_short_sign" class="err" style="display:none;"></span>
+                <p class="notic">如:【时代万网】</p>
+            </dd>
+        </dl>
+        <dl class="row">
+            <dt class="tit">
+                <label for="mmt_name"><em>*</em>短信模板ID</label>
+            </dt>
+            <dd class="opt">
+                <input type="text" value="{$arr['mmt_short_code']}" name="mmt_short_code" id="mmt_short_code" class="input-txt ">
+                <span id="err_mmt_short_code" class="err" style="display:none;"></span>
+                <p class="notic"></p>
+            </dd>
+        </dl>
+        <dl class="row">
+          <dt class="tit">
+            <label><em>*</em>消息内容</label>
+          </dt>
+          <dd class="opt">
+            <textarea name="mmt_short_content" rows="6" class="tarea" id="mmt_short_content">{$arr['mmt_short_content']}</textarea>
+            <span class="err" id="err_mmt_short_content"></span>
+            <p class="notic"> </p>
+          </dd>
+        </dl>
+        <div class="bot"> <a href="JavaScript:void(0);" onclick="msgForm(3)" class="ncap-btn-big ncap-btn-green">确认提交</a></div>
+      </div>
+    </form>
+    <!-- 短消息 E --> 
+    <!-- 邮件 S -->
+    <form class="tab-content" method="post" name="mail_form" id="form_4" style="display:none;">
+      <div class="ncap-form-default">
+        <dl class="row">
+          <dt class="tit">
+            <label>邮件开关</label>
+          </dt>
+          <dd class="opt">
+            <div class="onoff">
+                <if condition="$arr['mmt_mail_switch'] eq 1 ">
+                <label for="mail_switch1" class="cb-enable selected">开启</label>
+                <label for="mail_switch0" class="cb-disable ">关闭</label>
+                <input id="mail_switch1" name="mmt_mail_switch" checked="checked" value="1" type="radio">
+                <input id="mail_switch0" name="mmt_mail_switch"  value="0" type="radio">
+                    <else />
+                <label for="mail_switch1" class="cb-enable ">开启</label>
+                <label for="mail_switch0" class="cb-disable selected">关闭</label>
+                <input id="mail_switch1" name="mmt_mail_switch"  value="1" type="radio">
+                <input id="mail_switch0" name="mmt_mail_switch" checked="checked" value="0" type="radio">
+                </if>
+            </div>
+            <p class="notic"> </p>
+          </dd>
+        </dl>
+        <dl class="row">
+          <dt class="tit">
+            <label><em>*</em>邮件标题</label>
+          </dt>
+          <dd class="opt">
+            <textarea name="mmt_mail_subject" rows="6" class="tarea" id="mmt_mail_subject">{$arr['mmt_mail_subject']}</textarea>
+            <span class="err" id="err_mmt_mail_subject"></span>
+            <p class="notic"> </p>
+          </dd>
+        </dl>
+        <dl class="row">
+          <dt class="tit">
+            <label><em>*</em>邮件内容</label>
+          </dt>
+          <dd class="opt">
+            <textarea id="mmt_mail_content" name="mmt_mail_content" style="width:700px;height:300px;" class="mmt_mail_content ">{$arr['mmt_mail_content']}</textarea>
+            <span class="err" id="err_mmt_mail_content"></span>
+
+<!--以下是在线编辑器 代码 -->
+<load href="__ROOT__/public/plugins/Ueditor/ueditor.config.js"/>
+<load href="__ROOT__/public/plugins/Ueditor/ueditor.all.min.js"/>
+<script type="text/javascript" charset="utf-8" src="__ROOT__/public/plugins/Ueditor/lang/zh-cn/zh-cn.js"></script>
+<!--以上是在线编辑器 代码  end-->
+
+<script>
+     var url="{:url('Admin/Ueditor/index',array('savePath'=>'message'))}";
+     var ue = UE.getEditor('mmt_mail_content',{
+         toolbars: [[
+             'fullscreen', 'source', '|', 'undo', 'redo', '|',
+             'bold', 'italic', 'underline', 'fontborder', 'strikethrough', 'superscript', 'subscript', 'removeformat', 'formatmatch', 'autotypeset', 'blockquote', 'pasteplain', '|', 'forecolor', 'backcolor', 'insertorderedlist', 'insertunorderedlist', 'selectall', 'cleardoc', '|',
+             'rowspacingtop', 'rowspacingbottom', 'lineheight', '|',
+             'customstyle', 'paragraph', 'fontfamily', 'fontsize', '|',
+             'directionalityltr', 'directionalityrtl', 'indent', '|',
+             'justifyleft', 'justifycenter', 'justifyright', 'justifyjustify', '|', 'touppercase', 'tolowercase', '|',
+             'anchor', '|', 'imagenone', 'imageleft', 'imageright', 'imagecenter', '|',
+             'simpleupload', 'insertimage', 'emotion', 'scrawl', 'music', 'attachment', 'map', 'gmap', 'insertframe', 'insertcode', 'webapp', 'pagebreak', 'template', 'background', '|',
+             'horizontal', 'date', 'time', 'spechars', 'snapscreen', 'wordimage', '|',
+             'inserttable', 'deletetable', 'insertparagraphbeforetable', 'insertrow', 'deleterow', 'insertcol', 'deletecol', 'mergecells', 'mergeright', 'mergedown', 'splittocells', 'splittorows', 'splittocols', 'charts', '|',
+             'print', 'preview', 'searchreplace', 'drafts', 'help'
+         ]],
+         serverUrl :url,
+         zIndex: 999,
+         initialFrameWidth: "100%", //初化宽度
+         initialFrameHeight: 300, //初化高度            
+         focus: false, //初始化时，是否让编辑器获得焦点true或false
+         maximumWords: 99999, removeFormatAttributes: 'class,style,lang,width,height,align,hspace,valign',//允许的最大字符数 'fullscreen',
+         pasteplain:false, //是否默认为纯文本粘贴。false为不使用纯文本粘贴，true为使用纯文本粘贴
+         autoHeightEnabled: true
+     });
+</script>
+          </dd>
+        </dl>
+        <div class="bot"> <a href="JavaScript:void(0);" onclick="msgForm(4);" class="ncap-btn-big ncap-btn-green">确认提交</a> </div>
+      </div>
+    </form>
+    <!-- 邮件 E --> 
+  </div>
+</div>
+<script>
+$(function(){
+    $('div[nctype="sellerTplContent"] > .title > ul').find('a').click(function(){
+        $(this).addClass('current').parent().siblings().find('a').removeClass('current');
+        var _index = $(this).parent().index();
+        var _form = $('div[nctype="sellerTplContent"]').find('form');
+        _form.hide();
+        _form.eq(_index).show();
+    });
+    if ($("#act").val() == 'edit') {
+        $("#mmt_code").attr('readonly',true);
+    }
+});
+function msgForm(v){
+    console.log(ue.getContent())
+    if ($("#mmt_code").val() == '' || $("#mmt_name").val() == '') {
+        layer.alert('输入项不能为空', {icon: 2});
+        return;
+    }
+    if ($("#mmt_short_content").val() == '' ) {
+        layer.alert('手机短信 消息内容 不能为空', {icon: 2});
+        return;
+    }    
+    if ($("#mmt_mail_subject").val() == '') {
+        layer.alert('邮件标题不能为空', {icon: 2});
+        return;
+    }
+    if (ue.getContent() == '') {
+        layer.alert('邮件内容不能为空', {icon: 2});
+        return;
+    }    
+    var str = $('#form_2').serialize()
+    str += '&' + $('#form_3').serialize()
+    str += '&' + $('#form_4').serialize()
+    str += '&mmt_code=' + $("#mmt_code").val()
+    str += '&mmt_name=' + $("#mmt_name").val()
+    str += '&act=' + $("#act").val()
+    $.ajax({
+        type:'post',
+        data:str,
+        url: "{:U('Admin/MessageTemplate/editTemplate')}",
+        dataType:'JSON',
+        success: function(data) {
+            if(data.status == 1){
+                layer.alert(data.msg, {icon: 1},function () {
+                    window.location.href=data.url;
+                });
+            }else{
+                $('.err').hide();
+                for(var i in data['data'])
+                {
+                    $("#err_"+i).text(data['data'][i]).show();
+                }
+                layer.alert(data.msg, {icon: 2});
+
+            }
+        },
+        error:function(){
+            layer.alert('网络连接失败，请稍后再试！', {icon: 2});
+        }
+    });
+}
+</script><div id="goTop"> <a href="JavaScript:void(0);" id="btntop"><i class="fa fa-angle-up"></i></a><a href="JavaScript:void(0);" id="btnbottom"><i class="fa fa-angle-down"></i></a></div>
+</body>
+</html>

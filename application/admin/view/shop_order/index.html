@@ -1,0 +1,338 @@
+<include file="public/layout"/>
+<script type="text/javascript" src="__ROOT__/public/static/js/layer/laydate/laydate.js"></script>
+<style>
+    .dyrDiv2{
+        display: inline-block;vertical-align: middle;
+    }
+</style>
+<body style="background-color: rgb(255, 255, 255); overflow: auto; cursor: default; -moz-user-select: inherit;">
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <if condition="$Request.param.statistic eq 1">
+                <a class="back" href="javascript:history.back();" title="返回列表"><i class="fa fa-arrow-circle-o-left"></i></a>
+            </if>
+            <div class="subject">
+                <h3>自提订单</h3>
+                <h5>商城实物商品自提订单查询及管理</h5>
+            </div>
+            <if condition="$Request.param.statistic neq 1">
+                <ul class="tab-base nc-row">
+                    <li><a href="{:U('ShopOrder/off')}"><span>核销提货码</span></a></li>
+                    <li><a href="{:U('ShopOrder/index')}" <if condition="$Request.param.is_write_off nheq '0'">class="current"</if>><span>全部自提订单</span></a></li>
+                    <li><a href="{:U('ShopOrder/index',['is_write_off'=>0])}" <if condition="$Request.param.is_write_off heq '0'">class="current"</if>><span>待自提订单</span></a></li>
+                    <li><a href="{:U('ShopOrder/statistic')}"><span>数据统计</span></a></li>
+                </ul>
+            </if>
+        </div>
+    </div>
+    <!-- 操作说明 -->
+    <div id="explanation" class="explanation" style=" width: 99%; height: 100%;">
+        <div id="checkZoom" class="title"><i class="fa fa-lightbulb-o"></i>
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span title="收起提示" id="explanationZoom" style="display: block;"></span>
+        </div>
+        <ul>
+            <li>查看操作可以查看订单详情, 包括支付费用, 商品详情等</li>
+            <li>未支付的订单可以取消</li>
+            <li>用户收货后, 如果没有点击"确认收货",系统自动根据设置的时间自动收货.</li>
+        </ul>
+    </div>
+    <div class="flexigrid">
+        <div class="mDiv">
+            <div class="ftitle">
+                <h3>订单列表</h3>
+                <h5>(共{$page->totalRows}条记录)</h5>
+            </div>
+            <div title="刷新数据" class="pReload"><i class="fa fa-refresh"></i></div>
+            <if condition="$Request.param.statistic neq 1">
+                <form class="navbar-form form-inline" method="get" action="{:U('ShopOrder/index')}">
+                <input type="hidden" name="is_write_off" value="{$Request.param.is_write_off}">
+                <div class="sDiv">
+                    <div class="dyrDiv2">
+                        <span style="width: 30px;font-size: 12px;margin-right: 10px;">下单时间</span>
+                    </div>
+                    <div class="sDiv2" style="margin-right: 10px;">
+                        <input type="text" size="30" name="add_time_start" id="add_time_start" value="{$add_time_start}" placeholder="起始时间" class="qsbox">
+                    </div>
+                    <div class="dyrDiv2">
+                        <span style="width: 30px;font-size: 12px;">至</span>
+                    </div>
+                    <div class="sDiv2" style="margin: 0px 10px;">
+                        <input type="text" size="30" name="add_time_end" id="add_time_end" value="{$add_time_end}" placeholder="截止时间" class="qsbox">
+                    </div>
+                    <div class="dyrDiv2">
+                        <span style="width: 30px;font-size: 12px;margin-right: 10px;">自提点</span>
+                    </div>
+                    <div class="sDiv2">
+                        <select name="shop_id" class="select sDiv3">
+                            <option value="">全部</option>
+                            <volist name="shop_list" id="shop">
+                                <option value="{$shop.shop_id}" <if condition="$Request.param.shop_id eq $shop['shop_id']">selected="selected"</if>>{$shop.shop_name}</option>
+                            </volist>
+                        </select>
+                    </div>
+                    <div class="sDiv2">
+                        <input type="text" size="30" name="keywords" value="{$Request.param.keywords}" class="qsbox" placeholder="请输入订单号">
+                    </div>
+                    <div class="sDiv2">
+                        <input class="btn" value="搜索" type="submit">
+                    </div>
+                </div>
+            </form>
+            </if>
+        </div>
+        <div class="hDiv">
+            <div class="hDivBox" id="ajax_return">
+                <table cellspacing="0" cellpadding="0">
+                    <thead>
+                    <tr>
+                        <th axis="col0">
+                            <div style="width: 24px;"><i class="ico-check"></i></div>
+                        </th>
+                        <th align="left">
+                            <div style="text-align: center; width: 140px;">订单编号</div>
+                        </th>
+                        <th align="left">
+                            <div style="text-align: center; width: 120px;">下单时间</div>
+                        </th>
+                        <th align="center">
+                            <div style="text-align: center; width: 100px;">收货人</div>
+                        </th>
+                        <th align="center">
+                            <div style="text-align: center; width: 100px;">收货人电话</div>
+                        </th>
+                        <th align="center">
+                            <div style="text-align: center; width: 100px;">自提点</div>
+                        </th>
+                        <th align="center">
+                            <div style="text-align: center; width: 120px;">自提时间</div>
+                        </th>
+                        <th align="center">
+                            <div style="text-align: center; width: 50px;">配送方式</div>
+                        </th>
+                        <th align="center" >
+                            <div style="text-align: center; width: 50px;">订单状态</div>
+                        </th>
+                        <th align="center" >
+                            <div style="text-align: center; width: 50px;">支付状态</div>
+                        </th>
+                        <th align="center" >
+                            <div style="text-align: center; width: 50px;">发货状态</div>
+                        </th>
+                        <th align="center" >
+                            <div style="text-align: center; width: 50px;">支付方式</div>
+                        </th>
+                        <th align="left" class="handle">
+                            <div style="text-align: left; width: 150px;">操作</div>
+                        </th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        <div class="bDiv" style="height: auto;">
+            <div id="flexigrid" cellpadding="0" cellspacing="0" border="0">
+                <table>
+                    <tbody>
+                    <volist name="list" id="order">
+                        <tr>
+                            <td class="sign">
+                                <div style="width: 24px;"><i class="ico-check"></i></div>
+                            </td>
+                            <td align="left" class="">
+                                <div style="text-align: center; width: 140px;">{$order.order_sn}</div>
+                            </td>
+                            <td align="left" class="">
+                                <div style="text-align: center; width: 120px;">{$order['order']['add_time']|date='Y-m-d H:i:s',###}</div>
+                            </td>
+                            <td align="left" class="">
+                                <div style="text-align: center; width: 100px;">{$order['order']['consignee']}</div>
+                            </td>
+                            <td align="left" class="">
+                                <div style="text-align: center; width: 100px;">{$order['order']['mobile']}</div>
+                            </td>
+                            <td align="left" class="">
+                                <div style="text-align: center; width: 100px;">{$order['shop']['shop_name']}</div>
+                            </td>
+                            <td align="left" class="">
+                                <div style="text-align: center; width: 120px;">{$order['take_time']}</div>
+                            </td>
+                            <td align="left" class="">
+                                <div style="text-align: center; width: 50px;">自提</div>
+                            </td>
+                            <td align="left" class="">
+                                <div style="text-align: center; width: 50px;">{$Think.config.ORDER_STATUS[$order['order']['order_status']]}</div>
+                            </td>
+                            <td align="left" class="">
+                                <div style="text-align: center; width: 50px;">{$Think.config.PAY_STATUS[$order['order']['pay_status']]}</div>
+                            </td>
+                            <td align="left" class="">
+                                <div style="text-align: center; width: 50px;">{$Think.config.SHIPPING_STATUS[$order['order']['shipping_status']]}</div>
+                            </td>
+                            <td align="left" class="">
+                                <div style="text-align: center; width: 50px;">{$list.pay_name|default='其他方式'}</div>
+                            </td>
+                            <td align="left" class="handle">
+                                <div style="text-align: left; width: 240px; max-width:240px;">
+                                    <a class="btn blue" href="{:U('Order/detail',['order_id'=>$order['order_id']])}"><i class="fa fa-list-alt"></i>查看详情</a>
+                                    <if condition="$order['order']['shipping_status'] eq 0 && $order['order']['order_status'] neq 3">
+                                        <a class="btn orange" onclick="deliverGoods({$order.order_id})"><i class="fa fa-send-o"></i>发货</a>
+                                    </if>
+                                </div>
+                            </td>
+                            <td align="" class="" style="width: 100%;">
+                                <div>&nbsp;</div>
+                            </td>
+                        </tr>
+                    </volist>
+                    </tbody>
+                </table>
+            </div>
+            <div class="iDiv" style="display: none;"></div>
+        </div>
+        <!--分页位置-->
+        {$page->show()}
+    </div>
+</div>
+<div class="z-ztfh-bg" hidden>
+</div>
+<div class="z-ztfh-pop" hidden>
+    <form>
+        <div class="z-ztfh-head">
+            <i class="z-ztfh-close"></i>
+            <h3>商品发货</h3>
+        </div>
+        <div class="z-ztfh-tab">
+            <ul class="tab-ul-title">
+                <li style="width: 21%;">订单编号</li>
+                <li style="width: 24%;">下单时间</li>
+                <li style="width: 15%;">会员ID</li>
+                <li style="width: 15%;">订单总额</li>
+                <li style="width: 12%;">发货状态</li>
+                <li style="width: 12%;">配送方式</li>
+            </ul>
+            <ul class="tab-ul-cont" id="shop-order-info">
+            </ul>
+        </div>
+        <div class="z-ztfh-information">
+            <h5>自提信息:</h5>
+            <div class="ztfh-information-cont" id="shop-info"></div>
+        </div>
+        <div class="z-ztfh-select">
+            <span>提供方式:</span>
+            <div class="z-ztfh-hema ztfh-label">
+                <label ints="1" class="ztfh-lab-bg" data-val="1"></label>核码提货
+            </div>
+            <div class="z-ztfh-wuma ztfh-label">
+                <label data-val="0"></label>无码提货
+            </div>
+        </div>
+        <div class="z-ztfh-input">
+            <span>提      货 &nbsp;码:</span>
+            <label  ></label>
+            <input type="hidden" name="old_shop_order_id" id="old-shop-order-id" />
+            <input type="text" name="shop_order_id" id="shop-order-id" placeholder="请输入提货码" />
+        </div>
+        <div class="z-ztfh-btns">
+            <label></label>
+            <input type="button" id="fahuo" value="发货" />
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+
+    laydate.render({
+        elem: '#add_time_start',//绑定元素
+        theme: 'molv', //主题
+        type:'datetime', //控件选择类型
+        format: 'yyyy-MM-dd', //自定义格式
+        calendar: true, //显示公历节日
+        min: '1970-01-01', //最小日期
+        max: '2099-12-31', //最大日期
+        value: '{$add_time_start}',//默认当前时间
+        position : 'fixed', //定位方式
+        zIndex: 99999999, //css z-index
+    });
+
+    laydate.render({
+        elem: '#add_time_end',//绑定元素
+        theme: 'molv', //主题
+        type:'datetime', //控件选择类型
+        format: 'yyyy-MM-dd', //自定义格式
+        calendar: true, //显示公历节日
+        min: '1970-01-01 00:00:00', //最小日期
+        max: '2099-12-31 23:59:59', //最大日期
+        value: '{$add_time_end}',//默认当前时间
+        position : 'fixed', //定位方式
+        zIndex: 99999999, //css z-index
+    });
+
+    function deliverGoods(order_id){
+        var ordreStr = '',shopStr = '';
+        $.ajax({
+            type:"POST",
+            url:"/index.php?m=Admin&c=ShopOrder&a=getOrderGoodsInfo",
+            data:{order_id:order_id},
+            dataType:"json",
+            success: function (data) {
+                $("#old-shop-order-id").val(data.shop_order.shop_order_id);
+                ordreStr += '<li style="width: 21%;">' + data.order_sn + '</li><li style="width: 24%;">' + time_format(data.add_time) + '</li><li style="width: 15%;">' + data.user_id + '</li><li style="width: 15%;">' + data.total_amount + '</li><li style="width: 12%;">' + data.shipping_status_desc + '</li><li style="width: 12%;">' + data.delivery_method + '</li>';
+                $("#shop-order-info").html(ordreStr);
+
+                shopStr += '<div class="information-list">提货人：<em>' + data.consignee + '</em></div><div class="information-list">自提点：<em>' + data.shop.shop_name + '</em></div><div class="information-list">联系电话：<em>' + data.mobile + '</em></div><div class="information-list">自提时间：<em>' + data.shop_order.take_time + '</em></div>';
+                $("#shop-info").html(shopStr);
+
+                $(".z-ztfh-bg,.z-ztfh-pop").show();
+            }
+        })
+    }
+    $("#fahuo").click(function(){
+        var shopOrderId = $("#shop-order-id").val();
+        var oldShopOrderId = $("#old-shop-order-id").val();
+        var isCode = $(".ztfh-lab-bg").data().val;
+        var newShopOrderId = oldShopOrderId;
+        if (isCode == 1) {
+            if(shopOrderId != oldShopOrderId){
+                layer.alert("提货码错误", {icon: 2});
+                return;
+            }
+            if(shopOrderId == ""){
+                layer.alert("请输入提货码", {icon: 2});
+                return;
+            }
+            newShopOrderId = shopOrderId;
+        }
+        $.ajax({
+            type: "POST",
+            url: "/index.php?m=Admin&c=ShopOrder&a=writeOff",
+            data: {shop_order_id: newShopOrderId},
+            dataType: "json",
+            success: function (data) {
+                if(data.status == 1){
+                    location.reload();
+                }else{
+                    layer.alert(data.msg, {icon: 2});
+                }
+            }
+        })
+    })
+    $(".ztfh-label label").click(function  () {
+        var index= $(this).attr("ints")
+        $(".ztfh-label label").removeClass("ztfh-lab-bg");
+        $(this).addClass("ztfh-lab-bg");
+        if (index==1) {
+            $(".z-ztfh-input").show();
+        } else{
+            $(".z-ztfh-input").hide();
+        }
+    });
+    $(".z-ztfh-close").click(function  () {
+        $(".z-ztfh-bg,.z-ztfh-pop").hide();
+    })
+
+</script>
+</body>
+</html>

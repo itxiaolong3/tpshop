@@ -1,0 +1,14 @@
+<include file="public/header" title="消息详情" body=""/>
+<include file="public/header_nav" title="消息详情"  href="{:U('Mobile/User/message_notice')}"/>
+<div class="ac-d-title">{$user_message.category_name}</div>
+<!--<div class="ac-d-subtitle"></div>-->
+<div class="ac-d-state">
+    <span class="">类型 :  {$user_message.category_name}</span>
+    <span class="">时间 :  {:date('Y-m-d H:i:s',$user_message.send_time)}</span>
+</div>
+<div class="ac-d-cont">
+    {$user_message.message}
+</div>
+<script src="__STATIC__/js/style.js" type="text/javascript" charset="utf-8"></script>
+</body>
+</html>

@@ -1,0 +1,230 @@
+<include file="public/layout" />
+<body style="background-color: rgb(255, 255, 255); overflow: auto; cursor: default; -moz-user-select: inherit;">
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>消息提醒</h3>
+                <h5>消息模板列表</h5>
+            </div>
+        </div>
+    </div>
+    <!-- 操作说明 -->
+    <div id="explanation" class="explanation" style="color: rgb(44, 188, 163); background-color: rgb(237, 251, 248); width: 99%; height: 100%;">
+        <div id="checkZoom" class="title"><i class="fa fa-lightbulb-o"></i>
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span title="收起提示" id="explanationZoom" style="display: block;"></span>
+        </div>
+        <ul>
+            <li>消息提醒，即微信模板消息，需要先登录微信公众号平台，添加插件，申请开通模板消息。</li>
+            <li>然后选择填写所在行业： IT科技/互联网|电子商务，如果有其他行业则选填：IT科技/电子技术。每月可更改1次所选行业</li>
+            <li>启用列表所需要的模板消息，即可在相应事件触发模板消息；编辑模板消息备注，可增加显示自定义提示消息内容</li>
+            <li>每个公众号账号可以同时使用25个模板，超过将无法使用模板消息功能。</li>
+            <li>如果在使用中发现使用模板超出了25个，但这里并没有使用这么多，可能是微信后台本来就已有其他的模板，请前往自行删除</li>
+        </ul>
+    </div>
+    <div class="flexigrid">
+        <div class="mDiv">
+            <div class="ftitle">
+                <h3>消息模板列表</h3>
+                <h5>(共{:count($tpls)}条记录)</h5>
+            </div>
+            <div title="刷新数据" class="pReload"><i class="fa fa-refresh"></i></div>
+        </div>
+        <div class="hDiv">
+            <div class="hDivBox">
+                <table cellspacing="0" cellpadding="0">
+                    <thead>
+                    <tr>
+                        <th class="sign" axis="col6">
+                            <div style="width: 24px;"><i class="ico-check"></i></div>
+                        </th>
+                        <th align="left" abbr="" axis="col6" class="">
+                            <div style="text-align: center; width:200px;" class="">模板标题</div>
+                        </th>
+                        <th align="left" abbr="" axis="col6" class="">
+                            <div style="text-align: center; width:150px;" class="">模板编号</div>
+                        </th>
+                        <th align="center" abbr="" axis="col6" class="">
+                            <div style="text-align: center; width: 150px;" class="">添加时间</div>
+                        </th>
+                        <th align="center" abbr="" axis="col6" class="">
+                            <div style="text-align: center; width: 80px;" class="">是否启用</div>
+                        </th>
+                        <th align="center" abbr="" axis="col6" class="">
+                            <div style="text-align: center; width: 150px;">操作</div>
+                        </th>
+                        <th style="width:100%" axis="col7">
+                            <div></div>
+                        </th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+
+        <div  id="flexigrid" class="bDiv" style="height: auto;">
+            <!--ajax 返回 -->
+            <table>
+                <tbody>
+                <volist name="tpls" id="list">
+                    <tr data-id="{$list.openid}">
+                        <td class="sign" axis="col6">
+                            <div style="width: 24px;"><i class="ico-check"></i></div>
+                        </td>
+                        <td align="center" axis="col0">
+                            <div style="text-align: center; width: 200px;">{$list.title}</div>
+                        </td>
+                        <td align="center" axis="col0">
+                            <div style="text-align: center; width: 150px;">{$list.template_sn}</div>
+                        </td>
+                        <td align="center" axis="col0">
+                            <div style="text-align: center; width: 150px;">{$user_tpls[$list.template_sn] ? date('Y-m-d H:i:s',$user_tpls[$list.template_sn][add_time]) : ''}</div>
+                        </td>
+                        <td align="center" axis="col0">
+                            <div style="text-align: center; width: 80px;">
+                                <if condition='$user_tpls[$list.template_sn][is_use] eq 1'>
+                                    <span class="yes" onClick="setUse('{$list.template_sn}', this)" data-enable="{$user_tpls[$list.template_sn][is_use]}"><i class="fa fa-check-circle"></i>是</span>
+                                <else/>
+                                    <span class="no" onClick="setUse('{$list.template_sn}', this)" data-enable="{$user_tpls[$list.template_sn][is_use]}"><i class="fa fa-ban"></i>否</span>
+                                </if>
+                            </div>
+                        </td>
+                        <td align="center" class="col0">
+                            <div style="text-align: center; width: 150px;" >
+                                <a href="javascript:;" class="btn blue" onclick="popup('{$list.template_sn}')"><i class="fa fa-edit"></i>编辑</a>
+                                <a href="javascript:;" class="btn blue" onclick="reset('{$list.template_sn}')"><i class="fa fa-recycle"></i>重置</a>
+                            </div>
+                        </td>
+                        <td align="" class="" style="width: 100%;">
+                            <div>&nbsp;</div>
+                        </td>
+                    </tr>
+                    <textarea style="display:none" id="remark{$list.template_sn}">{$user_tpls[$list.template_sn][remark]}</textarea>
+                </volist>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!--弹窗-->
+<div class="ncap-form-default" id="editer" style="display: none">
+    <dl class="row">
+        <dt class="tit">
+            <label><em></em>消息备注:</label>
+        </dt>
+        <dd class="opt">
+            <textarea name="text" rows="6"  placeholder="此备注会附在消息后面一同发给微信用户" id="submit-text" class="tarea"></textarea>
+        </dd>
+    </dl>
+    <div class="bot"><a href="JavaScript:void(0);" onClick="setData()" class="ncap-btn-big ncap-btn-green">设置</a></div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        // 点击刷新数据
+        $('.fa-refresh').click(function(){
+            location.href = location.href;
+        });
+    });
+    function setUse(sn, el) {
+        var isEnable = $(el).data('enable') ? 0 : 1;
+        $.ajax({
+            type: 'post',
+            url: "{:U('set_template_msg')}",
+            data: {
+                template_sn: sn,
+                is_use: isEnable
+            },
+            dataType: 'json',
+            success: function (res) {
+                if (!res) {
+                    return layer.alert('服务器空响应', {icon:2});
+                }
+                if (res.status === 1) {
+                    return layer.msg(res.msg, {time: 1000, icon: 1}, function () {
+                        location.reload(true);
+                    });
+                }
+                var msg = (typeof res.status === 'undefined') ? '数据格式出错' : res.msg;
+                layer.alert(msg, {icon:2});
+            },
+            error: function () {
+                layer.alert('服务器繁忙！', {icon: 2});
+            }
+        })
+    }
+    var popup_template_sn = 0;
+    function setData() {
+        var remark = $('#submit-text').val();
+        $.ajax({
+            type: 'post',
+            url: "{:U('set_template_msg')}",
+            data: {
+                template_sn: popup_template_sn,
+                remark: remark
+            },
+            dataType: 'json',
+            success: function (res) {
+                if (!res) {
+                    return layer.alert('服务器空响应', {icon:2});
+                }
+                if (res.status === 1) {
+                    $('#remark'+popup_template_sn).val(remark);
+                    return layer.msg(res.msg, {time: 1000, icon: 1}, function () {
+                        location.reload(true);
+                    });
+                }
+                var msg = (typeof res.status === 'undefined') ? '数据格式出错' : res.msg;
+                layer.alert(msg, {icon:2});
+            },
+            error: function () {
+                layer.alert('服务器繁忙！', {icon: 2});
+            }
+        })
+    }
+
+    function popup(sn) {
+        popup_template_sn = sn;
+        $('#submit-text').val($('#remark'+sn).val());
+        layer.open({
+            type: 1,
+            title: '消息模板设置',
+            shadeClose: true,
+            shade: 0.8,
+            area: ['580px', '240px'],
+            content: $('#editer')
+        });
+    }
+
+    function reset(sn) {
+        $.ajax({
+            type: 'post',
+            url: "{:U('reset_template_msg')}",
+            data: {
+                template_sn: sn
+            },
+            dataType: 'json',
+            success: function (res) {
+                if (!res) {
+                    return layer.alert('服务器空响应', {icon:2});
+                }
+                if (res.status === 1) {
+                    return layer.msg(res.msg, {time: 1000, icon: 1}, function () {
+                        location.reload(true);
+                    });
+                }
+                var msg = (typeof res.status === 'undefined') ? '数据格式出错' : res.msg;
+                layer.alert(msg, {icon:2});
+            },
+            error: function () {
+                layer.alert('服务器繁忙！', {icon: 2});
+            }
+        })
+    }
+</script>
+</body>
+</html>

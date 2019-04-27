@@ -1,0 +1,118 @@
+<include file="public/layout" />
+<!--include file="public/min-header"/-->
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/bootstrap/css/style.css" />
+<style type="text/css">
+[class^="icon-"], [class*=" icon-"] {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    margin-top: 1px;
+    line-height: 14px;
+    vertical-align: text-top;
+    background-image: url("__PUBLIC__/bootstrap//img/glyphicons-halflings.png");
+    background-position: 14px 14px;
+    background-repeat: no-repeat;
+}
+.icon-folder-open {
+    width: 16px;
+    background-position: -408px -120px;
+}
+.icon-minus-sign {
+    background-position: -24px -96px;
+}
+.icon-plus-sign {
+    background-position: 0 -96px;
+}
+.icon-leaf {
+    background-position: -48px -120px;
+}
+.tree li:last-child::before {
+    height: 25px;
+}
+ul{
+    padding: 0 40px;
+}
+.tree_span{
+    cursor: pointer;
+}
+.tree{
+    padding-left: 0;
+}
+.tree > ul{
+    padding-left: 19px;
+}
+</style>
+
+<body style="background-color: #FFF; overflow: auto;">
+<div id="toolTipLayer" style="position: absolute; z-index: 9999; display: none; visibility: visible; left: 95px; top: 573px;"></div>
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+  <div class="fixed-bar">
+    <div class="item-title"><a class="back" href="javascript:history.back();" title="微信公众号配置"><i class="fa fa-arrow-circle-o-left"></i></a>
+      <div class="subject">
+        <h3>分销关系</h3>
+        <h5>查看代理商层级关系</h5>
+      </div>
+    </div>
+  </div>
+   <div class="flexigrid">
+    <div class="mDiv" style="border-bottom:0px">
+	  	<form class="navbar-form form-inline"  action=""  method="post" role="search">  
+      	<div class="sDiv" style="float:left; ">
+			<div class="sDiv2" >	 
+				<input type="text" size="30" id="user_id" placeholder="上级id"  name="user_id" id="user_id" class="qsbox">
+			</div>
+	        <div class="sDiv2">	 
+	          	<input type="submit" class="btn" value="搜索">
+	         </div>
+        </div>
+     	</form>
+    </div>
+   	</div>
+  
+	<div class="tree well" >
+		<ul>                                 
+	       <foreach name="list" item="v" key="k">
+			<li>
+				<span class="tree_span" data-id="{$v[user_id]}">
+	                              	<i class="icon-folder-open"></i>
+	                                  {$v['user_id']}:
+	                                  <if condition="$v['nickname'] neq null">
+	                                   {$v['nickname']}
+	                                  <elseif condition="$v['mobile'] neq null" />
+	                                      {$v['mobile']}   
+	                                  <elseif condition="$v['email'] neq null" />
+	                                      {$v['email']}   
+	                                  </if>
+	                              </span>									 
+			</li>
+			</foreach>
+		</ul>
+	</div>
+    
+</div>
+<script type="text/javascript">
+  
+//ajax 请求树下面的节点 
+$('.tree').on('click','.tree_span',function(){
+	
+	    tmp_span = $(this);		
+		tmp_span.siblings('ul').toggle();
+		if(tmp_span.hasClass('requrst'))
+		  return false;
+		  
+		$.ajax({
+			type : "get",
+			url:"/index.php?m=Admin&c=Distribut&a=ajax_lower&id="+tmp_span.data('id'),//+tab,
+			//data : $('#'+form).serialize(),// 你的formid
+			success: function(data){
+					tmp_span.after(data);
+					tmp_span.addClass('requrst'); // 表示ajax 请求过了 不再请求第二次
+			}
+		});
+});
+ 
+</script>
+</body>
+</html>

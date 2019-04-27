@@ -1,0 +1,247 @@
+<include file="public/layout" />
+<body style="background-color: rgb(255, 255, 255); overflow: auto; cursor: default; -moz-user-select: inherit;">
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+	<div class="fixed-bar">
+		<div class="item-title">
+			<div class="subject">
+				<h3>优惠促销管理</h3>
+				<h5>网站系统优惠促销审核与管理</h5>
+			</div>
+		</div>
+	</div>
+	<!-- 操作说明 -->
+	<div id="explanation" class="explanation" style="color: rgb(44, 188, 163); background-color: rgb(237, 251, 248); width: 99%; height: 100%;">
+		<div id="checkZoom" class="title"><i class="fa fa-lightbulb-o"></i>
+			<h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+			<span title="收起提示" id="explanationZoom" style="display: block;"></span>
+		</div>
+		<ul>
+			<li>优惠促销管理, 由平台设置管理.</li>
+		</ul>
+	</div>
+	<div class="flexigrid">
+		<div class="mDiv">
+			<div class="ftitle">
+				<h3>优惠促销列表</h3>
+				<h5>(共{$page->totalRows}条记录)</h5>
+                <!--<div class="fbutton">-->
+                    <!--<a href="http://help.tp-shop.cn/Index/Help/info/cat_id/5/id/50.html" target="_blank">-->
+                        <!--<div class="add" title="帮助">-->
+                            <!--<span>帮助</span>-->
+                        <!--</div>-->
+                    <!--</a>-->
+                <!--</div>-->
+			</div>
+			<a href=""><div title="刷新数据" class="pReload"><i class="fa fa-refresh"></i></div></a>
+		</div>
+		<div class="hDiv">
+			<div class="hDivBox">
+				<table cellspacing="0" cellpadding="0">
+					<thead>
+					<tr>
+						<th class="sign" axis="col0">
+							<div style="width: 24px;"><i class="ico-check"></i></div>
+						</th>
+						<th align="left" abbr="article_title" axis="col3" class="">
+							<div style="text-align: left; width: 240px;" class="">活动名称</div>
+						</th>
+						<th align="left" abbr="ac_id" axis="col4" class="">
+							<div style="text-align: center; width: 80px;" class="">活动类型</div>
+						</th>
+						<th align="center" abbr="article_time" axis="col6" class="">
+							<div style="text-align: center; width: 120px;" class="">开始时间</div>
+						</th>
+						<th align="center" abbr="article_time" axis="col6" class="">
+							<div style="text-align: center; width: 120px;" class="">结束时间</div>
+						</th>
+						<th align="center" abbr="article_time" axis="col6" class="">
+							<div style="text-align: center; width: 120px;" class="">活动状态</div>
+						</th>
+
+						<th align="center" abbr="article_time" axis="col6" class="">
+							<div style="text-align: center; width: 80px;" class="">是否启动</div>
+						</th>
+
+						<th align="left" axis="col1" class="handle">
+							<div style="text-align: center; width: 150px;">操作</div>
+						</th>
+						<th style="width:100%" axis="col7">
+							<div></div>
+						</th>
+					</tr>
+					</thead>
+				</table>
+			</div>
+		</div>
+		<div class="tDiv">
+			<div class="tDiv2">
+				<a href="{:U('Promotion/prom_goods_info')}">
+					<div class="fbutton">
+						<div title="添加活动" class="add">
+							<span><i class="fa fa-plus"></i>添加活动</span>
+						</div>
+					</div>
+				</a>
+			</div>
+			<div style="clear:both"></div>
+		</div>
+		<div class="bDiv" style="height: auto;">
+			<div id="flexigrid" cellpadding="0" cellspacing="0" border="0">
+				<table>
+					<tbody>
+					<foreach name="prom_list" item="vo" key="k" >
+						<tr>
+							<td class="sign">
+								<div style="width: 24px;"><i class="ico-check"></i></div>
+							</td>
+							<td align="left" class="">
+								<div style="text-align: left; width: 240px;">{$vo.title|getSubstr=0,30}</div>
+							</td>
+							<td align="left" class="">
+								<div style="text-align: center; width: 80px;">{$vo.prom_desc}</div>
+							</td>
+							<td align="left" class="">
+								<div style="text-align: center; width: 120px;">{$vo.start_time|date='Y-m-d',###}</div>
+							</td>
+							<td align="left" class="">
+								<div style="text-align: center; width: 120px;">{$vo.end_time|date='Y-m-d',###}</div>
+							</td>
+							<td align="left" class="">
+								<div style="text-align: center; width: 120px;">{$vo.status_desc}</div>
+							</td>
+
+							<td align="left" class="">
+								<div style="text-align: center; width: 80px;">
+									<if condition='$vo[is_end] eq 0'>
+										<span class="yes" onClick="changeTableVal2('prom_goods','id','{$vo.id}','is_end',this,'是','否','{$vo.status_desc}')" ><i class="fa fa-check-circle"></i>是</span>
+										<else />
+										<span class="no" onClick="changeTableVal2('prom_goods','id','{$vo.id}','is_end',this,'是','否')" ><i class="fa fa-ban"></i>否</span>
+									</if>
+								</div>
+							</td>
+
+
+							<td align="left" class="handle">
+								<div style="text-align: left; width: 170px; max-width:170px;">
+									<a class="btn blue goods_list" data-url="{:U('Promotion/get_goods',array('id'=>$vo['id']))}"><i class="fa fa-search"></i>查看商品</a>
+									<a class="btn blue" href="{:U('Promotion/prom_goods_info',array('id'=>$vo['id']))}"><i class="fa fa-pencil-square-o"></i>编辑</a>
+									<a class="btn red  del" data-id="{$vo['id']}"><i class="fa fa-trash-o"></i>删除</a>
+								</div>
+							</td>
+							<td align="" class="" style="width: 100%;">
+								<div>&nbsp;</div>
+							</td>
+						</tr>
+					</foreach>
+					</tbody>
+				</table>
+			</div>
+			<div class="iDiv" style="display: none;"></div>
+		</div>
+		<!--分页位置-->
+		{$page->show()} </div>
+</div>
+<script>
+	$(document).ready(function(){
+		// 表格行点击选中切换
+		$('#flexigrid > table>tbody >tr').click(function(){
+			$(this).toggleClass('trSelected');
+		});
+
+		// 点击刷新数据
+		$('.fa-refresh').click(function(){
+			location.href = location.href;
+		});
+
+	});
+
+	$('.goods_list').click(function(){
+		var url = $(this).attr('data-url');
+		layer.open({
+			type: 2,
+			title: '活动关联商品列表',
+			shadeClose: true,
+			shade: 0.5,
+			area: ['70%', '72%'],
+			content: url,
+		});
+	});
+    $(document).on('click','.del',function () {
+        $.ajax({
+            url:"{:U('Promotion/prom_goods_del')}",
+            data:{id:$(this).data('id')},
+            dataType:'json',
+            success:function(data){
+                if(data.status == 1){
+                    layer.msg(data.msg,{icon:1},function () {
+                        location.href = '';
+                    });
+                }else{
+                    layer.msg(data.msg,{icon:2})
+                }
+            }
+        })
+    })
+    // 修改指定表的指定字段值 包括有按钮点击切换是否 或者 排序 或者输入框文字
+    function changeTableVal2(table, id_name, id_value, field, obj,yes,no,status) {
+        if (status == '进行中') {
+            layer.confirm('活动进行中，确认关闭？', {
+                btn: ['确定', '取消'] //按钮
+            },function () {
+                var value = $(obj).val();
+                if(yes == '' || typeof(yes)== 'undefined')yes='是';
+                if(no == '' || typeof(no) == 'undefined')no='否';
+                if ($(obj).hasClass('yes')) // 图片点击是否操作
+                {
+                    $(obj).removeClass('no').addClass('yes');
+                    $(obj).html("<i class='fa fa-check-circle'></i>"+yes+"");
+                    value = 1;
+                } else if ($(obj).hasClass('yes')) { // 图片点击是否操作
+                    $(obj).removeClass('yes').addClass('no');
+                    $(obj).html("<i class='fa fa-ban'></i>"+no+"");
+                    value = 0;
+                }
+
+                $.ajax({
+                    url: "/index.php?m=Admin&c=Index&a=changeTableVal&table=" + table + "&id_name=" + id_name + "&id_value=" + id_value + "&field=" + field + '&value=' + value,
+                    success: function () {
+                        if (!$(obj).hasClass('no') && !$(obj).hasClass('yes'))
+                            layer.msg('更新成功', {icon: 1});
+                        window.location.reload();
+                    }
+                });
+            },function (index) {
+                layer.close(index);
+                return false;
+            })
+        }else{
+            var value = $(obj).val();
+            if(yes == '' || typeof(yes)== 'undefined')yes='是';
+            if(no == '' || typeof(no) == 'undefined')no='否';
+            if ($(obj).hasClass('yes')) // 图片点击是否操作
+            {
+                $(obj).removeClass('no').addClass('yes');
+                $(obj).html("<i class='fa fa-check-circle'></i>"+yes+"");
+                value = 1;
+            } else if ($(obj).hasClass('yes')) { // 图片点击是否操作
+                $(obj).removeClass('yes').addClass('no');
+                $(obj).html("<i class='fa fa-ban'></i>"+no+"");
+                value = 0;
+            }
+
+            $.ajax({
+                url: "/index.php?m=Admin&c=Index&a=changeTableVal&table=" + table + "&id_name=" + id_name + "&id_value=" + id_value + "&field=" + field + '&value=' + value,
+                success: function () {
+                    if (!$(obj).hasClass('no') && !$(obj).hasClass('yes'))
+                        layer.msg('更新成功', {icon: 1});
+                    window.location.reload();
+                }
+            });
+        }
+
+    }
+</script>
+</body>
+</html>

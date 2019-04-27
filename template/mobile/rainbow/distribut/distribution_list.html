@@ -1,0 +1,131 @@
+<include file="public/header" title="分销商品列表"/>
+<include file="public/header_nav" title="分销商品列表" href="{:U('Mobile/Distribut/my_store')}"/>
+
+<!--商品详情s-->
+<form id="delete_form">
+    <div id="goods_list">
+    </div>
+</form>
+<!--商品详情e-->
+<!--加载更多S-->
+<div id="getmore" style="font-size:.32rem;text-align: center;color:#888;padding:.25rem .24rem .4rem; clear:both;display: none">
+    <a>已显示完所有记录</a>
+</div>
+<!--加载更多E-->
+<!--提交栏-s-->
+<div class="foohi foohiext newcarfoo">
+    <div class="payit ma-to-20 payallb" style="bottom:0px;">
+        <div class="fl alllef">
+            <div class="radio fl">
+                <input class="check-box" name="checkboxes" type="checkbox" style="display: none;"/>
+                <span class="che checkFull">
+                    <i></i>
+                </span>
+                <span style="margin-left: .25rem;">全选</span>
+                <!--<span class="all">全选</span>-->
+            </div>
+        </div>
+        <div class="fr">
+            <a class="delete_item" onclick="delete_item()">删除</a>
+        </div>
+    </div>
+</div>
+<!--提交栏-e-->
+
+<div class="mask-filter-div" style="display: none;"></div>
+<script type="text/javascript" src="__STATIC__/js/sourch_submit.js"></script>
+<script type="text/javascript">
+
+    //选择商品
+    $(function () {
+        ajax_sourch_submit();
+        $(document).on("click", '.che', function (e) {
+            checkBox($(this));
+        });
+    })
+    //模拟checkbox，选中时背景变色
+    function checkBox(obj) {
+        if (!obj.hasClass('check_t')) {
+            obj.addClass('check_t');
+            obj.parent().find('.check-box').attr('checked', 'checked');
+        } else {
+            obj.removeClass('check_t');
+            obj.parent().find('.check-box').removeAttr('checked');
+        }
+        //选中全选多选框
+        if (obj.hasClass('checkFull')) {
+            if (!obj.hasClass('check_t')) {
+                $(".che").each(function (i, o) {
+                    $(this).addClass('check_t');
+                    $(this).parent().find('.check-box').attr('checked', 'checked');
+                })
+            } else {
+                $(".che").each(function (i, o) {
+                    $(this).removeClass('check_t');
+                    $(this).parent().find('.check-box').removeAttr('checked');
+                })
+            }
+        }
+    }
+
+    /**
+     * ajax加载商品
+     */
+    var ajax_return_status = 1; // 标识ajax 请求是否已经回来 可以进行下一次请求
+    var page = 1;
+    function ajax_sourch_submit() {
+        if (ajax_return_status == 0){
+            return false;
+        }
+        ajax_return_status = 0;
+
+        $.ajax({
+            type: "POST",
+            url: "{:U('Mobile/Distribut/distribution_list')}",
+            data: {p: page},
+            success: function (data) {
+
+                if ($.trim(data) == '') {
+                    $('#getmore').show();
+                    return false;
+                } else {
+                    $("#goods_list").append(data);
+                    page = page + 1;
+                    ajax_return_status = 1;
+                }
+            }
+        });
+    }
+    /**
+     * 删除分销商品
+     */
+function delete_item () {
+        var goods_ids = new Array();
+        $("input[type='checkbox']:checked").each(function () {
+            goods_ids.push($(this).val());
+        });
+        //选择数大于0
+        if (goods_ids.length > 0) {
+            $.ajax({
+                type : "POST",
+                url:"{:U('mobile/Distribut/delete')}",
+                dataType:'json',
+                data: {goods_ids: goods_ids},
+                success: function(data){
+                    if(data.status == 1) {
+                        $("input[type='checkbox']:checked").each(function () {
+                            $(this).parents('.orderlistshpop').remove();
+                        });
+                        layer.open({content: '删除成功', time: 2});
+                        $("input[name='checkboxes']").removeAttr("checked");
+                        $("input[name='checkboxes']").next().removeClass('check_t');
+                    }
+                }
+            });
+        } else {
+            layer.open({content: '请选择要删除的商品！', time: 2});
+        }
+    }
+</script>
+</body>
+</html>

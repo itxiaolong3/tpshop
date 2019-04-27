@@ -1,0 +1,1205 @@
+<include file="public/header" title="填写订单" body="g4"/>
+<include file="public/header_nav" title="填写订单" href="javascript:void(0);" back="back"/>
+<script src="__PUBLIC__/js/md5.min.js"></script>
+<script type="text/javascript" src="__STATIC__/js/date.js"></script>
+<script type="text/javascript" src="//api.map.baidu.com/api?ak=iR2qhnXd5vrFI9wUuIRG9AWGIqykVNok&type=lite&v=1.0"></script>
+<style>
+    .phoneclck {
+        /*部分手机不能点击问题*/
+        cursor: pointer
+    }
+</style>
+<div id="wrapBody">
+    <div id="pagePay">
+        <form name="cart2_form" id="cart2_form" method="post">
+            <input type="hidden" id="wap_invoice_title" name="invoice_title" value="">
+            <input type="hidden" id="wap_taxpayer" name="taxpayer" value="">
+            <input type="hidden" id="invoice_desc" name="invoice_desc" value="商品明细">
+            <input type="hidden" name="address_id" value="" autocomplete="off"/>
+            <input type="hidden" name="user_money" value="" autocomplete="off">
+            <input type="hidden" name="auth_code" value="{$Think.config.AUTH_CODE}"/>
+
+            <input type="hidden" name="goods_id" value="{$Request.param.goods_id}">
+            <input type="hidden" name="item_id" value="{$Request.param.item_id}">
+            <input type="hidden" name="goods_num" value="{$goods['goods_num']}">
+
+            <input type="hidden" name="pay_pwd" value=""/>
+            <input type="hidden" name="user_note" value="">
+            <input type="hidden" name="consignee" value="">
+            <input type="hidden" name="mobile" value="">
+            <input type="hidden" name="shop_id" value="">
+            <input type="hidden" name="take_time" value="">
+        </form>
+        <!--地址-s-->
+        <div class="edit_gtfix" id="addressDefault">
+            <div class="namephone fl">
+                <div class="top">
+                    <div class="le fl" id="default_address_consignee"></div>
+                    <div class="lr fl" id="default_address_mobile"></div>
+                </div>
+                <div class="bot">
+                    <i class="dwgp"></i>
+                    <span id="default_address_text"></span>
+                </div>
+            </div>
+            <div class="fr youjter">
+                <i class="Mright"></i>
+            </div>
+            <div class="ttrebu">
+                <img src="__STATIC__/images/tt.png"/>
+            </div>
+        </div>
+        <!--地址-e-->
+        <!--商品信息-s-->
+        <div class="ord_list fill-orderlist p">
+            <div class="maleri30">
+                <div class="shopprice">
+                    <div class="img_or fl"><img src="{$goods[goods_id]|goods_thum_images=100,100}"/></div>
+                    <div class="fon_or fl">
+                        <h2 class="similar-product-text">{$goods[goods_name]}</h2>
+                        <div>{$specGoodsPrice[key_name]}</div>
+                    </div>
+                    <div class="price_or fr">
+                        <p class="red"><span>￥</span><span id="goods_p">{$goods['shop_price']} + {$goods['exchange_integral']}</span>积分</p>
+                        <p class="ligfill">x{$goods['goods_num']}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--商品信息-e-->
+        <!--配送方式 上门自提s-->
+        <div class="z-select-wrap">
+            <div class="z-select-title">
+                <div class="maleri30">
+                    选择配送方式
+                </div>
+            </div>
+            <div class="maleri30 z-dispatching-wrap">
+                <div class="p z-dispatching border-none">
+                    <div class="fl">
+                        快速配送
+                    </div>
+                    <div class="fr">
+                        <label class="dispatching-checkbox" >
+                            <div id="express_delivery" class="dispatching-cont z-dispatching-cheng"></div>
+                        </label>
+                    </div>
+                </div>
+                <div class="z-dispatching-one dispatching-font1" style="display: block;">
+                    工作日、双休日与节假日均可送货
+                </div>
+                <div class="p z-dispatching ma-top-1" id="door_to_door_div" style="display: none">
+                    <div class="fl">
+                        上门自提
+                    </div>
+                    <div class="fr">
+                        <label class="dispatching-checkbox">
+                            <div id="door_to_door" class="dispatching-cont">
+                            </div>
+                        </label>
+                    </div>
+
+                </div>
+                <div class="z-dispatching-one dispatching-font2">
+                    选择自提上门点并支付订单>收到提货短信>到自提点提货
+                </div>
+                <div class="dispatching-Package">
+                    <!--自提时间-->
+                    <div class="invoice list7">
+                        <div class="myorder p">
+                            <div class="content30">
+                                <a class="remain">
+                                    <div class="order">
+                                        <div class="fl">
+                                            <span>自提时间</span>
+                                        </div>
+                                        <div class="fr">
+                                            <span class="invoice_Package" style="margin-top: 0.6rem;">
+                                                <input type="text" id="date_time_picker_mask" value="<?php echo date('Y-m-d H:00',strtotime('+1 day')); ?>"
+                                                       data-options="{'type':'YYYY-MM-DD hh:mm','beginYear':2018,'endYear':2088}"  >
+                                                <em id="date_time_day"></em>
+                                            </span>
+                                            <i class="Mright"></i>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--调用时间插件-->
+                    <script>
+                        $.date('#date_time_picker_mask');
+                        $(document).on('click', '#date_time_day', function () {
+                            $('#date_time_picker_mask').trigger('click');
+                        });
+                    </script>
+                    <!--自提地点-->
+                    <div class="invoice list7" id="replace_shop">
+                        <div class="myorder p">
+                            <div class="content30">
+                                <a class="remain">
+                                    <div class="order">
+                                        <div class="fl">
+                                            <span>自提地点</span>
+                                        </div>
+                                        <div class="fr">
+                                            <span class="invoice_Package select-invoice-Package" style="margin-top: 0.6rem;" id="shop_address"></span>
+                                            <i class="Mright"></i>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--配送方式 上门自提e-->
+        <!--支持配送,发票信息-s-->
+        <div class="information_dr">
+            <div class="maleri30">
+                <div class="invoice list7">
+                    <div class="myorder p">
+                        <div class="content30">
+                                <div class="order" id="invoiceDefault">
+                                    <div class="fl">
+                                        <span>发票信息</span>
+                                    </div>
+                                    <div class="fr">
+                                        <span class="invoice_title" style="margin-top: 0.6rem;">不开发票</span>
+                                        <i class="Mright"></i>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+                <!--使用余额-s-->
+                <div class="invoice list7">
+                    <div class="myorder p">
+                        <div class="content30">
+                            <a class="remain" href="javascript:void(0);">
+                                <div class="order">
+                                    <div class="fl">
+                                        <span>使用余额</span>
+
+                                        <p>余额：￥{$user['user_money']}</p>
+                                    </div>
+                                    <div class="fr z-toggle-btn">
+                                        <label class="z-toggle z-toggle-royal">
+                                            <input type="checkbox" id="user_money" value="{$user['user_money']}"/>
+
+                                            <div class="z-tarck">
+                                                <div class="z-handle">
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <!--使用余额-e-->
+                <div id="balance-li" class="invoice list7">
+                    <div class="myorder p">
+                        <div class="content30">
+                            <label>
+                                <div class="incorise">
+                                    <span>使用积分：</span>
+                                    <input id="pay_points" name="pay_points" value="" type="text" disabled="disabled"/>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="myorder myorder-2 p" id="paypwd_view">
+                        <div class="content30">
+                            <label>
+                                <div class="incorise">
+                                    <span>支付密码：</span>
+                                    <input type="password" id="pay_pwd" placeholder="请输入支付密码" autocomplete="off"/>
+                                    <if condition="empty($user['paypwd'])">
+                                        <a class="go-set-password" href="{:U('Mobile/User/paypwd')}">去设置支付密码?</a>
+                                    </if>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <!--使用余额、积分-e-->
+            </div>
+        </div>
+        <!--支持配送,发票信息-s-->
+        <!--卖家留言-s-->
+        <div class="customer-messa">
+            <div class="maleri30">
+                <p>用户备注（50字）</p>
+                <textarea class="tapassa" id="user_note" maxlength="50" placeholder="选填"></textarea>
+                <span class="xianzd"><em id="zero">50</em>/50</span>
+            </div>
+        </div>
+        <!--卖家留言-e-->
+        <!--订单金额-s-->
+        <div class="information_dr ma-to-20">
+            <div class="maleri30">
+                <div class="xx-list">
+                    <p class="p">
+                        <span class="fl">商品金额：</span>
+                        <span class="fr red"><span>￥</span><span id="goods_price">0</span>元</span>
+                    </p>
+                    <p class="p">
+                        <span class="fl">配送费用：</span>
+                        <span class="fr red"><span>￥</span><span id="postFee">0</span>元</span>
+                    </p>
+                    <p class="p">
+                        <span class="fl">使用积分：</span>
+                        <span class="fr red"><span>-￥</span><span id="pointsFee">0</span>元</span>
+                    </p>
+                    <p class="p">
+                        <span class="fl">使用余额：</span>
+                        <span class="fr red"><span>-￥</span><span id="balance">0</span>元</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <!--订单金额-e-->
+        <!--提交订单-s-->
+        <div class="mask-filter-div" style="display: none;"></div>
+        <div class="payit fillpay ma-to-200">
+            <div class="fr submit_price">
+                <a href="javascript:void(0)" onclick="submit_order()">提交订单</a>
+            </div>
+            <div class="fl">
+                <p><span class="pmo">应付金额：</span>￥<span id="payables"></span><span></span></p>
+            </div>
+        </div>
+        <!--提交订单-e-->
+    </div>
+    <div id="shopList" style="display: none">
+        <!--选择提货人弹窗 s-->
+        <div class="pop-prkage-wraps p pop-prkage-ziti">
+            <div class="z-Package-hrader">
+                <i class="z-Package-icon Package-icon-close" id="shop_list_back"></i>
+                <h5>选择自提点</h5>
+            </div>
+            <div class="z-Package-wrap ">
+                <div class="z-Packageiphon-header p"></div>
+                <div class="z-SelectPackage-wrap">
+                    <ul class="z-SelectPackage-ul" id="shop_list"></ul>
+                </div>
+            </div>
+            <div class="z-Package-footer-wrap">
+                <div class="Package-footer">
+                    <div class="z-Package-footer p" id="shop_consignee_edit">
+                        <div class="fl Package-foot-cont">提货人：<span id="consignee_txt"></span></div>
+                        <div class="fl Package-foot-cont">电话：<span id="mobile_txt"></span></div>
+                        <i class="Package-right-icon"></i>
+                    </div>
+                    <div class="Package-footer-btn">
+                        <input type="button" id="shop_list_confirm" value="确定"/>
+                        <label></label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript">
+            $(".select-invoice-Package").click(function () {
+                $(".pop-prkage-ziti").show();
+            })
+            $(".pop-prkage-ziti .Package-icon-close").click(function () {
+                $(".pop-prkage-ziti").hide();
+            })
+        </script>
+        <!--选择提货人弹窗 e-->
+    </div>
+    <div id="map" style="display: none">
+        <!--地图定位弹窗s-->
+        <div class="pop-prkage-wraps p prkage-wraps-map">
+            <div class="z-Package-hrader Package-hrader-absolute">
+                <i class="z-Package-icon Package-icon-map" id="map_back"></i>
+                <h5>自提点地址</h5>
+            </div>
+            <div id="container" style="width:16rem;height: 20.2666rem;border:#ccc solid 1px;"></div>
+            <div class="parkage-plat-cont">
+                <div class="parkage-plat-title p">
+                    <i class="fl"></i>
+                    <p class="fl" id="shop_name"></p>
+                </div>
+                <ul class="parkage-plat-ul">
+                    <li id="shop_address_text"></li>
+                    <li>电话：<em id="phone"></em></li>
+                    <li id="work_time_desc"></li>
+                </ul>
+            </div>
+        </div>
+        <script type="text/javascript">
+            var map;
+            function show_map()
+            {
+                var shop_item = $('.Package-radio-checked').parent().parent().parent();
+                var lnt = shop_item.data('longitude');
+                var lat = shop_item.data('latitude');
+                $("#shop_name").html(shop_item.find('.z-SelectPackage-title').html());
+                $("#shop_address_text").html('地址：'+shop_item.data('shop-address'));
+                $("#phone").html(shop_item.data('phone'));
+                $("#work_time_desc").html("营业时间："+shop_item.data('work-time')+"<span>"+shop_item.data('work-day')+"</span>");
+                map = new BMap.Map("container");//在百度地图容器中创建一个地图
+                var poi = new BMap.Point(lnt, lat);//定义一个中心点坐标
+                map.centerAndZoom(poi, 17);//设定地图的中心点和坐标并将地图显示在地图容器中
+                //创建检索信息窗口对象
+                var marker = new BMap.Marker(poi); //创建marker对象
+                map.addOverlay(marker); //在地图中添加marker
+            }
+        </script>
+        <!--地图定位弹窗e-->
+    </div>
+    <div id="shopConsignee" style="display: none">
+        <!--修改提货人弹窗s-->
+        <div class="pop-prkage-wraps up-prkage-pop">
+            <div class="z-Package-hrader">
+                <i class="z-Package-icon up-thr-icons" id="shop_consignee_back"></i>
+                <h5>修改提货人</h5>
+            </div>
+            <div class="z-Package-wrap">
+                <form>
+                    <div class="z-Package-cont ma-to-48">
+                        <div class="fl z-Package-title">
+                            提货人
+                        </div>
+                        <div class="fr z-Package-up">
+
+                            <div class="up-cont">
+                                <label></label>
+                                <input type="text" id="consignee" value="" maxlength="30"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="z-Package-cont ma-to-48">
+                        <div class="fl z-Package-title">
+                            联系方式
+                        </div>
+                        <div class="fr z-Package-up">
+                            <div class="up-cont">
+                                <label></label>
+                                <input type="text" id="mobile" value="" maxlength="11"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="Package-btn ma-to-535">
+                        <label></label>
+                        <input type="button" id="shop_consignee_save" value="保存"/>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <script type="text/javascript">
+            $(".z-Package-footer").click(function () {
+                $(".up-prkage-pop").show();
+            })
+            $(".up-thr-icons").click(function () {
+                $(".up-prkage-pop").hide();
+            })
+        </script>
+        <!--修改提货人弹窗e-->
+    </div>
+    <div id="addressList" style="display: none">
+        <!--地址-s-->
+        <div class="dizhi-pop">
+            <div class="z-Package-hrader">
+                <i class="z-Package-icon Package-icon-close" id="address_list_back"></i>
+                <h5>选择地址</h5>
+            </div>
+            <div id="address_list_html" style="height: 19.5rem;overflow:  scroll;"></div>
+            <!--地址-e-->
+            <div class="createnew ">
+                <a id="add_address" >+新建地址</a>
+            </div>
+        </div>
+    </div>
+    <div id="invoicelist" style="display: none">
+        <!--发票内容-s-->
+        <div class="dizhi-pop">
+            <div class="z-Package-hrader">
+                <i class="z-Package-icon Package-icon-close" id="invoice_list_back"></i>
+                <h5>发票信息</h5>
+            </div>
+            <div class="invoice_con">
+                <div class="invoice_tit">
+                    <h3>发票抬头</h3>
+                    <div class="invoice_type">
+                        <div class="intype_item"><input type="radio" name="radio_title"  checked id="intype1" value="个人"><label for="intype1"></label><span>个人</span></div>
+                        <div class="intype_item"><input type="radio" name="radio_title" id="intype2" value="单位"><label for="intype2"></label><span>单位</span></div>
+                    </div>
+                </div>
+                <hr class="invoice_line">
+                <div class="invoice_deta">
+                    <h3>发票内容</h3>
+                    <div class="invoice_comdel" style="display: none;">
+                        <input type="text" id="invoice_title" placeholder="请填写单位名称" value="">
+                        <input type="text" id="taxpayer" placeholder="请在此填写纳税人识别号"  value="">
+                        <p>开企业抬头发票，请准确填写对应的“纳税人识别号”，以免影响您的发票报销.</p>
+                    </div>
+                    <div class="invoice_type">
+                        <div class="intype_item"><input type="radio" name="radio_cont" checked id="intype3" value="商品明细"><label for="intype3"></label><span>商品明细</span></div>
+                        <div class="intype_item"><input type="radio" name="radio_cont" id="intype4" value="商品类别"><label for="intype4"></label><span>商品类别</span></div>
+                        <div class="intype_item"><input type="radio" name="radio_cont" id="intype5" value="不开发票"><label for="intype5"></label><span>不开发票</span></div>
+                    </div>
+                </div>
+                <div class="invoice_confir"><input type="button" id="submit_invoice" value="确认"></div>
+            </div>
+        </div>
+    </div>
+    <div id="addressAdd" style="display: none">
+        <div class="dizhi-pop">
+            <div class="z-Package-hrader">
+                <i class="z-Package-icon Package-icon-close" id="address_add_back"></i>
+                <h5>新建/编辑地址</h5>
+            </div>
+            <div class="floor my p edit">
+                <form id="address_form">
+                    <input type="hidden" value="" name="address_id"/>
+                    <input type="hidden" value="" name="province"/>
+                    <input type="hidden" value="" name="city"/>
+                    <input type="hidden" value="" name="district"/>
+
+                    <div class="content">
+                        <div class="floor list7">
+                            <div class="myorder p">
+                                <div class="content30">
+                                    <a href="javascript:void(0)">
+                                        <div class="order">
+                                            <div class="fl">
+                                                <span>收货人:</span>
+                                            </div>
+                                            <div class="fl">
+                                                <input type="text" value="" name="consignee"/>
+                                                <span class="err" id="err_address_consignee"></span>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="myorder p">
+                                <div class="content30">
+                                    <a href="javascript:void(0)">
+                                        <div class="order">
+                                            <div class="fl">
+                                                <span>手机号码:</span>
+                                            </div>
+                                            <div class="fl">
+                                                <input type="tel" value="" name="mobile" onkeyup="this.value=this.value.replace(/[^\d]/g,'')"/>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="myorder p">
+                                <div class="content30">
+                                    <a href="javascript:void(0)" onclick="location_address(this);">
+                                        <div class="order">
+                                            <div class="fl">
+                                                <span>所在地区: </span>
+                                            </div>
+                                            <div class="fl">
+                                                <span id="area"></span>
+                                            </div>
+                                            <div class="fr">
+                                                <i class="Mright"></i>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="myorder p">
+                                <div class="content30">
+                                    <a href="javascript:void(0)">
+                                        <div class="order">
+                                            <div class="fl">
+                                                <span>详细地址:</span>
+                                            </div>
+                                            <div class="fl">
+                                                <input type="text" value="{$address.address}" name="address"/>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="createnew ">
+                        <a id="address_form_confirm">确认</a>
+                    </div>
+                </form>
+            </div>
+            <!--选择地区-s-->
+            <div class="container">
+                <div class="city">
+                    <div class="screen_wi_loc">
+                        <div class="classreturn loginsignup">
+                            <div class="content">
+                                <div class="ds-in-bl return seac_retu">
+                                    <a href="javascript:void(0);" onclick="close_location();"><img src="__STATIC__/images/return.png" alt="返回"></a>
+                                </div>
+                                <div class="ds-in-bl search center">
+                                    <span class="sx_jsxz">选择地区</span>
+                                </div>
+                                <div class="ds-in-bl suce_ok">
+                                    <a href="javascript:void(0);">&nbsp;</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="province-list"></div>
+                    <div class="city-list" style="display:none"></div>
+                    <div class="area-list" style="display:none"></div>
+                </div>
+            </div>
+            <!--选择地区-e-->
+        </div>
+        <script src="__STATIC__/js/mobile-location.js"></script>
+        <script>
+            //选择地址回调
+            var address_form = $('#address_form');
+            function select_area_callback(province_name, city_name, district_name, province_id, city_id, district_id) {
+                var area = province_name + ' ' + city_name + ' ' + district_name;
+                $("#area").text(area);
+                address_form.find("input[name='province']").val(getCookie('province_id'));
+                address_form.find("input[name='city']").val(getCookie('city_id'));
+                address_form.find("input[name='district']").val(getCookie('district_id'));
+            }
+        </script>
+    </div>
+</div>
+<script type="text/javascript">
+    var is_shipping_able = true,shop_list_data;
+    window.addEventListener('popstate', function () {
+        panel();
+    });
+    var cart2_form = $('#cart2_form');
+    $(document).ready(function () {
+        pay_pwd_view();
+        get_address_list();
+    });
+    //各种弹窗返回上一步
+    $(function () {
+        //主页面返回上一步
+        $(document).on('click', '#back', function () {
+            var goods_id = cart2_form.find("input[name='goods_id']");
+            var item_id = cart2_form.find("input[name='item_id']");
+            url = "/index.php?m=Mobile&c=Goods&a=goodsInfo&id="+goods_id.val()+'&item_id='+item_id.val();
+            window.location.href = url;
+        });
+        //地址弹窗返回上一步
+        $(document).on('click', '#address_list_back,#invoice_list_back,#address_add_back,#shop_list_back,#shop_consignee_back,#map_back', function () {
+            history.back(-1);
+            panel();
+        });
+    })
+    //点击地址
+    $(function () {
+        //点击地址
+        $(document).on('click', '#addressDefault', function () {
+            window.location.hash = "#addressList";
+            get_address_list();
+            panel();
+        });
+        //修改发票
+        $(document).on('click', '#invoiceDefault', function () {
+            window.location.hash = "#invoicelist";
+            panel();
+        });
+        //选择地址
+        $(document).on('click', '.select_address', function () {
+            var address_id = $(this).data('address-id');
+            var mobile = $(this).data('mobile');
+            var consignee = $(this).data('consignee');
+            var address_area = $(this).data('address-area');
+            var address = $(this).data('address');
+            var province_id = $(this).data('province-id');
+            var city_id = $(this).data('city-id');
+            var district_id = $(this).data('district-id');
+            var longitude = $(this).data('longitude');
+            var latitude = $(this).data('latitude');
+            cart2_form.find("input[name='address_id']").val(address_id);
+            $("#default_address_mobile").empty().html(mobile);
+            $("#default_address_consignee").empty().html(consignee);
+            $("#default_address_text").empty().html(address_area + ' '+ address);
+            window.location.hash = "#";
+            panel();
+            get_shop_list(province_id, city_id, district_id, '', longitude, latitude);
+            ajax_order_price();
+        });
+        //点击新建地址
+        $(document).on('click', '#add_address', function () {
+            address_form.find("input[name='address_id']").val('');
+            address_form.find("input[name='consignee']").val('');
+            address_form.find("input[name='address']").val('');
+            address_form.find("input[name='mobile']").val('');
+            address_form.find("input[name='province']").val('');
+            address_form.find("input[name='city']").val('');
+            address_form.find("input[name='district']").val('');
+            $('#area').html('');
+            window.location.hash = "#addressAdd";
+            panel();
+        });
+        //添加地址
+        $(document).on('click', '#address_form_confirm', function () {
+            $.ajax({
+                type: "POST",
+                url: '/index.php?m=Mobile&c=User&a=addressSave',
+                data:  $("#address_form").serialize(),
+                dataType: "json",
+                success: function (data) {
+                    if (data.status == 1) {
+                        $("#address_add_back").trigger('click');
+                        get_address_list(data.result.address_id);
+                    } else {
+                        var err_msg = data.msg;
+                        $.each(data.result, function (index, item) {
+                            err_msg = item;
+                        });
+                        layer.open({icon: 2, content: err_msg, time: 2});
+                    }
+                }
+            });
+        });
+        //编辑地址弹窗事件
+        $(document).on("click", '.address_item', function (e) {
+            window.location.hash = "#addressAdd";
+            panel();
+            var select_address = $(this).parent().parent().find('.select_address');
+            address_form.find("input[name='address_id']").val(select_address.data('address-id'));
+            address_form.find("input[name='consignee']").val(select_address.data('consignee'));
+            address_form.find("input[name='address']").val(select_address.data('address'));
+            address_form.find("input[name='mobile']").val(select_address.data('mobile'));
+            address_form.find("input[name='province']").val(select_address.data('province-id'));
+            address_form.find("input[name='city']").val(select_address.data('city-id'));
+            address_form.find("input[name='district']").val(select_address.data('district-id'));
+            $('#area').html(select_address.data('address-area'));
+        })
+    })
+    //单页面显示
+    function panel(){
+        var hash = window.location.hash;
+        $('#wrapBody').children('div').hide();
+        if(hash == ''){
+            $('#pagePay').show();
+        }else{
+            $(hash).show();
+        }
+    }
+    //获取自提点列表
+    function get_shop_list(province_id, city_id, district_id, shop_address, longitude, latitude) {
+        $.ajax({
+            type: "POST",
+            url: "{:U('Home/Api/shop')}",
+            dataType: 'json',
+            data: {
+                province_id: province_id,
+                city_id: city_id,
+                district_id: district_id,
+                shop_address: shop_address,
+                longitude: longitude,
+                latitude: latitude
+            },
+            success: function (data) {
+                if(data.length > 0){
+                    shop_list_data = data;
+                    set_shop_list();
+                }else{
+                    shop_list_data = [];
+                    if($('#door_to_door').hasClass('z-dispatching-cheng')){
+                        $('#express_delivery').trigger('click');
+                    }
+                }
+                door_to_door_hide_or_show();
+            }
+        });
+    }
+    //上门自提按钮显示
+    function door_to_door_hide_or_show(){
+        var door_to_door_div = $('#door_to_door_div');
+        if(is_shipping_able == true && shop_list_data.length > 0){
+            door_to_door_div.show();
+        }else{
+            door_to_door_div.hide();
+        }
+    }
+    //自提点初始化
+    function set_shop_list() {
+        var shop_html = '';
+        var near_show_html = '';
+        for (var i = 0; i < shop_list_data.length; i++) {
+            if(i == 0){
+                near_show_html = '';
+            }else{
+                near_show_html = "style='display:none'";
+            }
+            shop_html += '<li class="p" data-shop-id="'+shop_list_data[i].shop_id+'" data-longitude="'+shop_list_data[i].longitude+'" data-latitude="'+shop_list_data[i].latitude+'"' +
+                    ' data-shop-address="'+shop_list_data[i].area_list[0].name+shop_list_data[i].area_list[1].name+shop_list_data[i].area_list[2].name+ shop_list_data[i].shop_address +'"' +
+                    ' data-phone="'+shop_list_data[i].phone+'" data-work-day="'+shop_list_data[i].work_day+'" ' +
+                    'data-work-time="'+shop_list_data[i].work_time+'"> <div class="fl Package-radio-wrap"> <div class="Package-radio"> ' +
+                    '<label class="Package-radio-label"></label> </div> </div> <div class="fl Package-radio-cont"> <div class="z-SelectPackage-title">' +
+                    shop_list_data[i].shop_name + '</div> <div class="z-SelectPackage-nvg"><span>'+shop_list_data[i].shop_address+'</span></div> ' +
+                    '<div class="z-SelectPackage-phon">电话:<em>' + shop_list_data[i].phone + '</em></div> </div> ' +
+                    '<div class="fl Package-radio-Lately p"> <i class="Package-Lately  fl" '+near_show_html+'> 离我最近 </i> <div class="Package-distance-wrap fr">' +
+                    ' <div class="Package-distance">' + shop_list_data[i].distance_text + '</div> <div class="p distance-icon-wrap"> <div class="Package-distance-icon fl"> ' +
+                    '</div> <span class="Package-Location fl"></span> </div> </div> </div> </li>';
+        }
+        $("#shop_list").empty().append(shop_html);
+        initShop();
+    }
+    //自提点初始化数据
+    function initShopInfo() {
+        var consignee = cart2_form.find("input[name='consignee']");
+        var mobile = cart2_form.find("input[name='mobile']");
+        if(consignee.val() == ''){
+            var consignee_val = $('#default_address_consignee').html();
+            consignee.val(consignee_val);
+        }
+        if(mobile.val() == ''){
+            var mobile_val = $('#default_address_mobile').html();
+            mobile.val(mobile_val);
+        }
+        $('#consignee_txt').html(consignee.val());
+        $('#mobile_txt').html(mobile.val());
+        $('#mobile').val(mobile.val());
+        $('#consignee').val(consignee.val());
+        var shop_item = $('.Package-radio-checked').parent().parent().parent();
+        $('#shop_address').html(shop_item.find('.z-SelectPackage-title').html());
+        if($('#express_delivery').hasClass('z-dispatching-cheng')){
+            cart2_form.find("input[name='shop_id']").val('');
+        }
+    }
+    //选择上门自提时，初始化自提点
+    function initShop() {
+        var shop_list = $("#shop_list");
+        if(shop_list.find('Package-radio-checked').length == 0){
+            shop_list.children('li').eq(0).find(".Package-radio label").trigger('click');
+        }
+        $('#shop_list_confirm').trigger('click');
+    }
+    //获取地址列表
+    function get_address_list(select_address_id){
+        var address_id = cart2_form.find("input[name='address_id']");
+        $.ajax({
+            type: "get",
+            url: '/index.php?m=Mobile&c=User&a=ajaxAddressList',
+            dataType: "json",
+            success: function (data) {
+                var address_list_html = '';
+                for (var i = 0; i < data.length; i++) {
+                    address_list_html += '<div class="jd_listaddless p "> <div class="maleri30"> <a class="select_address address_id_'+data[i].address_id+'" ' +
+                            'data-address-id="'+data[i].address_id+'" data-mobile="'+ data[i].mobile +'" data-consignee="'+ data[i].consignee+'" ' +
+                            'data-address-area="'+ data[i].address_area+'" data-address="'+ data[i].address+'" data-province-id="'+data[i].province+'"  ' +
+                            'data-city-id="'+data[i].city+'" data-district-id="'+data[i].district+'" data-town-id="'+data[i].twon+'" data-longitude="'+data[i].longitude+'" ' +
+                            'data-latitude="'+data[i].latitude+'"  > <div class="name fl"> <h1>'+data[i].consignee+'</h1> </div> <div class="numberaddress fl"> ' +
+                            '<span class="number"><i class="number-dh">电话：</i>'+ data[i].mobile +'</span> <span class="similars">' + data[i].address_area + ' ' + data[i].address +'</span> ' +
+                            '</div> </a> <div class="editdiv fl"> <a class="address_item"> <i class="eedit"></i> </a> </div> </div> </div>';
+                }
+                $("#address_list_html").empty().html(address_list_html);
+                if(data.length == 0){
+                    $("#add_address").trigger('click');
+                }
+                if(data.length > 0 && address_id.val() == ''){
+                    $("#address_list_html").find('.select_address').eq(0).trigger('click');
+                }
+                if(select_address_id > 0){
+                    $("#address_list_html").find('.address_id_'+select_address_id).trigger('click');
+                }
+            }
+        });
+    }
+    function close_location(){
+        var province_div = $('.province-list');
+        var city_div = $('.city-list');
+        var area_div = $('.area-list');
+        if(area_div.is(":hidden") == false){
+            area_div.hide();
+            city_div.show();
+            province_div.hide();
+            return;
+        }
+        if(city_div.is(":hidden") == false){
+            area_div.hide();
+            city_div.hide();
+            province_div.show();
+            return;
+        }
+        if(province_div.is(":hidden") == false){
+            area_div.hide();
+            city_div.hide();
+            $('.container').animate({width: '0', opacity: 'show'}, 'normal',function(){
+                $('.container').hide();
+            });
+            undercover();
+            $('.mask-filter-div').css('z-index','inherit');
+            return;
+        }
+    }
+    function location_address(e){
+        $('.container').animate({width: '14.4rem', opacity: 'show'}, 'normal',function(){
+            $('.container').show();
+        });
+        if(!$('.container').is(":hidden")){
+            $('body').css('overflow','hidden')
+            cover();
+            $('.mask-filter-div').css('z-index','9999');
+        }
+    }
+    //自提点
+    $(function () {
+        //选择快递配送
+        $(document).on('click', '#express_delivery', function () {
+            $(".dispatching-cont").removeClass("z-dispatching-cheng");
+            $(this).addClass("z-dispatching-cheng");
+            $(".dispatching-font1").show().siblings(".dispatching-font2").hide();
+            $(".dispatching-Package").slideUp();
+            cart2_form.find("input[name='shop_id']").val('');
+            ajax_order_price();
+        });
+        //选择自提点
+        $(document).on('click', '#door_to_door', function () {
+            $(".dispatching-cont").removeClass("z-dispatching-cheng");
+            $(this).addClass("z-dispatching-cheng");
+            $(".dispatching-font2").show().siblings(".dispatching-font1").hide();
+            $(".dispatching-Package").slideDown();
+            initShop();
+            initShopTime();
+            ajax_order_price();
+        });
+        //点击自提点
+        $(document).on("click", '#replace_shop', function (e) {
+            window.location.hash = "#shopList";
+            panel();
+        })
+        //选择自提点切换
+        $(document).on("click", '.pop-prkage-wraps .Package-radio label', function (e) {
+            $(".pop-prkage-wraps .Package-radio label").removeClass("Package-radio-checked");
+            $(this).addClass("Package-radio-checked");
+        })
+        //点击编辑提货人事件
+        $(document).on('click', '#shop_consignee_edit', function () {
+            window.location.hash = "#shopConsignee";
+            panel();
+        });
+        //点击提货人保存按钮
+        $(document).on('click', '#shop_consignee_save', function () {
+            var consignee_val = $('#consignee').val();
+            var mobile_val = $('#mobile').val();
+            cart2_form.find("input[name='mobile']").val(mobile_val);
+            cart2_form.find("input[name='consignee']").val(consignee_val);
+            initShopInfo();
+            $('#shop_consignee_back').trigger('click');
+        });
+        //选择自提点确定按钮
+        $(document).on('click', '#shop_list_confirm', function () {
+            var shop_item = $('.Package-radio-checked').parent().parent().parent();
+            cart2_form.find("input[name='shop_id']").val(shop_item.data('shop-id'));
+            if(window.location.hash == '#shopList'){
+                $('#shop_list_back').trigger('click');
+            }
+            initShopInfo();
+        });
+        //确认选择自提点时间
+        $(document).on('click', '#d-confirm', function () {
+            initShopTime();
+        });
+        $(document).on('click', '.Package-distance-wrap', function () {
+            window.location.hash = "#map";
+            panel();
+            show_map();
+        });
+    })
+    //支付密码
+    $(document).on('blur', '#pay_pwd', function () {
+        var pay_pwd = md5($("input[name='auth_code']").val() + $.trim($('#pay_pwd').val()));
+        $('input[name="pay_pwd"]').val(pay_pwd);
+    })
+    //选择使用积分和余额
+    $(document).on('click', '#user_money', function () {
+        pay_pwd_view();
+        ajax_order_price();
+    });
+    //备注输入
+    $(document).on('keyup', '#user_note', function () {
+        $('input[name="user_note"]').val(this.value);
+        var len = this.value.length;
+        var limit = 50;
+        if(len > limit){
+            $(this).val($(this).val().substring(0,limit));
+        }
+        var num = limit - len;
+        if(num <= 0){
+            $("#zero").text(0);
+        }else{
+            $("#zero").text(num);
+        }
+    });
+    //支付密码是否显示
+    function pay_pwd_view() {
+        var user_money = $('#user_money');
+        if (user_money.is(':checked')) {
+            $("input[name='user_money']").val(user_money.val());
+        }else{
+            $("input[name='user_money']").val('');
+        }
+    }
+    // 获取订单价格
+    function ajax_order_price() {
+        $.ajax({
+            type: "POST",
+            url: "{:U('Home/Cart/integral2')}",
+            data: $('#cart2_form').serialize(),
+            dataType: "json",
+            success: function (data) {
+                if (data.status == -3 || data.status == -4) {
+                    showErrorMsg(data.msg);
+                    refresh_price(data);
+                    $('.submit_price a').addClass("disable");
+                } else if (data.status != 1) {
+                    //执行有误
+                    showErrorMsg(data.msg);
+                    // 登录超时
+                    if (data.status == -100) {
+                        location.href = "{:U('Mobile/User/login')}";
+                        return false;
+                    }
+                } else {
+                    $('.submit_price a').removeClass("disable");
+                    refresh_price(data);
+                }
+
+            }
+        });
+    }
+    //刷新价格
+    function refresh_price(data) {
+        $("#balance").text(data.result.user_money);// 余额
+        $("#pointsFee").text(Math.round(data.result.integral_money,2));// 积分支付
+        $("#postFee").text(data.result.shipping_price); // 物流费
+        $("#payables").text(data.result.order_amount);// 应付
+        $("#pay_points").val(data.result.pay_points);// 积分支付
+        $("#goods_price").text(data.result.goods_price);// 商品总额
+        $('#goods_p').text((data.result.goods_price-data.result.integral_money) / data.result.total_num+'+'+data.result.pay_points / data.result.total_num); //积分商品价格
+    }
+    //设置自提时间
+    function initShopTime() {
+        var date_time_picker_mask = $('#date_time_picker_mask').val();
+        date_time_picker_mask += ':00';
+        date = date_time_picker_mask.replace(/-/g, '/');
+        var d = new Date(date);
+        var timestamp = d.getTime().toString().substring(0, 10);
+        cart2_form.find("input[name='take_time']").val(timestamp);
+        var weekDay = ["星期天", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
+        var day = weekDay[d.getDay()];
+        $('#date_time_day').html('【' + day + '】');
+    }
+    // 提交订单
+    var ajax_return_status = 1; // 标识ajax 请求是否已经回来 可以进行下一次请求
+    function submit_order() {
+        if ($('.submit_price a').hasClass("disable")) {
+            return;
+        }
+        if (ajax_return_status == 0)
+            return false;
+        ajax_return_status = 0;
+        $.ajax({
+            type: "POST",
+            url: "{:U('Mobile/Cart/integral2')}",//+tab,
+            data: $('#cart2_form').serialize() + "&act=submit_order",// 你的formid
+            dataType: "json",
+            success: function (data) {
+            	layer.closeAll();
+                if (data.status != '1') {
+                    showErrorMsg(data.msg);  //执行有误
+                    // 登录超时
+                    if (data.status == -100)
+                        location.href = "{:U('Mobile/User/login')}";
+                    ajax_return_status = 1; // 上一次ajax 已经返回, 可以进行下一次 ajax请求
+
+                    return false;
+                }
+                refresh_price(data);
+                showErrorMsg('订单提交成功，跳转支付页面!');
+                location.href = "/index.php?m=Mobile&c=Cart&a=cart4&order_id=" + data.result;
+            }
+        });
+    }
+
+    $(function () {
+        get_invoice();
+        $('.submits_de').click(function () {
+            $('.mask-filter-div').hide();
+            $('.losepay').hide();
+        })
+
+        //显示隐藏使用发票信息
+        $('.invoiceclickin').click(function () {
+            $('#invoice').toggle(300);
+        })
+    })
+
+</script>
+
+<!--发票优化-->
+<script type="text/javascript">
+    //发票相关js
+    $("#intype1").click(function(){
+        $(".invoice_comdel").css("display","none");
+        $('#wap_invoice_title').val("");
+        $('#wap_taxpayer').val("");
+    });
+    $("#intype2").click(function(){
+        var radioCont = $('input[name="radio_cont"]:checked').val();
+        if(radioCont == '商品明细' || radioCont == '商品类别'){
+            $(".invoice_comdel").css("display","block");
+        }else{
+            $(".invoice_comdel").css("display","none");
+        }
+    });
+    $("#intype3,#intype4").click(function(){
+        $(".invoice_tit").css("display","block");
+        var radioTitle = $('input[name="radio_title"]:checked').val();
+        var radioCont = $('input[name="radio_cont"]:checked').val();
+        $("#invoice_desc").val(radioCont);
+        if(radioTitle == "个人"){
+            $(".invoice_comdel").css("display","none");
+            $('#wap_invoice_title').val("");
+            $('#wap_taxpayer').val("");
+        }else{
+            $(".invoice_comdel").css("display","block");
+        }
+    });
+    $("#intype5").click(function(){
+        var radioCont = $('input[name="radio_cont"]:checked').val();
+        $("#invoice_desc").val(radioCont);
+        $(".invoice_tit").css("display","none");
+        $(".invoice_comdel").css("display","none");
+        $('#wap_invoice_title').val("");
+        $('#wap_taxpayer').val("");
+    });
+    //填写发票确认按钮
+    $("#submit_invoice").click(function() {
+        var radioTitle = $('input[name="radio_title"]:checked').val();
+        var invoice_title = $("#invoice_title").val();
+        var taxpayer = $("#taxpayer").val();
+        var radioCont = $('input[name="radio_cont"]:checked').val();
+        if (radioTitle=="单位" && radioCont!="不开发票"){
+            if (invoice_title.length == 0) {
+                layer.open({icon: 1, content: "发票抬头不能为空！", time: 2});
+                return false;
+            }
+            if ((taxpayer.length == 15) || (taxpayer.length == 18) || (taxpayer.length == 20)) {
+            } else {
+                layer.open({icon: 1, content: "请输入正确的纳税人识别号！", time: 2});
+                return;
+            }
+            var addressCode = taxpayer.substring(0, 6);
+            // 校验地址码
+            var check = checkAddressCode(addressCode);
+            if (!check) {
+                layer.open({icon: 1, content: "请输入正确的纳税人识别号！", time: 2});
+                return;
+            }
+            // 校验组织机构代码
+            var orgCode = taxpayer.substring(6, 9);
+            check = orgcodevalidate(orgCode);
+            if (!check) {
+                layer.open({icon: 1, content: "请输入正确的纳税人识别号！", time: 2});
+                return;
+            }
+            $('#wap_taxpayer').val(taxpayer);
+            $('#wap_invoice_title').val(invoice_title);
+        }else{
+            $('#wap_taxpayer').val("");
+            $('#wap_invoice_title').val("");
+        }
+        var str = "";
+        if(radioCont!="不开发票"){
+            if(radioTitle=="单位"){
+                str = "纸质（"+invoice_title+"-"+radioCont+"）";
+            }else {
+                str = "纸质（个人-"+radioCont+"）";
+            }
+        }else{
+            str = "不开发票";
+        }
+        $(".invoice_title").html(str);
+        save_invoice();
+        window.location.hash = "#";
+    });
+    //获取发票信息
+    function get_invoice() {
+        var str = "";
+        $.get("{:U('Cart/invoice')}", function (json) {
+            var data = eval("(" + json + ")");
+            if (data.status > 0) {
+                if (data.result.invoice_title != "") {
+                    $('#wap_invoice_title').val(data.result.invoice_title);
+                    $('#wap_taxpayer').val(data.result.taxpayer);
+                    $('#invoice_title').val(data.result.invoice_title);
+                    $("#invoice_desc").val(data.result.invoice_desc);
+                    $("#taxpayer").val(data.result.taxpayer);
+                    str = "纸质（" + data.result.invoice_title + "-"+data.result.invoice_desc+"）";
+                }
+                if (data.result.invoice_title == "个人" && data.result.invoice_desc != "不开发票") {
+                    $('#wap_invoice_title').val("个人");
+                    $('#wap_taxpayer').val("");
+                    $('#invoice_title').val("");
+                    $("#taxpayer").val("");
+                    $(".invoice_title").html("纸质（个人-"+data.result.invoice_desc+"）");
+                    str = "纸质（个人-"+data.result.invoice_desc+"）";
+                }
+                if (data.result.invoice_desc == "不开发票") {
+                    $(".invoice_tit").css("display","none");
+                    $(".invoice_comdel").css("display","none");
+                    $("#intype5").attr("checked", "checked");
+                    $('#wap_invoice_title').val("");
+                    $('#wap_taxpayer').val("");
+                    $('#invoice_title').val("");
+                    $("#invoice_desc").val(data.result.invoice_desc);
+                    $("#taxpayer").val("");
+                    str = "不开发票";
+                }
+                //加载之前发票信息
+                $(".invoice_title").html(str);
+                if(data.result.invoice_title == "单位" && data.result.taxpayer == ""){
+                    $("#intype1").attr("checked", "checked");
+                }
+                if(data.result.taxpayer　!= ""){
+                    $(".invoice_comdel").css("display","block");
+                    $("#intype2").attr("checked", "checked");
+                }
+                if(data.result.invoice_desc　== "商品明细") {
+                    $("#intype3").attr("checked", "checked");
+                }
+                if(data.result.invoice_desc　== "商品类别") {
+                    $("#intype4").attr("checked", "checked");
+                }
+                $(".invoice_title").html(str);
+            } else {
+                $("#intype1").attr("checked", "checked");
+                $("#intype3").attr("checked", "checked");
+            }
+        });
+    }
+    //修改发票信息
+    function save_invoice() {
+        var invoice_desc = $('#invoice_desc').val();
+        if(invoice_desc != "不开发票") {
+            var invoice_title = $('input[name="radio_title"]:checked').val();
+            if (invoice_title == "单位") {
+                var invoice_title = $('#wap_invoice_title').val();
+                var taxpayer = $('#wap_taxpayer').val();
+            }
+        }
+        var data = {invoice_title: invoice_title, taxpayer: taxpayer, invoice_desc: invoice_desc};
+        $.post("{:U('Cart/save_invoice')}", data, function (json) {
+            var data = eval("(" + json + ")");
+            $("#invoice").hide();
+        });
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+2016-12-05 18:01:52, INFO, 127.0.0.1, File[ D:\wamp\www\TPshop2.0\www\public\plugins\payment\unionpay\sdk\secureUtil.php ], Line[15]------ =====签名报文开始====== 
+2016-12-05 18:01:52, INFO, 127.0.0.1, File[ D:\wamp\www\TPshop2.0\www\public\plugins\payment\unionpay\sdk\secureUtil.php ], Line[21]------ 签名key=val&...串 >accessType=0&backUrl=http://www.tpshop2.0.com/index.php/home/Payment/notifyUrl/pay_code/unionpay.html&bizType=000201&certId=40220995861346480087409489142384722381&channelType=08&currencyCode=156&encoding=utf-8&frontUrl=http://www.tpshop2.0.com/index.php/home/Payment/returnUrl/pay_code/unionpay.html&merId=&orderId=201612051628404371&signMethod=01&txnAmt=300&txnSubType=01&txnTime=20161205162840&txnType=01&version=5.0.0 
+2016-12-05 18:01:52, INFO, 127.0.0.1, File[ D:\wamp\www\TPshop2.0\www\public\plugins\payment\unionpay\sdk\secureUtil.php ], Line[24]------ 摘要sha1x16 >4359cd1b74ba691fc7ec11df22b3872e097ed63f 
+2016-12-05 18:01:52, INFO, 127.0.0.1, File[ D:\wamp\www\TPshop2.0\www\public\plugins\payment\unionpay\sdk\secureUtil.php ], Line[31]------ 签名串为 >c5eqS1olZentOccoh+d76erRoMs/RlMe4B3aUfgOaR+jUGKwnsMr+dtRw+MF7a13PJs0umAjWC6bvsscV7FdHgbZ5vXtEkRgu3yuc71yGDSLMftjx5zhBkTg+bTQbtq9cQy0OsVGGw11bQNQsFqIcqdKGmZCLHOcoLjENGP2ZSk= 
+2016-12-05 18:01:52, INFO, 127.0.0.1, File[ D:\wamp\www\TPshop2.0\www\public\plugins\payment\unionpay\sdk\secureUtil.php ], Line[36]------ =====签名报文结束====== 
+2016-12-05 18:01:52, INFO, 127.0.0.1, File[ D:\wamp\www\TPshop2.0\www\public\plugins\payment\unionpay\sdk\acp_service.php ], Line[163]------ 自动跳转html><html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
+<body onload="javascript:document.pay_form.submit();">
+    <form id="pay_form" name="pay_form" action="https://101.231.204.80:5000/gateway/api/frontTransReq.do" target="_blank" method="post">
+	    <input type="hidden" name="version" id="version" value="5.0.0" />
+    <input type="hidden" name="encoding" id="encoding" value="utf-8" />
+    <input type="hidden" name="txnType" id="txnType" value="01" />
+    <input type="hidden" name="txnSubType" id="txnSubType" value="01" />
+    <input type="hidden" name="bizType" id="bizType" value="000201" />
+    <input type="hidden" name="frontUrl" id="frontUrl" value="http://www.tpshop2.0.com/index.php/home/Payment/returnUrl/pay_code/unionpay.html" />
+    <input type="hidden" name="backUrl" id="backUrl" value="http://www.tpshop2.0.com/index.php/home/Payment/notifyUrl/pay_code/unionpay.html" />
+    <input type="hidden" name="signMethod" id="signMethod" value="01" />
+    <input type="hidden" name="channelType" id="channelType" value="08" />
+    <input type="hidden" name="accessType" id="accessType" value="0" />
+    <input type="hidden" name="currencyCode" id="currencyCode" value="156" />
+    <input type="hidden" name="merId" id="merId" value="" />
+    <input type="hidden" name="orderId" id="orderId" value="201612051628404371" />
+    <input type="hidden" name="txnTime" id="txnTime" value="20161205162840" />
+    <input type="hidden" name="txnAmt" id="txnAmt" value="300" />
+    <input type="hidden" name="certId" id="certId" value="40220995861346480087409489142384722381" />
+    <input type="hidden" name="signature" id="signature" value="c5eqS1olZentOccoh+d76erRoMs/RlMe4B3aUfgOaR+jUGKwnsMr+dtRw+MF7a13PJs0umAjWC6bvsscV7FdHgbZ5vXtEkRgu3yuc71yGDSLMftjx5zhBkTg+bTQbtq9cQy0OsVGGw11bQNQsFqIcqdKGmZCLHOcoLjENGP2ZSk=" />
+   <!-- <input type="submit" type="hidden">-->
+    </form>
+</body>
+</html> 

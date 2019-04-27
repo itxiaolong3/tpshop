@@ -1,0 +1,195 @@
+<include file="public/layout" />
+<script type="text/javascript" src="__ROOT__/public/static/js/layer/laydate/laydate.js"></script>
+
+<body style="background-color: rgb(255, 255, 255); overflow: auto; cursor: default; -moz-user-select: inherit;">
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>拼单成员列表</h3>
+                <h5>商城拼单成员列表查询及管理</h5>
+            </div>
+        </div>
+    </div>
+    <!-- 操作说明 -->
+    <div id="explanation" class="explanation" style=" width: 99%; height: 100%;">
+        <div id="checkZoom" class="title"><i class="fa fa-lightbulb-o"></i>
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span title="收起提示" id="explanationZoom" style="display: block;"></span>
+        </div>
+        <ul>
+            <li>查看操作可以查看拼团成员, 包括拼团成员订单信息, 拼团详情等</li>
+        </ul>
+    </div>
+    <div class="flexigrid">
+        <div class="mDiv">
+            <div class="ftitle">
+                <h3>拼单成员列表</h3>
+                <h5></h5>
+            </div>
+            <div title="刷新数据" class="pReload"><i class="fa fa-refresh"></i></div>
+        </div>
+        <div class="hDiv">
+            <div class="hDivBox">
+                <table cellspacing="0" cellpadding="0">
+                    <thead>
+                    <tr>
+                        <th axis="col0">
+                            <div style="width: 24px;"><i class="ico-check"></i></div>
+                        </th>
+                        <th align="left" axis="col3" class="">
+                            <div style="text-align: left; width: 140px;" class="">团员</div>
+                        </th>
+                        <th align="center" axis="col5" class="">
+                            <div style="text-align: center; width: 80px;" class="">购买数量</div>
+                        </th>
+                        <th align="center" axis="col5" class="">
+                            <div style="text-align: center; width: 80px;" class="">订单金额</div>
+                        </th>
+                        <th align="left" axis="col4" class="">
+                            <div style="text-align: center; width: 200px;" class="">订单编号</div>
+                        </th>
+                        <th align="center" axis="col6" class="">
+                            <div style="text-align: center; width: 80px;" class="">收货人</div>
+                        </th>
+                        <th align="center" axis="col6" class="">
+                            <div style="text-align: center; width: 300px;" class="">收货地址</div>
+                        </th>
+                        <th align="center" axis="col6" class="">
+                            <div style="text-align: center; width: 80px;" class="">联系方式</div>
+                        </th>
+                        <th align="center" axis="col6" class="">
+                            <div style="text-align: center; width: 80px;" class="">订单交易状态</div>
+                        </th>
+                        <th align="left" axis="col1" class="handle">
+                            <div style="text-align: center; width: 150px;">操作</div>
+                        </th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        <div class="bDiv" style="height: auto;">
+            <div id="flexigrid">
+                <table>
+                    <tbody>
+                    <empty name="teamFound">
+                        <tr data-id="0">
+                            <td class="no-data" align="center" axis="col0" colspan="50">
+                                <i class="fa fa-exclamation-circle"></i>没有符合条件的记录
+                            </td>
+                        </tr>
+                    <else/>
+                        <tr>
+                            <td class="sign" axis="col0">
+                                <div style="width: 24px;"><i class="ico-check"></i></div>
+                            </td>
+                            <td align="left" axis="col3" class="">
+                                <div style="text-align: left; width: 140px;" class="">{$teamFound[nickname]}(团长)</div>
+                            </td>
+                            <td align="left" axis="col4" class="">
+                                <div style="text-align: center; width: 80px;" class="">{$teamFound[order_goods][goods_num]}</div>
+                            </td>
+                            <td align="center" axis="col5" class="">
+                                <div style="text-align: center; width: 80px;" class="">￥{$teamFound[order][total_amount]}</div>
+                            </td>
+                            <td align="center" axis="col6" class="">
+                                <div style="text-align: center; width: 200px;" class="">{$teamFound[order][order_sn]}</div>
+                            </td>
+                            <td align="center" axis="col6" class="">
+                                <div style="text-align: center; width: 80px;" class="">{$teamFound[order][consignee]}</div>
+                            </td>
+                            <td align="center" axis="col6" class="">
+                                <div style="text-align: center; width: 300px;" class="">{$teamFound[order][address_region]}{$teamFound[order][address]}</div>
+                            </td>
+                            <td align="center" axis="col6" class="">
+                                <div style="text-align: center; width: 80px;" class="">{$teamFound[order][mobile]}</div>
+                            </td>
+                            <td align="center" axis="col6" class="">
+                                <div style="text-align: center; width: 80px;" class="">{$teamFound[order][pay_status_detail]}</div>
+                            </td>
+                            <td align="left" axis="col1" class="handle">
+                                <div style="text-align: center; ">
+                                    <a class="btn green" href="{:U('Order/detail',['order_id'=>$teamFound[order_id]])}" ><i class="fa fa-search"></i>订单详情</a>
+                                </div>
+                            </td>
+                            <td style="width: 100%;">
+                                <div></div>
+                            </td>
+                        </tr>
+                        <volist name="teamFound[team_follow]" id="follow">
+                            <tr>
+                                <td class="sign" axis="col0">
+                                    <div style="width: 24px;"><i class="ico-check"></i></div>
+                                </td>
+                                <td align="left" axis="col3" class="">
+                                    <div style="text-align: left; width: 140px;" class="">{$follow[follow_user_nickname]}(团员)</div>
+                                </td>
+                                <td align="left" axis="col4" class="">
+                                    <div style="text-align: center; width: 80px;" class="">{$follow[order_goods][goods_num]}</div>
+                                </td>
+                                <td align="center" axis="col5" class="">
+                                    <div style="text-align: center; width: 80px;" class="">￥{$follow[order][total_amount]}</div>
+                                </td>
+                                <td align="center" axis="col6" class="">
+                                    <div style="text-align: center; width: 200px;" class="">{$follow[order][order_sn]}</div>
+                                </td>
+                                <td align="center" axis="col6" class="">
+                                    <div style="text-align: center; width: 80px;" class="">{$follow[order][consignee]}</div>
+                                </td>
+                                <td align="center" axis="col6" class="">
+                                    <div style="text-align: center; width: 300px;" class="">{$follow[order][address_region]}{$follow[order][address]}</div>
+                                </td>
+                                <td align="center" axis="col6" class="">
+                                    <div style="text-align: center; width: 80px;" class="">{$follow[order][mobile]}</div>
+                                </td>
+                                <td align="center" axis="col6" class="">
+                                    <div style="text-align: center; width: 80px;" class="">{$follow[order][pay_status_detail]}</div>
+                                </td>
+                                <td align="left" axis="col1" class="handle">
+                                    <div style="text-align: center; ">
+                                        <a class="btn green" href="{:U('Order/detail',['order_id'=>$follow[order_id]])}" ><i class="fa fa-search"></i>订单详情</a>
+                                    </div>
+                                </td>
+                                <td style="width: 100%;">
+                                    <div></div>
+                                </td>
+                            </tr>
+                        </volist>
+                    </empty>
+                    </tbody>
+                </table>
+                <div class="row">
+                    <div class="col-sm-6 text-left"></div>
+                    <div class="col-sm-6 text-right">{$page->show()}</div>
+                </div>
+            </div>
+            <div class="iDiv" style="display: none;"></div>
+        </div>
+        <!--分页位置-->
+    </div>
+</div>
+<script type="text/javascript">
+
+    // 点击刷新数据
+    $('.fa-refresh').click(function(){
+        location.href = location.href;
+    });
+    $('.ico-check ' , '.hDivBox').click(function(){
+        $('tr' ,'.hDivBox').toggleClass('trSelected' , function(index,currentclass){
+            var hasClass = $(this).hasClass('trSelected');
+            $('tr' , '#flexigrid').each(function(){
+                if(hasClass){
+                    $(this).addClass('trSelected');
+                }else{
+                    $(this).removeClass('trSelected');
+                }
+            });
+        });
+    });
+
+</script>
+</body>
+</html>

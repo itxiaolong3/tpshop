@@ -1,0 +1,128 @@
+<include file="public/header" title="店铺设置" />
+<include file="public/header_nav" title="店铺设置" href="javascript:history.back(-1)"/>
+<link rel="stylesheet" type="text/css" href="__STATIC__/distribut/css/main.css"/>
+<script src="__STATIC__/js/mobile-util.js" type="text/javascript" charset="utf-8"></script>
+    <form id="set_store" method="post" enctype="multipart/form-data" >
+			<div class="shop_seting">
+				<div class="w670">
+					<div class="alone_row_set">
+						<span>店铺名称：</span>
+						<input type="text" name="store_name" id="store_name" maxlength="15" value="{$store.store_name}" />
+					</div>
+					<div class="alone_row_set">
+						<span>真实姓名：</span>
+						<input type="text"  name="true_name" maxlength="15" id="true_name" value="{$store.true_name}" />
+					</div>
+					<div class="alone_row_set">
+						<span>手机号：</span>
+						<input type="text" name="mobile" id="mobile" value="{$store.mobile}" maxlength="11" onkeyup="value=value.replace(/[^0-9]/g,'')"/>
+					</div>
+					<div class="alone_row_set">
+						<span>QQ：</span>
+						<input type="text"  name="qq" id="qq" value="{$store.qq}" maxlength="12" onkeyup="value=value.replace(/[^0-9]/g,'')">
+					</div>
+				</div>
+			</div>
+			<div class="shop_img_set">
+				<div class="tit_produce">
+					<span class="tit_fon">店铺图片</span>
+				</div>
+				<div class="upload_shopbag">
+                    <label>
+                        <a id="fileList0">
+                            <img src="{$store.store_img|default='__STATIC__/images/m_03.jpg'}"/>
+                        </a>
+                        <input type="file" accept="image/*" name="store_img" id="store_img" onchange="handleFiles(this,0)"  style="display:none" />
+                    <label>
+				</div>
+				<div class="w670 ma-to-50 ma-bo-50">
+					<a class="submit_set" href="javascript:" onClick="verifyForm1();">确认修改</a>
+				</div>
+			</div>
+		</form>
+</body>
+<script>
+    function verifyForm1(){
+        var store_name = $.trim($('#store_name').val());
+        var true_name = $.trim($('#true_name').val());
+        var mobile = $.trim($('#mobile').val());
+        var qq = $.trim($('#qq').val());
+
+        if(!checkMobile(mobile)){
+            //判断手机格式
+            layer.open({content:'手机格式错误！！！',time:2});
+            return false;
+        }
+        if(store_name == '' || true_name == '' ||mobile == '' || qq=='')
+        {
+            layer.open({content:'所有信息都是必填！！！',time:2});
+            return false;
+        }
+        var formObj = document.getElementById("set_store");
+        var formData = new FormData(formObj);//表单id
+        $.ajax({
+            type: "POST",
+            url: "{:U('Mobile/Distribut/set_store')}",
+            data: formData,
+            dataType: "json",
+            async: false,
+            cache: false,  //上传文件不需要缓存
+            contentType: false,
+            processData: false, //因为data值是FormData对象，不需要对数据做处理
+            error: function () {
+                layer.open({content:"服务器繁忙, 请联系管理员!",time:2});
+            },
+            success: function (data) {
+                if (data.status == 1) {
+                    layer.open({content:data.msg,time:2,end:function () {
+                        location.href = "{:U('Mobile/Distribut/set_store')}";
+                    }});
+                }else {
+                    $.each(data.result, function (index, item) {
+                        layer.open({content: item, time: 2});
+                    });
+                }
+            }
+        });
+    }
+
+    //上传照片
+    window.URL = window.URL || window.webkitURL;
+    function handleFiles(obj,id) {
+        fileList = document.getElementById("fileList"+id);
+        var files = obj.files;
+        img = new Image();
+        if(window.URL){
+
+            img.src = window.URL.createObjectURL(files[0]); //创建一个object URL，并不是你的本地路径
+            img.onload = function(e) {
+                window.URL.revokeObjectURL(this.src); //图片加载后，释放object URL
+            }
+            if(fileList.firstElementChild){
+                fileList.removeChild(fileList.firstElementChild);
+            }
+            fileList.appendChild(img);
+        }else if(window.FileReader){
+            //opera不支持createObjectURL/revokeObjectURL方法。我们用FileReader对象来处理
+            var reader = new FileReader();
+            reader.readAsDataURL(files[0]);
+            reader.onload = function(e){
+                img.src = this.result;
+                fileList.appendChild(img);
+            }
+        }else
+        {
+            //ie
+            obj.select();
+            obj.blur();
+            var nfile = document.selection.createRange().text;
+            document.selection.empty();
+            img.src = nfile;
+            img.onload=function(){
+
+            }
+            fileList.appendChild(img);
+        }
+    }
+</script>
+</html>

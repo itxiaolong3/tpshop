@@ -1,0 +1,190 @@
+<include file="public/layout" />
+<body style="background-color: #FFF; overflow: auto;">
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <a class="back" href="javascript:history.back();" title="返回"><i class="fa fa-arrow-circle-o-left"></i></a>
+            <div class="subject">
+                <h3>小程序发布管理</h3>
+                <h5>展示发布信息，进行发布操作</h5>
+            </div>
+            <ul class="tab-base nc-row">
+                <li><a href="{:U('miniapp/index')}">
+                    <span>小程序授权</span></a>
+                </li>
+                <li><a href="{:U('miniapp/tester')}">
+                    <span>体验者设置</span></a>
+                </li>
+                <li><a href="{:U('miniapp/template')}">
+                    <span>小程序基本信息</span></a>
+                </li>
+                <li><a href="{:U('miniapp/release_manage')}" class="current">
+                    <span>上线管理</span></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- 操作说明 -->
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom"><i class="fa fa-lightbulb-o"></i>
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示"></span> </div>
+        <ul>
+            <li>这里展示小程序的所有审核、发布状态，便捷的发布操作，且只展示通过本平台发布的版本</li>
+            <li>版本审核通过后记得点击“发布上线”才能使小程序上线哦</li>
+        </ul>
+    </div>
+    <div class="ncap-form-default">
+        <dl class="row"><dt class="tit"><label style="font-size:15px"><b>线上版本</b></label></dt></dl>
+        <dl class="row">
+            <notempty name="release">
+                <dt class="tit">版本号</dt><dd class="opt">{$release.version}</dd>
+                <dt class="tit">模板名称</dt><dd class="opt">{$release.template_name} [{$release.template_id}-{$release.template_version}]</dd>
+                <dt class="tit">上线时间</dt><dd class="opt">{:date('Y-m-d H:i:s', $release.release_time)}</dd>
+                <dt class="tit">店铺名称</dt><dd class="opt">{$release.store_name}</dd>
+                <dt class="tit">店铺logo</dt><dd class="opt"><img src="{$release.store_logo}" style="height: 28px"> [{$release.store_logo}]</dd>
+                <dt class="tit">请求域名</dt><dd class="opt">{$release.request_url}</dd>
+                <dt class="tit">描述</dt><dd class="opt">{$release.description}</dd>
+                <dt class="tit">是否可被搜索</dt>
+                <dd class="opt">
+                    <div class="onoff">
+                        <label for="visitable" class="cb-enable <notempty name='miniapp.is_show_release'>selected</notempty>">可被搜索</label>
+                        <label for="unvisitable" class="cb-disable <empty name='miniapp.is_show_release'>selected</empty>">不可搜索</label>
+                        <input id="visitable" name="visitable" value="1" type="radio" <notempty name='miniapp.is_show_release'>checked="checked"</notempty>>
+                        <input id="unvisitable" name="unvisitable" value="0" type="radio" <empty name='miniapp.is_show_release'>checked="checked"</empty>>
+                    </div>
+                </dd>
+                <else/>
+                <dt class="tit"></dt><dd class="opt">您尚未提交线上版本</dd>
+            </notempty>
+        </dl>
+
+        <dl class="row"><dt class="tit"><label style="font-size:15px"><b>审核版本</b></label></dt></dl>
+        <dl class="row">
+            <notempty name="audit">
+                <dt class="tit">版本号</dt><dd class="opt">{$audit.version}</dd>
+                <dt class="tit">模板名称</dt><dd class="opt">{$audit.template_name} [{$audit.template_id}-{$audit.template_version}]</dd>
+                <dt class="tit">提交审核时间</dt><dd class="opt">{:date('Y-m-d H:i:s', $audit.audit_time)}</dd>
+                <dt class="tit">审核状态</dt><dd class="opt red">{$audit.status_name}</dd>
+                <if condition="$audit.status==3"><dt class="tit">审核失败原因</dt><dd class="opt red">{$audit.audit_fail_reason}</dd></if>
+                <dt class="tit">店铺名称</dt><dd class="opt">{$audit.store_name}</dd>
+                <dt class="tit">店铺logo</dt><dd class="opt"><img src="{$audit.store_logo}" style="height: 28px"> [{$audit.store_logo}]</dd>
+                <dt class="tit">请求域名</dt><dd class="opt">{$audit.request_url}</dd>
+                <dt class="tit">描述</dt><dd class="opt">{$audit.description}</dd>
+                <if condition="$audit.status==2">
+                    <dt class="tit"></dt><dd class="opt"><a href="JavaScript:void(0);" class="ncap-btn ncap-btn-green" onclick="release();">发布上线</a></dd>
+                </if>
+                <else/>
+                <dt class="tit"></dt><dd class="opt">您暂无提交审核的版本或版本已发布上线</dd>
+            </notempty>
+        </dl>
+
+        <dl class="row"><dt class="tit"><label style="font-size:15px"><b>体验版本</b></label></dt></dl>
+        <dl class="row">
+            <notempty name="test">
+                <dt class="tit">版本号</dt><dd class="opt">{$test.version}</dd>
+                <dt class="tit">模板名称</dt><dd class="opt">{$test.template_name} [{$test.template_id}-{$test.template_version}]</dd>
+                <dt class="tit">提交时间</dt><dd class="opt">{:date('Y-m-d H:i:s', $test.add_time)}</dd>
+                <dt class="tit">店铺名称</dt><dd class="opt">{$test.store_name}</dd>
+                <dt class="tit">店铺logo</dt><dd class="opt"><img src="{$test.store_logo}" style="height: 28px"> [{$test.store_logo}]</dd>
+                <dt class="tit">请求域名</dt><dd class="opt">{$test.request_url}</dd>
+                <dt class="tit">描述</dt><dd class="opt">{$test.description}</dd>
+                <dt class="tit"></dt>
+                <dd class="opt">
+                    <a href="JavaScript:void(0);" class="ncap-btn gray" onclick="getTestQrcode();">体验二维码</a>
+                    <if condition="$audit.status!=1&&$audit.status!=2">
+                        <a href="JavaScript:void(0);" class="ncap-btn ncap-btn-green" onclick="submitAudit();">提交审核</a>
+                    </if>
+                </dd>
+                <else/>
+                <dt class="tit"></dt><dd class="opt">您暂无提交的体验版本</dd>
+            </notempty>
+        </dl>
+    </div>
+</div>
+</body>
+
+<script type="text/javascript">
+    $(function() {
+        var status = {$miniapp.is_show_release};
+        $('#visitable,#unvisitable').on('click', function() {
+            if (($(this).attr('id') === 'visitable' && status === 1) || ($(this).attr('id') === 'unvisitable' && status === 0)) {
+                return;
+            }
+            layer.confirm('确定设置为可见？', {icon: 3, title:'提示'}, function (index) {
+                status = status ? 0 : 1;
+                $.ajax({
+                    url: "{:U('miniapp/set_visit_status')}",
+                    data: { status: status },
+                    method: 'post',
+                    dataType: 'json',
+                    success: function (res) {
+                        if (res.status === 1) {
+                            layer.msg(res.msg, {icon: 1});
+                        } else {
+                            setVisitRadio(status);
+                            layer.alert(res.msg, {icon:2});
+                        }
+                    },
+                    error: function () {
+                        setVisitRadio(status);
+                        layer.alert('系统繁忙，请联系管理员');
+                    }
+                });
+                layer.close(index);
+            }, function (index) {
+                setVisitRadio(status);
+                layer.close(index);
+            });
+        });
+    });
+
+    function setVisitRadio(status) {
+        if (status) {
+            $('label[for=visitable]').addClass('selected');
+            $('label[for=unvisitable]').removeClass('selected');
+        } else {
+            $('label[for=visitable]').removeClass('selected');
+            $('label[for=unvisitable]').addClass('selected');
+        }
+    }
+
+    function getTestQrcode() {
+        layer.open({
+            type: 1,
+            area: ['500px', '400px'],
+            shadeClose: true, //点击遮罩关闭
+            title: '扫码访问体验版',
+            content:'<div style="text-align: center">' +
+            '    <p style="font-size: 15px;margin: 20px 0;">管理员/体验者扫描下方二维码即可体验体验版</p>' +
+            '    <img src="/admin/miniapp/test_qrcode" style="width: 240px;height: 240px;"/>' +
+            '</div>'
+        });
+    }
+    function submitAudit() {
+        window.location.href = "{:U('miniapp/audit')}";
+    }
+    function release() {
+        $.ajax({
+            url: "{:U('miniapp/release_miniapp')}",
+            method: 'post',
+            dataType: 'json',
+            success: function (res) {
+                console.log(res);
+                if (res.status === 1) {
+                    layer.msg(res.msg, {icon: 1}, function(){
+                        window.location.reload(true);
+                    });
+                } else {
+                    layer.alert(res.msg, {icon:2});
+                }
+            },
+            error: function () {
+                layer.alert('系统繁忙，请联系管理员');
+            }
+        })
+    }
+</script>
+</html>

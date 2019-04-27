@@ -1,0 +1,82 @@
+<include file="public/layout"/>
+<load href="__ROOT__/public/plugins/Ueditor/ueditor.config.js"/>
+<load href="__ROOT__/public/plugins/Ueditor/ueditor.all.min.js"/>
+<script type="text/javascript" charset="utf-8" src="__ROOT__/public/plugins/Ueditor/lang/zh-cn/zh-cn.js"></script>
+<script src="__ROOT__/public/static/js/layer/laydate/laydate.js"></script>
+
+<style type="text/css">
+    html, body {
+        overflow: visible;
+    }
+</style>
+<body style="background-color: #FFF; overflow: auto;">
+<div id="toolTipLayer" style="position: absolute; z-index: 9999; display: none; visibility: visible; left: 95px; top: 573px;"></div>
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <a class="back" href="javascript:history.back();" title="返回列表"><i class="fa fa-arrow-circle-o-left"></i></a>
+            <div class="subject">
+                <h3>{$Request.param.material_id?'编辑':'新增'}文本素材</h3>
+                <h5>微信公众号管理</h5>
+            </div>
+        </div>
+    </div>
+    <form class="form-horizontal" id="add_post">
+        <div class="ncap-form-default">
+            <dl class="row">
+                <dt class="tit">
+                    <label><em>*</em>标题</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" value="{$info.data.title}" name="title" class="input-txt">
+                    <span class="err" id="err_title"></span>
+                    <p class="notic">最多64个字。</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">内容</dt>
+                <dd class="opt">
+                    <textarea class="input-txt" name="content">{$info.data.content}</textarea>
+                    <span class="err" id="err_digest"></span>
+                    <p class="notic">不多于600字。</p>
+                </dd>
+            </dl>
+            <div class="bot">
+                <a href="JavaScript:void(0);" class="ncap-btn-big ncap-btn-green" onclick="verifyForm()">提 交</a>
+            </div>
+        </div>
+        <input type="hidden" id="material_id" name="material_id" value="{$Request.param.material_id}">
+    </form>
+</div>
+
+<script type="text/javascript">
+    function verifyForm() {
+        $.ajax({
+            type: "POST",
+            url: "{:U('wechat/handle_text')}",
+            data: $('#add_post').serialize(),
+            dataType: "json",
+            error: function () {
+                layer.alert("服务器繁忙, 请联系管理员!");
+            },
+            success: function (data) {
+                if (data.status === 1) {
+                    layer.msg(data.msg, {icon: 1, time: 1000}, function () {
+                        location.href = "{:U('wechat/materials', ['tab' => 'text'])}";
+                    });
+                } else if (data.status === 0) {
+                    layer.msg(data.msg, {icon: 2, time: 1000});
+                    $.each(data.result, function (index, item) {
+                        $('#err_' + index).text(item).show();
+                    });
+                } else {
+                    layer.msg(data.msg, {icon: 2, time: 1000});
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>我的名片</title>
+        <link rel="stylesheet" type="text/css" href="__STATIC__/distribut/css/main.css"/>
+        <script src="__STATIC__/js/jquery-3.1.1.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="__STATIC__/js/mobile-util.js" type="text/javascript" charset="utf-8"></script>
+        <script src="__PUBLIC__/js/global.js"></script>
+    </head>
+    <body class="bag_red">
+        <div class="my_team_alon busniess_card_name">
+            <a class="p" href="">
+                <div class="team_head">
+                    <img src="{$user[head_pic]|default='__STATIC__/images/user68.jpg'}"/>
+                </div>
+                <div class="team_name_time">
+                    <span class="t_n">我是<em>【{$user.nickname}】</em></span>
+                    <span class="t_n" style="margin-top:10px;">我为自己代言</span>
+                    <if condition="$user['is_distribut'] neq 1">
+                        <span class="t_t">我要成为TPshop商城分销商</span>
+                    </if>
+                </div>
+            </a>
+            <notempty name="is_owner">
+            <div class="change-qr-code p" id="change-qr-code">
+                <p class="uesername">加入微信关注：</p>
+                <a class="change-btn <if condition='$qr_mode eq 1'>xmove</if>" href="javascript:;" onclick="qrModeBtn()"></a>
+            </div>
+            </notempty>
+        </div>
+        <div class="my_business_card">
+                <div class="fx_qrcode">
+        <img src="/index.php?m=Home&c=Index&a=qr_code&data={$ShareLink}&head_pic={$head_pic}&back_img={$back_img}<if condition='$qr_mode eq 1'>&valid_date={:Date('Y.m.d',strtotime('+30 days'))}</if>"/>
+        <p>长按此图识别二维码</p>
+                </div>
+                <i class="cloud-1"></i>
+                <i class="cloud-2"></i>
+                <i class="cloud-3"></i>
+                <i class="cloud-mo"></i>
+                <i class="cloud-mo mo2"></i>
+                <i class="cloud-mo mo3"></i>
+                <i class="cloud-mo mo4"></i>
+                <i class="cloud-rm"></i>
+        </div>
+        <include file="public/wx_share"/>
+        <script>
+            function qrModeBtn()
+            {
+                var qr_mode = Number(!$('.change-btn').hasClass('xmove'));
+                location.href = "{:url('Distribut/qr_code')}?user_id={$user.user_id}&qr_mode="+qr_mode;
+            }
+        </script>
+    </body>
+</html>

@@ -1,0 +1,98 @@
+<include file="public/header" title="我的店铺" body="g4"/>
+<include file="public/header_nav" title="我的店铺" href="{:U('mobile/Distribut/index')}"/>
+<link rel="stylesheet" type="text/css" href="__STATIC__/distribut/css/main.css"/>
+		<div class="banner bag_white p">
+            <img class="bagimg" src="{$store.store_img|default="__STATIC__/distribut/images/m_03.jpg"}"/>
+			<!--<div class="my_share"><i class="icon-share"></i></div>-->
+			<!--<div class="my_collect"><a class="my_collect_button" href="">收藏</a></div>-->
+			<div class="my_head">
+				<div class="head">
+                    <img src="{$head_pic|default="__STATIC__/distribut/images/user68.jpg"}"/>
+                </div>
+				<p class="my_name">{$store_name}</p>
+			</div>
+		</div>
+		<nav class="my_allshop bag_white p">
+			<ul>
+				<li>
+					<a href="{:U('Distribut/distribution_list')}">
+						<span class="quantity co-red">{$totalRows}</span>
+						<span>全部商品</span>
+					</a>
+				</li>
+				<li>
+					<a >
+						<span class="quantity co-red">{$new}</span>
+						<span>上新</span>
+					</a>
+				</li>
+				<li>
+					<a >
+						<span class="quantity co-red">{$promotion}</span>
+						<span>促销</span>
+					</a>
+				</li>
+			</ul>
+		</nav>
+		<div class="tit_produce ma-to-8 bag_white">
+			<!--<i class="icon-leaf"></i>-->
+			<!--<span class="tit_fon ma-le-6">上新产品</span>-->
+		</div>
+		<div class="allgoods bag_white p">
+            <if condition="!empty($lists)">
+                <ul id="goods_list">
+                    <foreach name="lists" item="good">
+                        <li>
+                            <a href="{:U('Mobile/Goods/goodsInfo',array('id'=>$good['goods_id'],'first_leader'=>$user_id))}">
+                                <div class="goods">
+                                    <img class="goods_Img" src="{$good.goods_id|goods_thum_images=200,200}"/>
+                                    <div class="goods_name ma-to-24 pa-0-30">
+                                        {$good.goods_name}
+                                    </div>
+                                    <div class="goods_price pa-0-30">
+                                        <em>￥</em>
+                                        <span>{$good.shop_price}</span>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                    </foreach>
+                </ul>
+            <else/>
+                <!--没有内容时-s-->
+                <div class="comment_con p">
+                    <div style="padding:1rem;text-align: center;font-size: .59733rem;color: #777777;"><img src="__STATIC__/images/none.png"/><br /><br />亲，您还没有分销商品！</div>
+                </div>
+                <!--没有内容时-e-->
+            </if>
+		</div>
+		<include file="public/wx_share"/>
+	</body>
+    <script type="text/javascript" src="__STATIC__/js/sourch_submit.js"></script>
+    <script>
+        var  page = 1;
+        var before_request = 1;
+        /*** ajax 提交表单 查询订单列表结果*/
+        function ajax_sourch_submit()
+        {
+            if(before_request == 0)
+                return false;
+            before_request = 0
+            page += 1;
+            $.ajax({
+                type : "get",
+                url:"/index.php?m=Mobile&c=Distribut&a=my_store&is_ajax=1&p="+page,//+tab,
+                dataTupe:'html',
+                success: function(data)
+                {
+                    before_request = 1;
+                    if($.trim(data) == '')
+                        $('#getmore').hide();
+                    else{
+                        $("#goods_list").append(data);
+                    }
+                }
+            });
+        }
+    </script>
+</html>

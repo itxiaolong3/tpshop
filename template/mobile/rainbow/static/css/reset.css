@@ -1,0 +1,18 @@
+
+body,ul,ol,li,p,h1,h2,h3,h4,h5,h6,form,fieldset,table,td,img,div,dl,dt,dd,input{ margin:0; padding:0;}
+img{ border:none; vertical-align:top;}
+input,select,textarea{ outline:none;}
+textarea{ resize:none;}
+a{ text-decoration:none;}
+.fl{ float:left;}
+.fr{ float:right;}
+
+table{border-collapse:collapse;border-spacing:0;}
+ol,ul,li,dl{list-style:none;}
+body{font-family:"Microsoft YaHei",tahoma,verdana,arial,sans-serif;line-height:1; font-size:0.341334rem;}
+i,a,big,small,b,span,em,strong,font{ display:inline-block;font-style:normal; font-weight:normal;}
+
+input::-webkit-input-placeholder{color: #999;}
+input:-moz-placeholder{color:#999;}
+input::-moz-placeholder{color:#999;}
+input:-ms-input-placeholder{color:#999;}

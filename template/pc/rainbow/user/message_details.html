@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>我的消息 </title>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/css/tpshop.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/css/myaccount.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/css/message_notice.css"/>
+    <script src="__STATIC__/js/jquery-1.11.3.min.js" type="text/javascript" charset="utf-8"></script>
+
+    
+<body class="bg-f5">
+
+<include file="user/header"/>
+<div class="home-index-middle">
+    <div class="w1224">
+        <div class="g-crumbs"><a href="">我的商城</a><i class="litt-xyb"></i><span>我的消息</span></div>
+        <div class="home-main">
+            <include file="user/menu"/>
+
+            <!--消息中心优化后-->
+            <div class="ri-menu fr">
+                <div class="mesg_container">
+                    <div class="mesg_tab">
+                        <ul id="mesg_tab">
+                            <li <if condition="((null == $Think.get.type) OR ($Think.get.type == 2))">class="mesgtab_cur"
+                            </if>><a href="{:U('Home/User/message_notice',array('type'=>2))}">物流<notempty name="no_read['message_logistics_no_read']">（{$no_read['message_logistics_no_read']}）</notempty></a></li>
+                            <li <if condition="((null != $Think.get.type) and ($Think.get.type == 0))">class="mesgtab_cur"
+                            </if>><a href="{:U('Home/User/message_notice',array('type'=>0))}">通知<notempty name="no_read['message_notice_no_read']">（{$no_read['message_notice_no_read']}）</notempty></a></li>
+                            <li <if condition="($Think.get.type == 1)">class="mesgtab_cur"
+                            </if>><a href="{:U('Home/User/message_notice',array('type'=>1))}">活动<notempty name="no_read['message_activity_no_read']">（{$no_read['message_activity_no_read']}）</notempty></a></li>
+                            <li <if condition="($Think.get.type == 3)">class="mesgtab_cur"
+                            </if>><a href="{:U('Home/User/message_notice',array('type'=>3))}">私信<notempty name="no_read['message_private_no_read']">（{$no_read['message_private_no_read']}）</notempty></a></li>
+                        </ul>
+                    </div>
+                    <!--消息为空-->
+                    <if condition="empty($message_details)"/>
+                    <div class="mesg_infoma" >
+                        <div class="mesg_none">
+                            <img src="__STATIC__/images/mesgnone.png">
+                            <span>暂无消息记录哦~</span>
+                        </div>
+                    </div>
+                    <else/>
+                    
+                    <!--消息详情-->
+                    <div class="mesg_infoma" >
+                    	<div class="mesg_deta_con">
+                        	<div class="mesgdeta_tit">
+                            	<h3>{$message_details.message_title}</h3>
+                                <p><em>类型：<i>{$message_details.category_name}</i></em><i>{$message_details.send_time_text}</i></p>
+                            </div>
+                            <div class="mesgdeta_mid"><p>{$message_details.message_content}</p></div>
+                            <div class="mesgdeta_bot" style="display:none;">
+                            	<span class="prev-_article"><em>上一篇：</em><a href="">MessageNotice京东7Fresh生鲜超市第二家在哪？怎么样？</a></span>
+                				<span class="next_mesg"><em>下一篇：</em><a href="">知识付费是焦虑的“止痛药”还是“良方”？这个功能定生死！</a></span>
+                            </div>
+                        </div>
+                    </div>
+                                    
+
+                    </if>
+                    
+                </div>
+                <div class="paging-pages">
+                    {$page}
+        		</div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--footer-s-->
+<div class="footer p">
+    <include file="public/footer" />
+</div>
+<!--footer-e-->
+<!--TAB切换-->
+<script>
+
+</script>
+
+
+
+</body>
+</html>

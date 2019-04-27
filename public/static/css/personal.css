@@ -1,0 +1,303 @@
+/*a:hover{
+	color: #FFFFFF;
+}*/
+p, form, ul, ol, dl{
+	margin: 0;
+}
+
+a:link { text-decoration:none;} 
+*{
+	 scrollbar-3dlight-color:#fff;
+	 scrollbar-highlight-color:#fff; 
+	 scrollbar-arrow-color:#fff;
+	  scrollbar-shadow-color:#fff; 
+	  scrollbar-darkshadow-color:#fff;
+	   scrollbar-base-color:#fff; 
+	   scrollbar-track-color:#fff;
+	     }
+
+.z_cont_wrap{
+	overflow: hidden;
+	margin-left: 15px;
+}
+.cont_fl{
+	float: left;
+}
+.cont_fr{
+	float: right;
+}
+.padd10{
+	padding: 0 15px;
+}
+.border10{
+	border-bottom: 10px solid #f8f8f8;
+}
+.z_title_name{
+	color: #666666;
+	font-size: 14px;
+	text-align: left;
+	line-height: 40px;
+	border-bottom: 1px solid #dddddd;
+}
+.z_user_wrap{
+	width: 414.5px;
+	height: 867.5px;
+	margin-left: 50px;
+	margin-top: 10px;
+	position: relative;
+}
+.z_user_img{
+	width: 100%;
+	height: 100%;
+}
+.z_user_img img{
+	width: 100%;
+	height: 100%;
+}
+.z_views_wrap{
+	width: 375px;
+	height: 667px;
+	position: absolute;
+	left: 22px;
+    top: 100px;
+    overflow: hidden;
+}
+.z_user_views{
+	width: 395px;
+	height: 687px;
+	background: #ffffff;
+    overflow: scroll;
+    overflow-y: auto;
+    padding-right: 20px;
+}
+.z_user_views::-webkit-scrollbar {
+    width: 0px !important;
+}
+.z_user_vs{
+	width: 375px;
+	height: 667px;
+}
+.z_user_head{
+	width: 100%;
+	height: 198px;
+	background-color: #2e69c1;
+}
+.z_user_top{
+	width: 100%;
+	padding-top: 15px;
+	height: 140px;
+	text-align: center;
+	color: #FFFFFF;
+}
+.user_top_tx{
+	width: 67.5px;
+	height: 67.5px;
+	margin: 0 auto;
+	border-radius: 25px;
+}
+.user_top_tx img{
+	width: 100%;
+	height: 100%;
+}
+.user_top_name{
+	padding-top: 6px;
+	font-size: 15px;
+}
+.user_top_title{
+	font-size: 10px;
+}
+.user_top_name a,.user_top_title a{
+	width: 100%;
+	height: 100%;
+	color: #FFFFFF;
+}
+.z_user_down{
+	height: 57.5px;
+	position: relative;
+	padding: 0 10px;
+}
+.user_down_bg {
+	background-color: #000000;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	left: 0;
+	top: 0;
+	z-index: 8;
+	opacity: 0.6;
+}
+
+.z_user_down ul{
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	z-index: 9;
+}
+.z_user_down ul li{
+	text-align: center;
+	width: 50%;
+	float: left;
+	color: #ffffff;
+}
+.z_user_down ul li a{
+	width: 100%;
+}
+.user_down_dev{
+	font-size: 15px;
+	margin-top: 10px;
+	color: #ffff;
+}
+.user_down_name{
+	font-size: 11px;
+}
+.user_down_name {
+	color: #FFFFFF;
+}
+.user_list_cont{
+	line-height: 45px;
+	border-bottom: 1px solid #ddd;
+	overflow: hidden;
+}
+.user_list_cont .cont_fl img{
+	width:22px;
+	height: 22px;
+	vertical-align: middle;
+}
+.user_list_cont .cont_fl span{
+	font-size: 15px;
+    vertical-align: middle;
+    font-weight: normal;
+    margin-left: 10px;
+}
+.user_list_cont .cont_fr i{
+	margin-top: 16px;
+	margin-left: 10px;
+}
+.user_list_cont .cont_fr span{
+	vertical-align: middle;
+    font-weight: normal;
+    color: #4c4c4c;
+    font-size: 15px;
+    float: left;
+    margin-top: 1px;
+}
+.zMright{
+	background-image: url(../images/zLEFTS.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 7px;
+    height: 14px;
+    display: block;
+    float: left;
+}
+.z_user_nav {
+	padding:0 15px;
+}
+.z_user_nav ul{
+	overflow: hidden;
+	margin: 0;
+}
+.z_user_nav ul li{
+	position: relative;
+    float: left;
+    width: 25%;
+    text-align: center;
+}
+.z_user_nav ul li a{
+	padding: 20px 0;
+    display: block;
+}
+.z_user_nav ul li a img{
+	width: 25px;
+	height: 20px;
+}  
+.z_user_nav ul li a p{
+	font-size: 13px;
+	margin-top: 5px;
+	color: #666666;
+}
+.z_form_wraps{
+    width: 700px;
+    margin-left: 50px;
+}
+/*右边块*/ 
+.user_right_color{
+	overflow: hidden;
+}
+.z_user_right{
+	width: 620px;
+	height: 900px;
+}
+.input-group-addon, .input-group-btn{
+	width: 10px;
+}
+.input-group-addon:last-child{
+	border-radius: 4px !important;
+	border: 1px solid #dddddd;
+}
+.z_user_right {
+	padding: 10px 0 0 90px;
+}
+.user_right_color p{
+	line-height: 30px;
+	margin-right: 30px;
+}
+.right_list_btn{
+	overflow: hidden;
+}
+.right_list_qk{
+	overflow: hidden;
+}
+.right_list_kg{
+	position: relative;
+	height: 25px;
+	width: 50px;
+	border: solid 2px #E5E5E5;
+    border-radius: 20px;
+    background-color: #E5E5E5;
+    cursor: pointer;
+}
+.right_list_clase{
+	position: absolute;
+    top: 0px;
+    left: 1px;
+    display: block;
+    width: 22px;
+    height: 22px;
+    border-radius: 28px;
+    background-color: #fff;
+}
+.right_list_name{
+	height: 25px;
+	margin-right: 10px;
+	line-height: 25px;
+	min-width: 70px;
+}
+.right_list_title span{
+	margin-right: 10px;
+}		
+.right_list_title{
+	margin-left: 20px;
+}	
+.right_list_qk{
+	margin-left: 20px;
+}	
+
+.right_click{
+	border:2px solid #0086E3;
+	background-color:#0086E3;
+}
+.right_click .right_list_clase{
+	left: auto;
+	right: 1px;
+}	
+.user_right_list{
+	margin-top: 30px;
+}	
+.user_right_list ul li{
+	overflow: hidden;
+	margin-bottom: 20px;
+}			

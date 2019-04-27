@@ -1,0 +1,371 @@
+<include file="public/layout" />
+<style>
+    .err{color:#F00; display:none;}
+</style>
+<script src="__ROOT__/public/static/js/layer/laydate/laydate.js"></script>
+<body style="background-color: #FFF; overflow: auto;">
+<div id="toolTipLayer" style="position: absolute; z-index: 9999; display: none; visibility: visible; left: 95px; top: 573px;"></div>
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title"><a class="back" href="javascript:history.back();" title="返回列表"><i class="fa fa-arrow-circle-o-left"></i></a>
+            <div class="subject">
+                <h3>促销管理 - 搭配购</h3>
+                <h5>网站系统搭配购详情页</h5>
+            </div>
+        </div>
+    </div>
+    <form class="form-horizontal" id="handleposition" method="post" onsubmit="return false;">
+        <input type="hidden" name="combination_id" value="{$combination.combination_id}">
+        <div class="ncap-form-default">
+            <dl class="row">
+                <dt class="tit">
+                    <label><em>*</em>搭配购标题</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" name="title" value="{$combination.title}" class="input-txt">
+                    <span class="err" id="err_title"></span>
+                    <span class="err" id="err_combination_id"></span>
+                    <p class="notic">请填写搭配购标题</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label><em>*</em>活动起止时间</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" id="start_time" name="start_time" value="{:date('Y-m-d H:i:s',$combination.start_time)}" style="width:132px; ">~
+                    <input type="text" id="end_time" name="end_time" value="{:date('Y-m-d H:i:s',$combination.end_time)}" style="width:132px; ">
+                    <span class="err" id="err_start_time"></span>
+                    <span class="err" id="err_end_time"></span>
+                    <p class="notic">活动起止时间</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label><em>*</em>描述</label>
+                </dt>
+                <dd class="opt">
+                    <textarea placeholder="请输入描述" name="desc" rows="6" class="tarea">{$combination.desc}</textarea>
+                    <span class="err" id="err_desc"></span>
+                    <p class="notic">描述介绍</p>
+                </dd>
+            </dl>
+
+            <div class="flexigrid">
+
+                <div class="hDiv">
+                    <div class="hDivBox">
+                        <table cellspacing="0" cellpadding="0">
+                            <thead>
+                            <tr>
+                                <th abbr="article_title" axis="col3" class="" align="left">
+                                    <div style="text-align: left; width: 50px;" class="">商品ID</div>
+                                </th>
+                                <th abbr="article_time" axis="col6" class="" align="left">
+                                    <div style="text-align: left; width: 240px;" class="">商品名称</div>
+                                </th>
+                                <th abbr="ac_id" axis="col4" class="" align="left">
+                                    <div style="text-align: left; width: 100px;" class="">商品图片</div>
+                                </th>
+                                <th abbr="article_show" axis="col5" class="" align="center">
+                                    <div style="text-align: center; width: 100px;" class="">商品类型</div>
+                                </th>
+                                <th abbr="article_time" axis="col6" class="" align="center">
+                                    <div style="text-align: center; width: 250px;" class="">规格</div>
+                                </th>
+                                <th abbr="article_time" axis="col6" class="" align="center">
+                                    <div style="text-align: center; width: 50px;" class="">数量</div>
+                                </th>
+                                <th abbr="article_time" axis="col6" class="" align="center">
+                                    <div style="text-align: center; width: 50px;" class="">库存</div>
+                                </th>
+                                <th abbr="article_time" axis="col6" class="" align="center">
+                                    <div style="text-align: center; width: 100px;" class="">成本价格（元）</div>
+                                </th>
+                                <th abbr="article_time" axis="col6" class="" align="center">
+                                    <div style="text-align: center; width: 100px;" class="">商城价格（元）</div>
+                                </th>
+                                <th abbr="article_time" axis="col6" class="" align="center">
+                                    <div style="text-align: center; width: 100px;" class="">优惠价格（元）</div>
+                                </th>
+                                <th axis="col1" class="handle" align="left">
+                                    <div style="text-align: center; width: 150px;">操作</div>
+                                </th>
+                                <th style="width:100%" axis="col7">
+                                    <div></div>
+                                </th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+                <div class="tDiv">
+                    <div class="tDiv2">
+                        <a onclick="selectGoods()">
+                            <div class="fbutton">
+                                <div title="添加商品" class="add">
+                                    <span><i class="fa fa-plus"></i>添加商品</span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="tDiv2" style="margin-top: 2px;">
+                        <span class="err" id="err_combination_goods" style="font-size: 12px;height: 20px;margin-left: 400px;vertical-align:top">选择商品</span>
+                    </div>
+                    <div style="clear:both"></div>
+                </div>
+                <div class="bDiv" style="height: auto;">
+                    <div id="flexigrid">
+                        <table>
+                            <tbody id="selected_group_goods">
+                            <volist name="combination['combination_goods']" id="combination_goods">
+                                <tr>
+                                    <input name="combination_goods[{$key}][goods_id]" value="{$combination_goods['goods_id']}" type="hidden"/>
+                                    <input name="combination_goods[{$key}][item_id]" value="{$combination_goods['item_id']}" type="hidden"/>
+                                    <input name="combination_goods[{$key}][goods_name]" value="{$combination_goods['goods_name']}" type="hidden"/>
+                                    <input name="combination_goods[{$key}][key_name]" value="{$combination_goods['key_name']}" type="hidden"/>
+                                    <input name="combination_goods[{$key}][original_price]" value="{$combination_goods['original_price']}" type="hidden"/>
+                                    <input name="combination_goods[{$key}][is_master]" value="{$combination_goods['is_master']}" type="hidden"/>
+                                    <td align="left"> <div style="text-align: left; width: 50px;">{$combination_goods['goods_id']}</div> </td>
+                                    <td align="left"><div style="text-align: left; width: 240px;">{$combination_goods['goods']['goods_name']}</div></td>
+                                    <td align="left">
+                                        <div style="text-align: center; width: 100px;">
+                                            <empty name="combination_goods['spec_goods_price']">
+                                                <img src="{$combination_goods['goods_id']|goods_thum_images=80,45}" width="80px" height="45px">
+                                             <else/>
+                                                <if condition="$combination_goods['spec_goods_price']['spec_img']">
+                                                    <img src="{$combination_goods['spec_goods_price']['spec_img']}" width="80px" height="45px">
+                                                <else/>
+                                                    <img src="{$combination_goods['goods_id']|goods_thum_images=80,45}" width="80px" height="45px">
+                                                </if>
+                                            </empty>
+                                        </div>
+                                    </td>
+                                    <td align="left"> <div class="is_master_text" style="text-align: center; width: 100px;">{$combination_goods['is_master_text']}</div> </td>
+                                    <td align="left"> <div style="text-align: center; width: 250px;"> {$combination_goods['spec_goods_price']['key_name']|default='--'} </div> </td>
+                                    <td align="left"> <div style="text-align: center; width:50px;">1</div> </td>
+                                    <td align="left">
+                                        <div style="text-align: center; width: 50px;">
+                                            <empty name="combination_goods['spec_goods_price']">
+                                                {$combination_goods['goods']['store_count']}
+                                                <else/>
+                                                {$combination_goods['spec_goods_price']['store_count']}
+                                            </empty>
+                                        </div>
+                                    </td>
+                                    <td align="left">
+                                        <div style="text-align: center; width: 100px;">
+                                            <empty name="combination_goods['spec_goods_price']">
+                                                {$combination_goods['goods']['cost_price']}
+                                                <else/>
+                                                {$combination_goods['spec_goods_price']['cost_price']}
+                                            </empty>
+                                        </div>
+                                    </td>
+                                    <td align="left">
+                                        <div style="text-align: center; width: 100px;">
+                                            <empty name="combination_goods['spec_goods_price']">
+                                                {$combination_goods['goods']['shop_price']}
+                                                <else/>
+                                                {$combination_goods['spec_goods_price']['price']}
+                                            </empty>
+                                        </div>
+                                    </td>
+                                    <td align="left"> <div style="text-align: center; width: 100px;"><input name="combination_goods[{$key}][price]" value="{$combination_goods['price']}" type="text"></div> </td>
+                                    <td class="handle" align="left">
+                                        <div style="text-align: left; width: 150px; max-width:170px;">
+                                            <if condition="$combination_goods['is_master'] eq 1">
+                                                <a class="btn master_button disabled">主商品</a>
+                                                <a class="btn red delete_tr" href="javascript:void(0)" style="display: none;">删除</a>
+                                                <else/>
+                                                <a class="btn master_button blue set_master">设为主商品</a>
+                                                <a class="btn red delete_tr" href="javascript:void(0)">删除</a>
+                                            </if>
+                                        </div>
+                                    </td>
+                                    <td class="" style="width: 100%;" align=""> <div>&nbsp;</div> </td>
+                                </tr>
+                            </volist>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="iDiv" style="display: none;"></div>
+                </div>
+                <!--分页位置-->
+                <div class="dataTables_paginate paging_simple_numbers"><ul class="pagination">    </ul></div> </div>
+            <div class="bot"><a onclick="verifyForm()" class="ncap-btn-big ncap-btn-green">确认提交</a></div>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#start_time').layDateHMS();
+        $('#end_time').layDateHMS();
+    });
+    $(function () {
+        //提交按钮
+        $(document).on("click", '#submit', function (e) {
+            $('#submit').attr('disabled',true);
+            verifyForm();
+        })
+        //删除选择商品
+        $(document).on("click", '.delete_tr', function (e) {
+            $(this).parents('tr').remove();
+        })
+        //设置为主商品
+        $(document).on("click", '.set_master', function (e) {
+            $('.is_master_text').html('副商品');
+            $(this).parents('tr').find('.is_master_text').html('主商品');
+            $(".master_button").addClass('set_master').removeClass('disables').addClass('blue').html('设为主商品');
+            $(this).removeClass('set_master').removeClass('blue').addClass('disabled').html('主商品');
+            $("input[name$='[is_master]']").val(0);
+            $(this).parents('tr').find("input[name$='[is_master]']").val(1);
+            $('.delete_tr').show();
+            $(this).parents('tr').find('.delete_tr').hide();
+        })
+    })
+    function verifyForm(){
+        $('span.err').hide();
+
+        $.ajax({
+            type: "POST",
+            url: "{:U('Combination/save')}",
+            data: $('#handleposition').serialize(),
+            dataType: "json",
+            error: function (data) {
+                layer.alert("服务器繁忙, 请联系管理员!");
+            },
+            success: function (data) {
+                console.log(data)
+                if (data.status == 1) {
+                    layer.msg(data.msg, {
+                        icon: 1,
+                        time: 1000
+                    }, function(){
+                        location.href = "{:U('Combination/index')}";
+                    });
+                } else {
+                    layer.msg(data.msg, {icon: 2,time: 1000});
+                    $.each(data.result, function (index, item) {
+                        $('#err_' + index).text(item).show();
+                    });
+                }
+            }
+        });
+    }
+    function selectGoods(){
+        var url = "{:U('Promotion/search_goods',array('prom_type'=>7))}";
+        layer.open({
+            type: 2,
+            title: '选择商品',
+            shadeClose: true,
+            shade: 0.2,
+            area: ['75%', '75%'],
+            content: url,
+        });
+    }
+
+    function call_back(goodsItem){
+        $('#goods_id').val(goodsItem.goods_id);
+        var selected_group_goods = $('#selected_group_goods');
+        tr_num = 0;
+        var html = '';
+        $.each(goodsItem, function (index, item) {
+            if (item.goods_id != 'on') {
+                var tr_count = selected_group_goods.find('tr').length;
+                tr_index = tr_count + tr_num;
+                if (item.spec != null) {
+                    //有规格
+                    $.each(item.spec, function (i, o) {
+                        var status = true;
+                        for (var i=0;i<$('.bd-line').length;i++) {
+                            var goods_id = $('input[name="combination_goods['+i+'][goods_id]"]').val();
+                            var item_id = $('input[name="combination_goods['+i+'][item_id]"]').val();
+                            if (item.goods_id == goods_id && o.item_id == item_id) {
+                                status = false;
+                                break;
+                            }
+                        }
+                        //不存在才进来
+                        if(status) {
+                            var tr_count = selected_group_goods.find('tr').length;
+                            tr_index = tr_count + tr_num;
+                            html += '<tr class="bd-line">' +
+                                '<input type="hidden" name="combination_goods[' + tr_index + '][goods_id]" value="' + item.goods_id + '"/>' +
+                                '<input type="hidden" name="combination_goods[' + tr_index + '][item_id]" value="' + o.item_id + '"/>' +
+                                '<input type="hidden" name="combination_goods[' + tr_index + '][goods_name]" value="' + item.goods_name + '"/>' +
+                                '<input type="hidden" name="combination_goods[' + tr_index + '][key_name]" value="' + o.key_name + '"/>' +
+                                '<input type="hidden" name="combination_goods[' + tr_index + '][original_price]" value="' + o.price + '"/>' +
+                                '<input type="hidden" name="combination_goods[' + tr_index + '][is_master]" value="0"/>' +
+                                '<td align="left"> <div style="text-align: left; width:50px;">' + item.goods_id + '</div> </td> ' +
+                                '<td align="left"> <div style="text-align: left; width: 240px;">' + item.goods_name + '</div> </td> ' +
+                                '<td align="left"> <div style="text-align: center; width: 100px;"><img src="' + o.spec_img + '" width="80px" height="45px"></div> </td> ' +
+                                '<td align="left"> <div class="is_master_text" style="text-align: center; width: 100px;">副商品</div> </td> ' +
+                                '<td align="left"> <div style="text-align: center; width: 250px;">' + o.key_name + '</div> </td> ' +
+                                '<td align="left"> <div style="text-align: center; width: 50px;">1</div> </td> ' +
+                                '<td align="left"> <div style="text-align: center; width: 50px;">' + o.store_count + '</div> </td> ' +
+                                '<td align="left"> <div style="text-align: center; width: 100px;">' + o.cost_price + '</div> </td> ' +
+                                '<td align="left"> <div style="text-align: center; width: 100px;">' + o.price + '</div> </td> ' +
+                                '<td align="left"> <div style="text-align: center; width: 100px;"><input type="text" name="combination_goods[' + tr_index + '][price]" value="1.00"></div> </td> ' +
+                                '<td class="handle" align="left"> ' +
+                                '<div style="text-align: left; width: 150px; max-width:170px;"> <a class="btn blue master_button set_master">设为主商品</a> <a class="btn red delete_tr" href="javascript:void(0)">删除</a> </div> ' +
+                                '</td> ' +
+                                '<td class="" style="width: 100%;" align=""> <div>&nbsp;</div> </td> ' +
+                                '</tr>';
+
+                            tr_num++;
+                        }
+                    });
+                } else {
+                    var status = true;
+                    for (var i=0;i<$('.bd-line').length;i++) {
+                        var goods_id = $('input[name="combination_goods['+i+'][goods_id]"]').val();
+                        if (item.goods_id == goods_id ) {
+                            status = false;
+                            break;
+                        }
+                    }
+                    //不存在才进来
+                    if(status) {
+                        html += '<tr class="bd-line">' +
+                            '<input type="hidden" name="combination_goods[' + tr_index + '][goods_id]" value="' + item.goods_id + '"/>' +
+                            '<input type="hidden" name="combination_goods[' + tr_index + '][item_id]" value="0"/>' +
+                            '<input type="hidden" name="combination_goods[' + tr_index + '][goods_name]" value="' + item.goods_name + '"/>' +
+                            '<input type="hidden" name="combination_goods[' + tr_index + '][key_name]" value=""/>' +
+                            '<input type="hidden" name="combination_goods[' + tr_index + '][original_price]" value="' + item.goods_price + '"/>' +
+                            '<input type="hidden" name="combination_goods[' + tr_index + '][is_master]" value="0"/>' +
+                            '<td align="left"> <div style="text-align: left; width: 50px;">' + item.goods_id + '</div> </td> ' +
+                            '<td align="left"> <div style="text-align: left; width: 240px;">' + item.goods_name + '</div> </td> ' +
+                            '<td align="left"> <div style="text-align: center; width: 100px;"><img src="' + item.goods_image + '" width="80px" height="45px"></div> </td> ' +
+                            '<td align="left"> <div class="is_master_text" style="text-align: center; width: 100px;">副商品</div> </td> ' +
+                            '<td align="left"> <div style="text-align: center; width: 250px;"> -- </div> </td> ' +
+                            '<td align="left"> <div style="text-align: center; width: 50px;">1</div> </td> ' +
+                            '<td align="left"> <div style="text-align: center; width: 50px;">' + item.store_count + '</div> </td> ' +
+                            '<td align="left"> <div style="text-align: center; width: 100px;">' + item.cost_price + '</div> </td> ' +
+                            '<td align="left"> <div style="text-align: center; width: 100px;">' + item.goods_price + '</div> </td> ' +
+                            '<td align="left"> <div style="text-align: center; width: 100px;"><input type="text" name="combination_goods[' + tr_index + '][price]" value="1.00"></div> </td> ' +
+                            '<td class="handle" align="left"> ' +
+                            '<div style="text-align: left; width: 150px; max-width:170px;"> <a class="btn blue master_button set_master">设为主商品</a> <a class="btn red delete_tr" href="javascript:void(0)">删除</a> </div> ' +
+                            '</td> ' +
+                            '<td class="" style="width: 100%;" align=""> <div>&nbsp;</div> </td> ' +
+                            '</tr>';
+
+                        tr_num++;
+                    }
+                }
+            }
+        });
+        selected_group_goods.append(html);
+        var is_master_have = $("input[name$='[is_master]'][value='1']").length;
+        if(is_master_have == 0){
+            selected_group_goods.find('tr').eq(0).find('.set_master').trigger('click');
+        }
+        layer.closeAll('iframe');
+    }
+
+
+</script>
+</body>
+</html>

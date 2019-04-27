@@ -1,0 +1,62 @@
+<div class="classreturn loginsignup ">
+    <div class="content">
+        <div class="ds-in-bl return">
+            <a id="[back]" <php> if(request()->action() == 'userinfo' && $_GET["action"]==""){ </php>  href="{:U('User/index')}" <php> }else{ </php> href="[href]" <php> } </php> ><img src="__STATIC__/images/return.png" alt="返回"></a>
+        </div>
+        <div class="ds-in-bl search center">
+            <span>[title]</span>
+        </div>
+        <div class="ds-in-bl menu">
+            <a href="javascript:void(0);"><img src="__STATIC__/images/class1.png" alt="菜单"></a>
+        </div>
+    </div>
+</div>
+<div class="flool up-tpnavf-wrap tpnavf [top-header]">
+    <div class="footer up-tpnavf-head">
+    	<div class="up-tpnavf-i"> </div>
+        <ul>
+            <li>
+                <a class="yello" href="{:U('Index/index')}">
+                    <div class="icon">
+                        <i class="icon-shouye iconfont"></i>
+                        <p>首页</p>
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a href="{:U('Goods/categoryList')}">
+                    <div class="icon">
+                        <i class="icon-fenlei iconfont"></i>
+                        <p>分类</p>
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a href="{:U('Cart/index')}">
+                    <div class="icon">
+                        <i class="icon-gouwuche iconfont"></i>
+                        <p>购物车</p>
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a href="{:U('User/index')}">
+                    <div class="icon">
+                        <i class="icon-wode iconfont"></i>
+                        <p>我的</p>
+                    </div>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+<script type="text/javascript">
+	
+$(function(){	
+	$(window).scroll(function() {		
+		if($(window).scrollTop() >= 1){ 
+			$('.tpnavf').hide()
+		}
+	})
+})
+</script>

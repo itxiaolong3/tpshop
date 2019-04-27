@@ -1,0 +1,198 @@
+<div class="tpd-diy-js tpd-message" data-eidtid="10">
+    <div class="tpd-diy-title">公告设置</div>
+    <div class="tpd-mes-style">
+        <div class="tpd-mes-uploadimg">
+            <p style="float: left;"> 公告图片 :</p>
+            <div class="tpd-mes-tpWrap">
+                <ul>
+                    <li><img src="__PUBLIC__/static/images/z-mse1.png"/></li>
+                    <li><img src="__PUBLIC__/static/images/z-mse2.png"/></li>
+                    <li><img src="__PUBLIC__/static/images/z-mse3.png"/></li>
+                    <li><img src="__PUBLIC__/static/images/z-mse4.png"/></li>
+                </ul>
+            </div>
+            <a href="javascript:;" id="notice_pic"  onclick="getpath(this);"><img src="__PUBLIC__/static/images/pic-mes-upload.jpg" alt="" /></a>
+        </div>
+        <div class="tpd-txtnav-text tpd-mes-bgcolor">
+            <label>背景颜色 :</label>
+            <input type="color"  name="msg_bg_color" id="msg_bg_color" value="" />
+        </div>
+        <div class="tpd-txtnav-text tpd-mes-bgcolor">
+            <label>字体颜色 :</label>
+            <input type="color"  name="msg_font_color" id="msg_font_color" value="" />
+        </div>
+        <div class="tpd-txtnav-text">
+            <label>字体大小 :</label>
+            <div  class="slider-font-wrap" >
+                <div id="slider-mes-max" class="slider-font" ></div>
+            </div>
+            <em class="amount-font"><input type="text" id="amount_mes"/>px</em>
+        </div>
+        <label class="tpd-diy-bb tpd-cdiy-font28">下间距 :<input type="text" value="10" />px</label>
+    </div>
+    <div class="tpd-title-z" style="margin-bottom: 20px;">组件数据 <em>最多支持扩展10条公告，必填内容</em> </div>
+    <ul class="tpd-cdiy-list" id="tpd-cdiy-list">
+        <li class="tpd-meslist1">
+            <div class="tpd-mes-set">
+                <div class="tpd-mes-addlink tpd-cdiy-font28">
+                    <label>链接设置 : </label>
+                    <div class="tpd-addlink-target" id="nu0"><i></i>添加链接目标</div>
+                </div>
+            </div>
+            <div class="tpd-mes-cont tpd-cdiy-font28">公告内容 : <input id="nc0" onblur="notice_edit(this,'con',0);" class="maxword-input-js" data-classid="2" data-maxlength="30" type="text" placeholder="此处填写公告内容" /><span><i class="now-words">0</i>/30</span></div>
+            <div class="tpd-cdiy-identity"></div>
+            <a class="tpd-del-nav" href="javascript:;"></a>
+        </li>
+        <li class="tpd-meslist2">
+            <div class="tpd-mes-set">
+                <div class="tpd-mes-addlink tpd-cdiy-font28">
+                    <label>链接设置 : </label>
+                    <div class="tpd-addlink-target" id="nu1"><i></i>添加链接目标</div>
+                </div>
+            </div>
+            <div class="tpd-mes-cont tpd-cdiy-font28">公告内容 : <input id="nc1" onblur="notice_edit(this,'con',1);" class="maxword-input-js" data-classid="4" data-maxlength="30" type="text" placeholder="此处填写公告内容" /><span><i class="now-words">0</i>/30</span></div>
+            <div class="tpd-cdiy-identity"></div>
+            <a class="tpd-del-nav" href="javascript:;"></a>
+        </li>
+    </ul>
+    <div class="tpd-cadd-project" style="width: 450px;" onclick="add_message()"><i></i>新建公告</div>
+    <script>
+
+        // 切换公告logo
+        $(document).on("click",".tpd-mes-tpWrap ul li",function  () {
+            var img_url= $(this).children("img").attr("src");
+            set_img_url(img_url)
+        })
+        // 显示图标
+        function set_img_url(img_url){
+            var img_url_f= false;
+            $(".tpd-mes-tpWrap ul li img").each(function(){
+                if($(this).attr('src') == img_url){
+                    $(".tpd-edits-hidden.tpd-editing").find(".tpdm-messtyle .tpdm-mes-logo img").attr("src",img_url);
+                    $(this).parent('li').css('border','1px solid #ff354d').siblings('li').css("border","0")
+                    block[divid].notice_pic = img_url
+                    img_url_f = true;
+                }else{
+                    $(this).parent('li').css("border","0")
+                }
+            })
+            if(!img_url_f){
+                //$("#notice_pic").find('img').attr('src', img_url);
+                var html = '公告图片 : <a href="javascript:;"><img src="'+img_url+'" alt="">'
+                $("#notice_pic").html(html);
+            }
+        }
+
+        // 删除修改显示
+        function del_message(v){
+            //var lengths = $('#tpd-cdiy-list>li').length;
+            if (block[divid].nav.length < 3) {
+                layer.msg('不能少于2条公告!', {icon: 2, time: 1000});
+                return;
+            }
+            //$(".tpd-meslist"+v).remove();
+            block[divid].nav.splice(v, 1);
+            show_msg();
+        }
+        // 添加显示
+        function add_message(){
+            if (block[divid].nav.length > 9) {
+                layer.msg('不能大于10条公告!', {icon: 2, time: 1000});
+                return;
+            }
+            var arr = {
+                "notice_title":"", // 标题没有
+                "notice_info":"此处填写公告内容", // 显示内容
+                "url":"" //链接地址
+            }
+            block[divid].nav.push(arr);
+            show_msg();
+        }
+
+        $(function() {
+
+            //	获取颜色值
+            var colordata = document.querySelector('#msg_bg_color');
+            var colorFontdata = document.querySelector('#msg_font_color');
+            //	点击确定选择颜色替换背景颜色
+            colordata.onchange = function() {
+                var msg_bg_color= this.value;
+                $('.tpd-edits-hidden.tpd-editing').find(".tpdm-messtyle").css("background-color",msg_bg_color);
+                block[divid].msg_bg_color = msg_bg_color;
+            }
+            //	点击确定选择颜色替换字体颜色
+            colorFontdata.onchange=function  () {
+                var msg_font_color= this.value;
+                $('.tpd-edits-hidden.tpd-editing').find(".tpdm-messtyle ul li a i").css("color",msg_font_color);
+                block[divid].msg_font_color = msg_font_color;
+            }
+            //设置字体大小
+            $( "#slider-mes-max" ).slider({
+                range: "max",
+                min: 0,
+                max: 100,
+                value: 14,
+                slide: function( event, ui ) {
+                    set_msg_font(ui.value)
+                }
+            });
+        })
+        // 设置字体
+        function set_msg_font(text_font){
+            $( "#amount_mes" ).val( text_font);
+            $( "#slider-range-max" ).slider({value:text_font});
+            block[divid].text_font = text_font;
+            $('.tpd-edits-hidden.tpd-editing').find(".tpdm-messtyle ul li a i").css("font-size",text_font);
+            $('.tpd-edits-hidden.tpd-editing').find(".tpdm-messtyle ul li a i").attr("txtNav_fonts",text_font)
+        }
+        // 根据数据来显示页面,只要更改任何一个数据，即可调用此方法
+        function show_msg(){
+            console.log('show_msg',block[divid])
+            html_tpl('#edit_html_message','#tpd-cdiy-list',block[divid]);
+            html_tpl('#show_html_message','#tpdm-mes-title',block[divid]);
+
+            set_img_url(block[divid].notice_pic);
+
+            $( "#amount_mes" ).val( block[divid].text_font);
+            $( "#slider-range-max" ).slider({value:block[divid].text_font});
+            $('.tpd-edits-hidden.tpd-editing').find(".tpdm-messtyle ul li a i").css("font-size",block[divid].text_font);
+
+            $("#msg_bg_color").val(block[divid].msg_bg_color)
+            $('.tpd-edits-hidden.tpd-editing').find(".tpdm-messtyle").css("background-color",block[divid].msg_bg_color);
+
+            $("#msg_font_color").val(block[divid].msg_font_color)
+            $('.tpd-edits-hidden.tpd-editing').find(".tpdm-messtyle ul li a i").css("color",block[divid].msg_font_color);
+        }
+        // 滚动公告 输入文字左边实时显示
+        function notice_msg_edit(a,b,c){
+            if(b=='con'){   //公告内容
+                block[divid].nav[c].notice_info=$(a).val();
+                $('.tpd-edits-hidden.tpd-editing .tpdm-mescont'+(c+1)).find('i').html($(a).val());  //公告标签编辑后左边实时显示*/
+            }
+        }
+    </script>
+    <script id="edit_html_message" type="text/html">
+        {{#  layui.each(d.nav, function(index, item){ }}
+        <li class="tpd-meslist{{index}}">
+            <div class="tpd-mes-set">
+                <div class="tpd-mes-addlink tpd-cdiy-font28">
+                    <label>链接设置 : </label>
+                    <div class="tpd-addlink-target" id="nu{{index}}"  nav="{{index}}"><i></i>{{item.url=='' ? '添加链接目标':item.url}}</div>
+                </div>
+            </div>
+            <div class="tpd-mes-cont tpd-cdiy-font28">公告内容 : <input id="nc{{index}}" value="{{item.notice_info}}"  nav="{{index}}" onblur="notice_msg_edit(this,'con',{{index}});" class="maxword-input-js" data-classid="2" data-maxlength="30" type="text" placeholder="此处填写公告内容" /><span><i class="now-words">{{item.notice_info.length}}</i>/30</span></div>
+            <div class="tpd-cdiy-identity"></div>
+            <a class="tpd-del-nav" onclick="del_message({{index}})" href="javascript:;" ></a>
+        </li>
+        {{#  }); }}
+    </script>
+    <script id="show_html_message" type="text/html">
+        {{#  layui.each(d.nav, function(index, item){ }}
+        <li class="tpdm-mesname{{index+1}}">
+            <a class="ellipsis{{index+1}} tpdm-mescont{{index+1}}" href="{{item.url=='' ? 'javascript:;':item.url}}">
+                <i class="tpdm-mesname-name fontSizes" txtnav_fonts="14">{{item.notice_info==''?'2998 ! 全新OPPO R11团购仅需2998元！':item.notice_info}}</i>
+            </a>
+        </li>
+        {{#  }); }}
+    </script>
+</div>

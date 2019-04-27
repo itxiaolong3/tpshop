@@ -1,0 +1,86 @@
+<include file="public/layout" />
+<body style="background-color: #FFF; overflow: auto;">
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <a class="back" href="javascript:history.back();" title="返回"><i class="fa fa-arrow-circle-o-left"></i></a>
+            <div class="subject">
+                <h3>小程序基本信息</h3>
+                <h5>小程序基本信息设置</h5>
+            </div>
+            <ul class="tab-base nc-row">
+                <li><a href="{:U('miniapp/index')}">
+                    <span>小程序授权</span></a>
+                </li>
+                <li><a href="{:U('miniapp/tester')}">
+                    <span>体验者设置</span></a>
+                </li>
+                <li><a href="{:U('miniapp/template')}" class="current">
+                    <span>小程序基本信息</span></a>
+                </li>
+                <li><a href="{:U('miniapp/release_manage')}">
+                    <span>上线管理</span></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- 操作说明 -->
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom"><i class="fa fa-lightbulb-o"></i>
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示"></span> </div>
+        <ul>
+            <li>填写完以下模板信息，点击提交成功后，小程序会进入体验版状态，可前往“上线管理”查看体验版，可扫二维码体验小程序。</li>
+        </ul>
+    </div>
+    <form method="post" id="template">
+        <input type="hidden" name="miniapp_id" value="{$Request.param.miniapp_id}"/>
+        <div class="ncap-form-default">
+            <dl class="row">
+                <dt class="tit">
+                    <label>小程序商城名称</label>
+                </dt>
+                <dd class="opt">
+                    <input name="store_name" class="input-txt" type="text" value="{$miniapp.nickname}"/>
+                    <p class="notic">请填写小程序商城的名称，会在小程序首页上面显示，示例：时代万网</p>
+                </dd>
+            </dl>
+            <div class="bot">
+                <a href="JavaScript:void(0);" class="ncap-btn-big ncap-btn-green" onclick="checkForm();">提 交</a>
+            </div>
+        </div>
+    </form>
+</div>
+</body>
+<script type="text/javascript">
+    function checkForm() {
+        if ($('input[name=store_name]').val() === ''
+            || $('input[name=store_logo]').val() === ''
+            || $('input[name=request_url]').val() === ''
+            || $('input[name=version]').val() === ''
+            || $('input[name=description]').val() === '') {
+            return layer.alert('模板信息不能有空', {icon:2});
+        }
+        $.ajax({
+            url: "{:U('miniapp/commit_template')}",
+            type: 'POST',
+            data: $('#template').serialize(),
+            dataType: 'json',
+            success: function (res) {
+                if (res.status === 1) {
+                    return layer.msg(res.msg, {time: 1000, icon: 1}, function () {
+                        window.location.href = "{:U('miniapp/release_manage')}";
+                    });
+                }
+                var msg = (typeof res.status === 'undefined') ? '数据格式出错' : res.msg;
+                layer.alert(msg, {icon:2});
+            },
+            error: function () {
+                layer.alert('服务器繁忙！', {icon: 2});
+            }
+        });
+    }
+</script>
+</html>

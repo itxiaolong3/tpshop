@@ -1,0 +1,372 @@
+<include file="public/layout" />
+<style>
+    .err{color:#F00; display:none;}
+</style>
+<script src="__ROOT__/public/static/js/layer/laydate/laydate.js"></script>
+<body style="background-color: #FFF; overflow: auto;">
+<div id="toolTipLayer" style="position: absolute; z-index: 9999; display: none; visibility: visible; left: 95px; top: 573px;"></div>
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title"><a class="back" href="javascript:history.back();" title="返回列表"><i class="fa fa-arrow-circle-o-left"></i></a>
+            <div class="subject">
+                <h3>促销管理 - 编辑拼团</h3>
+                <h5>网站系统拼团活动详情页</h5>
+            </div>
+        </div>
+    </div>
+    <form class="form-horizontal" id="handleposition" method="post" onsubmit="return false;">
+        <input type="hidden" name="team_id" value="{$teamActivity.team_id}">
+        <input type="hidden" id="goods_id" name="goods_id" value="{$teamActivity.goods_id}" autocomplete="off">
+        <div class="ncap-form-default">
+            <dl class="row">
+                <dt class="tit">
+                    <label><em>*</em>拼团标题</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" name="act_name" value="{$teamActivity.act_name}" class="input-txt">
+                    <span class="err" id="err_act_name"></span>
+                    <span class="err" id="err_team_id"></span>
+                    <p class="notic">请填写拼团标题</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label><em>*</em>发放类型</label>
+                </dt>
+                <dd class="opt ctype">
+                    <volist name="$Think.config.TEAM_TYPE" id="type">
+                        <input name="team_type" class="team_type" type="radio" value="{$key}" <if condition="$teamActivity['team_type'] eq $key">checked='checked'</if>><label>{$type}</label>
+                    </volist>
+                </dd>
+            </dl>
+            <dl class="row commission">
+                <dt class="tit">
+                    <label><em>*</em>团长佣金</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" name="bonus" value="{$teamActivity.bonus}"  onpaste="this.value=this.value.replace(/[^\d.]/g,'')" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" class="input-txt">
+                    <span class="err" id="err_bonus"></span>
+                    <p class="notic">拼团成功后，开团人能获得的佣金<br/>必须是0.01~1000000之间的数字(单位：元)</p>
+                </dd>
+            </dl>
+            <dl class="row luck">
+                <dt class="tit">
+                    <label><em>*</em>抽奖限量</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" name="stock_limit" value="{$teamActivity.stock_limit}" onpaste="this.value=this.value.replace(/[^\d.]/g,'')" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" class="input-txt">
+                    <span class="err" id="err_stock_limit"></span>
+                    <p class="notic">中奖人数(单位：人)</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label><em>*</em>成团有效期</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" name="time_limit" value="{$teamActivity.time_limit_hours}" onpaste="this.value=this.value.replace(/[^\d.]/g,'')" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" class="input-txt">
+                    <span class="err" id="err_goods_num"></span>
+                    <p class="notic">开团后有效时间范围(单位：小时)</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label><em>*</em>需要成团人数</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text"  name="needer" value="{$teamActivity.needer}" onpaste="this.value=this.value.replace(/[^\d.]/g,'')" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')"  class="input-txt">
+                    <span class="err" id="err_needer"></span>
+                    <p class="notic">需要多少人拼团才能成功(单位：人)</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label><em>*</em>购买限制数</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" name="buy_limit" value="{$teamActivity.buy_limit}" onpaste="this.value=this.value.replace(/[^\d.]/g,'')" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')"  class="input-txt">
+                    <span class="err" id="err_buy_limit"></span>
+                    <p class="notic">限制购买商品个数,0为不限制(单位：个),抽奖团限购数为1</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label><em>*</em>虚拟销售基数</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" name="virtual_num" value="{$teamActivity.virtual_num}" onpaste="this.value=this.value.replace(/[^\d.]/g,'')" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')"  class="input-txt">
+                    <span class="err" id="err_virtual_num"></span>
+                    <p class="notic">虚拟购买商品数(单位：个)</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label><em>*</em>分享标题</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" name="share_title" value="{$teamActivity.share_title}" class="input-txt">
+                    <span class="err" id="err_share_title"></span>
+                    <p class="notic">请填写分享标题</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label><em>*</em>分享描述</label>
+                </dt>
+                <dd class="opt">
+                    <textarea placeholder="请输入分享描述" name="share_desc" rows="6" class="tarea">{$teamActivity.share_desc}</textarea>
+                    <p class="notic">拼团描述介绍</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label><em>*</em>分享图片</label>
+                </dt>
+                <dd class="opt">
+                    <div class="input-file-show">
+                        <span class="show">
+                            <a id="img_a"  class="nyroModal" rel="gal" href="{$teamActivity.share_img}">
+                                <i id="img_i" class="fa fa-picture-o" onMouseOver="layer.tips('<img src={$teamActivity.share_img}>',this,{tips: [1, '#fff']});" onMouseOut="layer.closeAll();"></i>
+                            </a>
+                        </span>
+                        <span class="type-file-box">
+                            <input type="text" id="imagetext" name="share_img" value="{$teamActivity.share_img}" class="type-file-text">
+                            <input type="button" name="button" id="button1" value="选择上传..." class="type-file-button">
+                            <input class="type-file-file" onClick="GetUploadify(1,'share_img','activity','img_call_back')" size="30" title="点击前方预览图可查看大图，点击按钮选择文件并提交表单后上传生效">
+                        </span>
+                    </div>
+                    <span class="err" id="err_share_img"></span>
+                    <p class="notic">请上传图片格式文件</p>
+                </dd>
+            </dl>
+            <div class="flexigrid">
+                <div class="hDiv">
+                    <div class="hDivBox">
+                        <table cellspacing="0" cellpadding="0">
+                            <thead>
+                            <tr>
+                                <th align="center">
+                                    <div style="text-align: center; width: 250px;" class="">规格</div>
+                                </th>
+                                <th align="center">
+                                    <div style="text-align: center; width: 50px;" class="">库存</div>
+                                </th>
+                                <th align="center">
+                                    <div style="text-align: center; width: 100px;" class="">商城价格（元）</div>
+                                </th>
+                                <th align="center">
+                                    <div style="text-align: center; width: 150px;" class="">拼团价格（元）</div>
+                                </th>
+                                <th class="handle" align="left">
+                                    <div style="text-align: center; width: 150px;">操作</div>
+                                </th>
+                                <th style="width:100%" axis="col7">
+                                    <div></div>
+                                </th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+                <div class="tDiv">
+                    <div class="tDiv2">
+                        <a onclick="selectGoods()">
+                            <div class="fbutton">
+                                <div title="添加商品" class="add">
+                                    <span><i class="fa fa-plus"></i>添加商品</span>
+                                </div>
+                            </div>
+                        </a>
+                        <div class="fbutton_right" style="margin-left: 5px;vertical-align: top;">
+                            <div class="fbutton_span">
+                                <input type="text" id="goods_name" name="goods_name" readonly="readonly" value="{$teamActivity.goods_name}" class="input-txt" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="fbutton_right" style="margin-left: 5px;vertical-align: top;">
+                            <div class="fbutton_span">
+                                <span class="err" id="err_team_goods_item"></span>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="tDiv2" style="margin-top: 2px;">
+                        <span class="err" id="err_combination_goods" style="font-size: 12px;height: 20px;margin-left: 400px;vertical-align:top">选择商品</span>
+                    </div>
+                    <div style="clear:both"></div>
+                </div>
+                <div class="bDiv" style="height: auto;">
+                    <div id="flexigrid">
+                        <table>
+                            <tbody id="selected_group_goods">
+                            <volist name="teamActivity['team_goods_item']" id="goods_item" key="item_key">
+                                <tr class="bd-line">
+                                    <input name="team_goods_item[{$item_key-1}][goods_id]" value="{$goods_item.goods_id}" type="hidden"/>
+                                    <input name="team_goods_item[{$item_key-1}][item_id]" value="{$goods_item.item_id}" type="hidden"/>
+                                    <td> <div style="text-align: center; width: 250px;">{$goods_item.spec_goods_price.key_name}</div> </td>
+                                    <td>
+                                        <div style="text-align: center; width: 50px;">
+                                            <if condition="$goods_item['item_id'] eq 0">
+                                                {$teamActivity.goods.store_count}
+                                                <else/>
+                                                {$goods_item.spec_goods_price.store_count}
+                                            </if>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style="text-align: center; width: 100px;">
+                                            <if condition="$goods_item['item_id'] eq 0">
+                                                {$teamActivity.goods.shop_price}
+                                                <else/>
+                                                {$goods_item.spec_goods_price.price}
+                                            </if>
+                                        </div>
+                                    </td>
+                                    <td> <div style="text-align: center; width: 150px;"><input name="team_goods_item[{$item_key-1}][team_price]" value="{$goods_item.team_price}" type="text"/></div></td>
+                                    <td class="handle">
+                                        <div style="text-align: center; width: 100px;">
+                                            <a class="btn red delete_tr" href="javascript:void(0)">删除</a>
+                                        </div>
+                                    </td>
+                                    <td style="width: 100%;">
+                                        <div>&nbsp;</div>
+                                    </td>
+                                </tr>
+                            </volist>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!--分页位置-->
+                <div class="dataTables_paginate paging_simple_numbers"><ul class="pagination">    </ul>
+                </div>
+            </div>
+            <div class="bot"><a onclick="verifyForm()" class="ncap-btn-big ncap-btn-green">确认提交</a></div>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+    $(document).ready(function(){
+        initType();
+    });
+    $(document).on("click", '#submit', function (e) {
+        $('#submit').attr('disabled',true);
+        verifyForm();
+    })
+    $(document).on("click", ".team_type", function (e) {
+        initType();
+    })
+    $(document).on("click", ".delete_tr", function (e) {
+        $(this).parent().parent().parent().remove();
+        if($('#selected_group_goods').find('tr').length == 0){
+            $('#goods_name').removeAttr('readonly').val('').attr('readonly', 'readonly');
+        }
+    })
+    function initType(){
+        var type = $("input[name='team_type']:checked").val();
+        var commission = $('.commission');
+        var luck = $('.luck');
+        switch(parseInt(type))
+        {
+            case 0:
+                commission.hide();
+                luck.hide();
+                break;
+            case 1:
+                commission.show();
+                luck.hide();
+                break;
+            case 2:
+                commission.hide();
+                $("input[name='buy_limit']").val(1);
+                luck.show();
+                break;
+            default:
+                commission.hide();
+                luck.hide();
+        }
+    }
+    function verifyForm(){
+        $('span.err').hide();
+        $.ajax({
+            type: "POST",
+            url: "{:U('Team/save')}",
+            data: $('#handleposition').serialize(),
+            dataType: "json",
+            error: function () {
+                layer.alert("服务器繁忙, 请联系管理员!");
+            },
+            success: function (data) {
+                if (data.status == 1) {
+                    layer.msg(data.msg, {
+                        icon: 1,
+                        time: 1000
+                    }, function(){
+                        location.href = "{:U('Team/index')}";
+                    });
+                } else {
+                    layer.msg(data.msg, {icon: 2,time: 1000});
+                    $.each(data.result, function (index, item) {
+                        $('#err_' + index).text(item).show();
+                    });
+                }
+            }
+        });
+    }
+    function selectGoods(){
+        var url = "{:U('Promotion/search_goods',array('tpl'=>'select_goods_item','prom_type'=>6,'prom_id'=>$teamActivity.team_id))}";
+        layer.open({
+            type: 2,
+            title: '选择商品',
+            shadeClose: true,
+            shade: 0.2,
+            area: ['75%', '75%'],
+            content: url,
+        });
+    }
+    function call_back(goodsItem){
+        var html = '';
+        if(goodsItem.spec != null){
+            //有规格
+            $.each(goodsItem.spec, function (i, o) {
+                html += '<tr class="bd-line"> ' +
+                        '<input name="team_goods_item['+i+'][goods_id]" value="'+goodsItem.goods_id+'" type="hidden"/> ' +
+                        '<input name="team_goods_item['+i+'][item_id]" value="'+ o.item_id +'" type="hidden"/> ' +
+                        '<td> <div style="text-align: center; width: 250px;">'+o.key_name+'</div> </td> ' +
+                        '<td> <div style="text-align: center; width: 50px;"> '+ o.store_count+ ' </div> </td> ' +
+                        '<td> <div style="text-align: center; width: 100px;"> '+ o.price +' </div> </td> ' +
+                        '<td> <div style="text-align: center; width: 150px;"><input name="team_goods_item['+i+'][team_price]" value="1.00" type="text"/></div></td> ' +
+                        '<td class="handle"> <div style="text-align: center; width: 100px;"> <a class="btn red delete_tr" href="javascript:void(0)">删除</a> </div> </td> ' +
+                        '<td style="width: 100%;"> <div>&nbsp;</div> </td> ' +
+                        '</tr>';
+            });
+
+        }else{
+            html = '<tr class="bd-line"> ' +
+                    '<input name="team_goods_item[0][goods_id]" value="'+goodsItem.goods_id+'" type="hidden"/> ' +
+                    '<input name="team_goods_item[0][item_id]" value="0" type="hidden"/> ' +
+                    '<td> <div style="text-align: center; width: 250px;"> -- </div> </td> ' +
+                    '<td> <div style="text-align: center; width: 50px;"> '+ goodsItem.store_count+ ' </div> </td> ' +
+                    '<td> <div style="text-align: center; width: 100px;"> '+ goodsItem.goods_price +' </div> </td> ' +
+                    '<td> <div style="text-align: center; width: 150px;"><input name="team_goods_item[0][team_price]" value="1.00" type="text"/></div></td> ' +
+                    '<td class="handle"> <div style="text-align: center; width: 100px;"> <a class="btn red delete_tr" href="javascript:void(0)">删除</a> </div> </td> ' +
+                    '<td style="width: 100%;"> <div>&nbsp;</div> </td> ' +
+                    '</tr>';
+        }
+        $('#goods_id').val(goodsItem.goods_id);
+        $('#goods_name').val(goodsItem.goods_name);
+        $('#selected_group_goods').empty().html(html);
+        $('.selected-group-goods').show();
+        layer.closeAll('iframe');
+    }
+    function img_call_back(fileurl_tmp)
+    {
+        $("#imagetext").val(fileurl_tmp);
+        $("#img_a").attr('href', fileurl_tmp);
+        $("#img_i").attr('onmouseover', "layer.tips('<img src="+fileurl_tmp+">',this,{tips: [1, '#fff']});");
+    }
+
+</script>
+</body>
+</html>

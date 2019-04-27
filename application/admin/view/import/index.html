@@ -1,0 +1,232 @@
+<include file="public/layout" />
+<!--物流配置 css -start-->
+<script src="__ROOT__/public/static/js/layer/laydate/laydate.js"></script>
+<style>
+    ul.group-list {
+        width: 96%;min-width: 1000px; margin: auto 5px;list-style: disc outside none;
+    }
+    .err{color:#F00; display:none;}
+    ul.group-list li {
+        white-space: nowrap;float: left;
+        width: 150px; height: 25px;
+        padding: 3px 5px;list-style-type: none;
+        list-style-position: outside;border: 0px;margin: 0px;
+    }
+    .row .table-bordered td .btn,.row .table-bordered td img{
+        vertical-align: middle;
+    }
+	
+    .row .table-bordered td{
+      padding: 8px;
+      line-height: 1.42857143;
+    }
+    .table-bordered{
+      width: 100%
+    }
+    .table-bordered tr td{
+      border: 1px solid #f4f4f4;
+    }
+    .btn-success {
+        color: #fff;background-color: #449d44;border-color: #398439 solid 1px;
+    }
+    .btn {
+    display: inline-block;
+    padding: 6px 12px;
+    margin-bottom: 0;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.42857143;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-image: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+.col-xs-8 {
+    width: 66.66666667%;
+}
+.col-xs-4 {
+    width: 33.33333333%;
+}
+.col-xs-1, .col-xs-10, .col-xs-11, .col-xs-12, .col-xs-2, .col-xs-3, .col-xs-4, .col-xs-5, .col-xs-6, .col-xs-7, .col-xs-8, .col-xs-9 {
+    float: left;
+}
+.row .tab-pane h4{
+  padding: 10px 0;
+}
+.row .tab-pane h4 input{
+  vertical-align: middle;
+} 
+.table-striped>tbody>tr:nth-of-type(odd) {
+    background-color: #f9f9f9;
+}
+.ncap-form-default .title{
+  border-bottom: 0
+}
+.ncap-form-default dl.row, .ncap-form-all dd.opt{
+    /*border-color: #F0F0F0;*/
+    border: none;
+}
+.ncap-form-default dl.row:hover, .ncap-form-all dd.opt:hover{
+    border: none;box-shadow: inherit;
+}
+.addprine{display: inline; }
+.alisth{margin-top: 10px}
+.p_plus strong{cursor: pointer;margin-left: 4px;}
+.freight_template {
+    font-size: 14px;
+    display: inline-block;
+    padding: 0px 10px;
+}
+</style>
+<!--物流配置 css -end-->
+<!--以下是在线编辑器 代码 -->
+<load href="__ROOT__/public/plugins/Ueditor/ueditor.config.js"/>
+<load href="__ROOT__/public/plugins/Ueditor/ueditor.all.min.js"/>
+<script type="text/javascript" charset="utf-8" src="__ROOT__/public/plugins/Ueditor/lang/zh-cn/zh-cn.js"></script>
+<!--以上是在线编辑器 代码  end-->
+<body style="background-color: #FFF; overflow: auto;">
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>导入csv</h3>
+                <h5>淘宝csv文件导入</h5>
+            </div>
+        </div>
+    </div>
+    <!-- 操作说明 -->
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom"><i class="fa fa-lightbulb-o"></i>
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示"></span> </div>
+        <ul>
+<li>
+1.请将解压后的csv文件和图片文件夹里的图片文件同时上传，多图可使用按住Ctrl键勾选上传<br>    
+2.如果修改CSV文件请务必使用微软excel软件，修改时请勿修改其表格结构、行列名称，修改完成后务必不要修改文件编码格式及文件后缀名<br>
+3.请务必不要修改图片文件名称，否则将造成图片丢失，商品相册多图排序可在导入成功后点击商品编辑操作<br>
+4.上传时请注意商品分类及店铺分类为必选项<br>
+</li>
+        </ul>
+    </div>
+    <!--表单数据-->
+    <form method="post" id="addEditGoodsForm" enctype="multipart/form-data" action="{:U('Admin/Import/add_data')}">
+<!--通用信息-->
+        <div class="ncap-form-default tab_div_1">
+
+            <dl class="row">
+                <dt class="tit">
+                    <label for="record_no">CSV文件</label>
+                </dt>
+                <dd class="opt">
+                    <input type="file" value="" name="csv"/>
+                </dd>
+            </dl>
+
+            <dl class="row">
+                <dt class="tit">
+                    <label for="record_no">图片文件</label>
+                </dt>
+                <dd class="opt">
+                    <input type="file" hidefocus="false" size="150" multiple='multiple' name="images[]">
+                </dd>
+            </dl>
+
+            <dl class="row">
+                <dt class="tit">
+                    <label for="record_no">商品分类</label>
+                </dt>
+                <dd class="opt">
+                      <select name="cat_id" id="cat_id"  class="small form-control">
+                        <option value="0">请选择商品分类</option>                                      
+                             <foreach name="cat_list" item="v" key="k" >                                                                                 
+                               <option value="{$v['id']}" <if condition="$v['id'] eq $level_cat['1']">selected="selected"</if> >
+                                    {$v['name']}
+                               </option>
+                             </foreach>
+                      </select>
+                      <select name="cat_id_2" id="cat_id_2" onChange="get_category(this.value,'cat_id_3','0');" class="small form-control">
+                        <option value="0">请选择商品分类</option>
+                      </select>
+                      <select name="cat_id_3" id="cat_id_3" class="small form-control">
+                        <option value="0">请选择商品分类</option>
+                      </select>                      
+                    <span class="err" id="err_cat_id" style="color:#F00; display:none;"></span>
+                </dd>
+            </dl>             
+                                                                                                                                         
+        </div>
+<!--通用信息-->
+
+        
+		<div class="ncap-form-default">        
+            <div class="bot">            
+                <a href="JavaScript:void(0);" class="ncap-btn-big ncap-btn-green" onClick="do_save();">确认提交</a>
+            </div>
+        </div> 
+     </form>
+    <!--表单数据-->
+</div>
+<script>
+    //选择分类
+    $(function(){
+        $(document).on("change",'#cat_id',function(){
+            get_category($(this).val(),'cat_id_2','0');
+            $('#cat_id_3').empty().html("<option value='0'>请选择商品分类</option>");
+        })
+    })
+    $(function(){
+        $(document).on("change",'#extend_cat_id',function(){
+            get_category($(this).val(),'extend_cat_id_2','0');
+            $('#extend_cat_id_3').empty().html("<option value='0'>请选择商品分类</option>");
+        })
+    })
+    $(function(){
+        $(document).on("click",'.is_virtual',function(){
+            initIsVirtual();
+        })
+    })
+
+/** 以下是编辑时默认选中某个商品分类*/
+$(document).ready(function(){
+
+    <if condition="$level_cat['2'] gt 0">
+         // 商品分类第二个下拉菜单
+         get_category('{$level_cat[1]}','cat_id_2','{$level_cat[2]}');  
+    </if>
+    <if condition="$level_cat['3'] gt 0">
+        // 商品分类第二个下拉菜单
+         get_category('{$level_cat[2]}','cat_id_3','{$level_cat[3]}');   
+    </if>
+
+    //  扩展分类
+    <if condition="$level_cat2['2'] gt 0">
+         // 商品分类第二个下拉菜单
+         get_category('{$level_cat2[1]}','extend_cat_id_2','{$level_cat2[2]}'); 
+    </if>
+    <if condition="$level_cat2['3'] gt 0">
+        // 商品分类第二个下拉菜单
+         get_category('{$level_cat2[2]}','extend_cat_id_3','{$level_cat2[3]}');  
+    </if>
+
+});
+function do_save(){
+    // if($('#cat_id_3').val()==0){
+    //     layer.msg('商品分类必须选到最后一级', {icon: 2, time: 1000});
+    //     return false;
+    // }
+    $('#addEditGoodsForm').submit();
+}
+</script>
+</body>
+</html>

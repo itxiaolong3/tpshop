@@ -1,0 +1,237 @@
+/*关联手机号*/
+input,select,option,textarea{outline: none;}
+#containe-view{
+	width: 16rem;
+}
+.correlation-head-wrap{
+	width: 16rem;
+	height: 8.32rem;
+	background: url(../images/tpbgs.png) no-repeat;
+    background-size: 100% 100%;
+	position: relative;
+}
+.correlation-head-wrap .correlation-header{
+	width: 100%;
+	height: 1.92rem;
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	background-color: #ffffff;
+}
+.correlation-header .correlation-header-cont h2{
+	height: 1.92rem;
+	line-height: 1.92rem;
+	text-align: center;
+	color: #696969;
+	font-size: 0.768rem;
+	position: relative;
+	font-weight: 500;
+}
+.correlation-header-cont i{
+	position: absolute;
+	display: block;
+	width: 0.5333rem;
+	height: 0.8533rem;
+	cursor: pointer;
+	z-index: 9;
+	left: 0.68266rem;
+	top: 0.64rem;
+	background: url(../images/tpleft.png) no-repeat;
+	background-size:100% 100% ;
+}
+.container-yh-wrap{
+	padding:0px 1.066rem;
+	text-align: center;
+	padding-top: 2.944rem;
+}
+.container-yh-wrap .container-head{
+	width: 2.5173rem;
+	height: 2.5173rem;
+	margin: 0 auto;
+	overflow: hidden;
+	border-radius: 50%;
+}
+.container-yh-wrap .container-head a{
+	display: block;
+}
+.container-yh-wrap .container-head a img{
+	width: 100%;
+	height: auto;
+}
+.container-yh-wrap h3{
+	margin-top: 0.533rem;
+	font-size: 0.64rem;
+	color: #ffffff;
+	font-weight: 500;
+}
+.container-yh-icon {
+	height: 0.64rem;
+	margin-top: 0.4266rem;
+}
+.container-yh-icon i{
+	display: inline-block;
+	width: 0.7466rem;
+	height: 0.5973rem;
+	vertical-align: middle;
+}
+.container-yh-icon i img{
+	width: 100%;
+	height: 100%;
+}
+.container-yh-icon span{
+	font-size: 0.4693rem;
+	color: #FFFFFF;
+	margin-left: 0.2133rem;
+}
+.correlation-cont-wrap{
+	width: 16rem;
+	height:3.2rem;
+}
+.correlation-cont{
+	width: 100%;
+	padding: 0 2.88rem;
+	margin-top: 1.1733rem;
+}
+.correlation-cont p{
+	padding: 0 0.32rem;
+	font-size: 0.4693rem;
+	line-height: 0.5693rem;
+	color: #333333;
+}
+.container-list{
+	width: 98%;
+	margin-top: 0.7466rem;
+}
+.container-list li{
+	width: 50%;
+	height: 1.28rem;
+	line-height: 1.28rem;
+	font-size: 0.5546rem;
+	font-weight: 400;
+}
+.container-list li a{
+	text-align: center;
+	border: 1px solid #b7b7b7;
+    border-left: 0px;
+    display: block;
+    height: 1.28rem;
+    line-height: 1.28rem;
+}
+.container-list li:first-of-type a{
+	border-left:1px solid #b7b7b7;
+	border-bottom-left-radius: 0.5266rem;
+    border-top-left-radius: 0.5266rem;
+}
+.container-list li:last-of-type a{
+	border-bottom-right-radius: 0.5266rem;
+    border-top-right-radius: 0.5266rem;
+}
+.tp-list-bg{
+	color: #fff;
+	background: #e02b20;
+	border:1px solid #db261e !important;
+}
+/*绑定模块*/
+.correlation-input-wrap{
+	margin-top: 1.2rem;
+	width: 16rem;
+	padding: 0 1.92rem 0 2.0906rem;
+}
+.items-warp{
+	display: none;
+	margin-bottom:1.0666rem;
+}
+.item_cont {
+	height:2.133rem;
+	position: relative;
+	line-height:2.133rem;
+} 
+.item_cont i{
+	position: absolute;
+	left: 0;
+	width: 0.7466rem;
+	height: 0.7893rem;
+	top: 0.64rem;
+}
+.item_cont i img{
+	vertical-align: top;
+	width: 100%;
+}
+.item-inputs{
+	margin: 0 0 0.2133rem 1.1306rem;
+	border-bottom: 1px solid #e6e6e6;
+}
+.item-inputs input{
+	border: 0px;
+	font-size: 0.4693rem;
+	height: 1.0666rem;
+	line-height: 1.0666rem;
+	display: inline-block;
+    vertical-align: middle;
+    width: 7.466rem;
+}
+.item-inputs span{
+	font-size: 0.5546rem;
+	color: #707070;
+	display: inline-block;
+	height:2.1333rem;
+	line-height:2.133rem;
+	width: 2.9866rem;
+}   
+.item-input-yz input{
+	width: 3.286rem;
+}
+.tp-get-gode{
+	position: absolute;
+	right: 0px;
+	top: 0px;
+}
+.tp-get-gode input{
+	border: 1px solid #e2372d;
+    border-radius: 25px;
+    background-color: #ffffff;
+    color: #e2372d;
+    height: 1.066rem;
+	width: 3.2rem;
+	font-size: 0.4693rem;
+}
+.cont15{
+	margin-top: 1.0026rem;
+}
+.correlation-submit{
+	width: 100%;
+	height: 1.92rem;
+	background: #db261e;
+    border: 0px;
+    border-radius:70px;
+    color: #ffffff;
+    font-weight: 500;
+    font-size: 0.64rem;
+}
+.tp-chenboxs{
+	margin: 0.5973rem 0 0 0;
+	height: 0.7466rem;
+	line-height: 0.7466rem;
+	position: relative;
+}
+.tp-chenboxs input{
+	display: inline-block;
+	position: absolute;
+	width: 0.5546rem;
+	height: 0.5546rem;
+	left: 0.64rem;
+	top: 0.0853rem;
+}
+.tp-chenboxs label{
+	line-height: 0.7466rem;
+	font-size: 0.4693rem;
+	padding-left: 1.493rem;
+	display: inline-block;
+}
+.tp-chenboxs a{
+	color:#1a76fe ;
+	font-size: 0.4693rem;
+	display: inline-block;
+	line-height: 0.7466rem;
+	vertical-align: top;
+}

@@ -1,0 +1,19 @@
+<include file="public/header" title="消息中心" body=""/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/css/reset.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/css/mesg_center.css"/>
+
+<div class="header">
+	<a href="javascript:history.back(-1);"><img src="__STATIC__/images/return.png"></a>
+    <span>消息详情</span>
+</div>
+
+<div class="mesg_detail">
+	<h2>{$message_details.message_title}</h2>
+    <div class="mesg_info"><b>类型：<i>{$message_details.category_name}</i></b><em>时间：<i>{$message_details.send_time_text}</i></em></div>
+    <div class="mesg_con">
+    	<span>{$message_details.message_content}
+		</span>
+    </div>
+</div>
+</body>
+</html>

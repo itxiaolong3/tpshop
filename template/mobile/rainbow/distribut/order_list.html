@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>分销订单</title>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/distribut/css/main.css"/>
+    <script src="__STATIC__/js/jquery-3.1.1.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__STATIC__/js/mobile-util.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__STATIC__/js/style.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/css/style.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/css/iconfont.css"/>
+</head>
+<body class="bag_gray">
+<include file="public/header_nav" title="分销订单"  href="{:U('Mobile/Distribut/index')}" />
+    <div class="retails_li3 p">
+        <ul>
+            <li <if condition="$Request.param.status eq 0">class="current"</if>><a href="{:U('mobile/Distribut/order_list',array('status'=>0))}">未付款</a></li>
+            <li <if condition="$Request.param.status eq '1,2'">class="current"</if>><a href="{:U('mobile/Distribut/order_list',array('status'=>'1,2'))}">已付款</a></li>
+            <li <if condition="$Request.param.status eq 3">class="current"</if>><a href="{:U('mobile/Distribut/order_list',array('status'=>3))}">已完成</a></li>
+        </ul>
+    </div>
+<if condition="!empty($list)">
+    <div id="ajax_return">
+        <foreach name="list" item="v">
+            <div class="main_order_list ma-to-8 p">
+                <div class="w670">
+                    <div class="tit_produce bo-bo-f5">
+                        <span class="tit_fon">买家：{$v[nickname]}</span>
+                        <div class="not_complate">
+                            <if condition="$v.status eq 0">未付款</if>
+                            <if condition="$v.status eq 1">已付款</if>
+                            <if condition="$v.status eq 2">等待分成(已收货)</if>
+                            <if condition="$v.status eq 3">已分成</if>
+                            <if condition="$v.status eq 4">已取消</if>
+                        </div>
+                    </div>
+                    <div class="order_alone_cont">
+                        <div class="order_number">
+                            <p class="on">订单号：<em>{$v[order_sn]}</em></p>
+                            <p class="time">{:date('Y-m-d H:i', $v[create_time])}</p>
+                        </div>
+                        <div class="order_shop_list">
+                            <if condition="count($v['goods_list']) gt 1">
+                                <!--商品种类大于2只显示图片-s-->
+                                <ul class="shop_num">
+                                    <foreach name="$v['goods_list']" item="good" key="k">
+                                        <if condition="$k lt 2">
+                                            <li>
+                                                <a href="">
+                                                    <img src="{$good.goods_id|goods_thum_images=200,200}"/>
+                                                </a>
+                                            </li>
+                                        </if>
+                                    </foreach>
+                                    <li class="ellipsis" id="ellipsis" style="display: none">
+                                        <span>...</span>
+                                    </li>
+                                </ul>
+                                <div class="sum_number_arrow">
+                                    <a href="">
+                                        <span>共<em class="jnum">{:count($v['goods_list'])}</em>种商品</span>
+                                        <i class="icon-arrow_r"></i>
+                                    </a>
+                                </div>
+                                <!--商品种类大于2只显示图片-e-->
+                                <else/>
+                                <foreach name="$v['goods_list']" item="good">
+                                    <ul class="shop_num">
+                                        <li>
+                                            <a href="">
+                                                <img src="{$good.goods_id|goods_thum_images=200,200}"/>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                    <div class="detail_somestandard">
+                                        <div class="goods_name">
+                                            <!--<a href="">-->
+                                                <span>{$good.goods_name}</span>
+                                                <!--<i class="icon-arrow_r"></i>-->
+                                            <!--</a>-->
+                                        </div>
+                                        <div class="ret_price">
+                                            ￥{$good.member_goods_price}
+                                        </div>
+                                        <div class="stardard">
+                                            <p>{$good.spec_key_name}</p>
+                                        </div>
+                                    </div>
+                                </foreach>
+                            </if>
+                        </div>
+                        <div class="tit_produce bo-to-f5">
+                            <div class="get_commission" style="float: left">
+                                <span class="red" >￥{$v.goods_price} </span> <span class="" style="color: #7f7f7f"> 共{$good.goods_num}件</span>
+                            </div>
+
+                            <div class="get_commission">获得佣金：<em>￥{$v.money}</em></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </foreach>
+    </div>
+<else/>
+    <!--没有内容时-s-->
+    <div class="comment_con p">
+        <div style="padding:1rem;text-align: center;font-size: .59733rem;color: #777777;"><img src="__STATIC__/images/none.png"/><br /><br />亲，没找到你要的数据！</div>
+    </div>
+    <!--没有内容时-e-->
+</if>
+<script type="text/javascript" src="__STATIC__/js/sourch_submit.js"></script>
+<script type="text/javascript">
+    //商品数量大于2时显示省略号
+    $(function(){
+        var jnum = $('.jnum').text();
+        if(jnum > 2){
+            $('#ellipsis').show();
+        }
+    })
+
+    var  page = 1;
+    /*** ajax 提交表单 查询订单列表结果*/
+    function ajax_sourch_submit()
+    {
+        page += 1;
+        $.ajax({
+            type : "GET",
+            url:"/index.php?m=Mobile&c=Distribut&a=order_list&status={$Request.param.status}&is_ajax=1&p="+page,//+tab,
+            data : $('#filter_form').serialize(),// 你的formid 搜索表单 序列化提交
+            success: function(data)
+            {
+                if($.trim(data) == '')
+                    $('#getmore').hide();
+                else{
+                    $("#ajax_return").append(data);
+                    $('#getmore').show();
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>

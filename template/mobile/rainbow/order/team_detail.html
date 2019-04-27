@@ -1,0 +1,228 @@
+<include file="public/header" title="拼团订单详情" body="g4"/>
+<include file="public/header_nav" title="拼团订单详情" href="javascript:history.go(-1);"/>
+<if condition="$order['address_region'] neq ''">
+    <div class="edit_gtfix">
+        <div class="namephone fl">
+            <div class="top">
+                <div class="le fl">{$order[consignee]}</div>
+                <div class="lr fl">{$order[mobile]}</div>
+            </div>
+            <div class="bot">
+                <i class="dwgp"></i>
+                <span>{$order[address_region]}&nbsp;{$order[address]}</span>
+            </div>
+        </div>
+        <div class="fr youjter">
+        </div>
+        <div class="ttrebu">
+            <img src="__STATIC__/images/tt.png"/>
+        </div>
+    </div>
+</if>
+<div class="packeg p">
+    <div class="maleri30">
+        <div class="fl">
+            <h1><span class="bg"></span><span class="bgnum"></span><span></span></h1>
+            <h1></h1>
+        </div>
+        <div class="fr">
+            <span>{$order[order_status_detail]}</span>
+        </div>
+    </div>
+</div>
+<!--订单商品列表-s-->
+<div class="ord_list p">
+    <div class="maleri30">
+        <volist name="order[order_goods]" id="goods">
+            <a href="{:U('Mobile/Goods/goodsInfo',array('id'=>$goods[goods_id]))}">
+                <div class="shopprice">
+                    <div class="img_or fl">
+                        <img src="{$goods[goods_id]|goods_thum_images=100,100}"/>
+                    </div>
+                    <div class="fon_or fl">
+                        <h2 class="similar-product-text">{$goods[goods_name]}</h2>
+                        <div><span class="bac">{$goods[spec_key_name]}</span></div>
+                    </div>
+                    <div class="price_or fr">
+                        <p><span>￥</span><span>{$goods[member_goods_price]}</span></p>
+                        <p>x{$goods[goods_num]}</p>
+                    </div>
+                </div>
+            </a>
+        </volist>
+    </div>
+</div>
+<!--订单商品列表-e-->
+<div class="qqz">
+    <div class="maleri30">
+        <a href="{:U('Mobile/team/found',['id'=>$orderTeamFound['found_id']])}">查看拼团详情</a>
+        <a href="tel:{$tpshop_config['shop_info_phone']}">联系客服</a>
+        <if condition="$order[cancel_btn] eq 1">
+            <a class="closeorder_butt" >取消订单</a>
+        </if>
+    </div>
+</div>
+<div class="information_dr ma-to-20">
+    <div class="maleri30">
+        <div class="tit">
+            <h2>基本信息</h2>
+        </div>
+        <div class="xx-list">
+            <p class="p">
+                <span class="fl">订单编号</span>
+                <span class="fr">{$order[order_sn]}</span>
+            </p>
+            <p class="p">
+                <span class="fl">下单时间</span>
+                <span class="fr"><span>{$order[add_time]|date='Y-m-d H:i:s',###}</span></span>
+            </p>
+            <p class="p">
+                <span class="fl">支付方式</span>
+                <span class="fr">
+                     <if condition="$order[pay_status] eq 1 and empty($order[pay_name])">
+                         在线支付
+                         <else/>
+                         {$order[pay_name]}
+                     </if>
+                </span>
+            </p>
+            <p class="p">
+                <span class="fl">配送方式</span>
+                <span class="fr">{$order[shipping_name]}</span>
+            </p>
+        </div>
+    </div>
+</div>
+<div class="information_dr ma-to-20">
+    <div class="maleri30">
+        <div class="tit">
+            <h2>价格信息</h2>
+        </div>
+        <div class="xx-list">
+            <if condition="$order['address_region'] neq ''">
+                <p class="p">
+                    <span class="fl">运费</span>
+                    <span class="fr"><span>￥</span><span>{$order[shipping_price]}</span>元</span>
+                </p>
+            </if>
+            <p class="p">
+                <span class="fl">优惠券</span>
+                <span class="fr"><span>-￥</span><span>{$order[coupon_price]}</span>元</span>
+            </p>
+            <p class="p">
+                <span class="fl">积分</span>
+                <span class="fr"><span>-￥</span><span>{$order[integral_money]}</span>元</span>
+            </p>
+            <p class="p">
+                <span class="fl">余额</span>
+                <span class="fr"><span>-￥</span><span>{$order[user_money]}</span>元</span>
+            </p>
+            <p class="p">
+                <span class="fl">活动优惠</span>
+                <span class="fr"><span>-￥</span><span>{$order[order_prom_amount]}</span>元</span>
+            </p>
+            <p class="p">
+                <span class="fl">实付金额</span>
+                <span class="fr red"><span>￥</span><span>{$order[order_amount]}</span>元</span>
+            </p>
+        </div>
+    </div>
+</div>
+
+<!--取消订单-s-->
+<div class="losepay closeorder" style="display: none;">
+    <div class="maleri30">
+        <p class="con-lo">取消订单后,存在促销关系的子订单及优惠可能会一并取消。是否继续？</p>
+        <div class="qx-rebd">
+            <a class="ax">取消</a>
+            <a class="are" id="cancel_order" data-order-id="{$order[order_id]}">确定</a>
+        </div>
+    </div>
+</div>
+<!--取消订单-e-->
+
+<div class="mask-filter-div" style="display: none;"></div>
+
+<!--底部支付栏-s-->
+<div class="payit ma-to-20">
+    <div class="fr s">
+        <if condition="$order[pay_btn] eq 1">
+            <a href="{:U('Mobile/Team/order',array('order_id'=>$order[order_id]))}">立即付款</a>
+        </if>
+        <if condition="$order[receive_btn] eq 1">
+            <a id="order_confirm" data-order-id="{$order[order_id]}">收货确认</a>
+        </if>
+        <if condition="$order[shipping_btn] eq 1">
+            <a href="{:U('Mobile/Order/express',array('order_id'=>$order['order_id']))}" >查看物流</a>
+        </if>
+    </div>
+</div>
+<!--底部支付栏-d-->
+<script type="text/javascript">
+    //取消订单按钮
+    $('.closeorder_butt').click(function(){
+        $('.mask-filter-div').show();
+        $('.losepay').show();
+    })
+    //取消取消订单
+    $('.qx-rebd .ax').click(function(){
+        $('.mask-filter-div').hide();
+        $('.losepay').hide();
+    })
+    //确认收货
+    $('#order_confirm').click(function(){
+        var orderId = $(this).data('order-id');
+        if(!confirm("确认收货?"))
+            return false;
+        $.ajax({
+            url:"{:U('Order/order_confirm')}",
+            type:'POST',
+            dataType:'JSON',
+            data:{id:orderId},
+            success:function(data){
+                if(data.status == 1){
+                    // 如果应付金额为0  可能是余额支付 + 积分 + 优惠券 直接跳转拼团订单详情
+                    layer.open({content:data.msg, time:2,end:function(){
+                        location.href ='/index.php?m=mobile&c=Order&a=team_detail&order_id='+orderId;
+                    }});
+                }else{
+                    layer.open({content:data.msg, time:2,end:function(){
+                        location.href ='/index.php?m=mobile&c=Order&a=team_list';
+                    }});
+                }
+            },
+            error : function() {
+                layer.open({content:'网络失败，请刷新页面后重试', time: 2});
+            }
+        })
+    })
+
+    //确认收货
+    $('#cancel_order').click(function(){
+        var id = $(this).data('order-id');
+        $.ajax({
+            type: 'GET',
+            url:"/index.php?m=Mobile&c=Order&a=cancel_order&id="+id,
+            dataType:'JSON',
+            success:function(data){
+                if(data.status == 1){
+                    //成功
+                    layer.open({content:data.msg,time:2,end:function(){
+                        location.href = "/index.php?m=Mobile&c=Order&a=team_detail&order_id="+id;
+                    }});
+                }else{
+                    //状态不允许
+                    layer.open({content:data.msg,time:2});
+                    return false;
+                }
+            },
+            error:function(){
+                layer.open({content:'网络失败，请刷新页面后重试',time:3});
+            },
+        });
+        $('.mask-filter-div').hide();
+        $('.losepay').hide();
+    })
+</script>
+</body>
+</html>

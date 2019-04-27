@@ -1,0 +1,50 @@
+<i class="sprite_le_ri"></i>
+<div class="top_leg p">
+    <span class="paragraph fl"><i class="ddd"></i>收货人信息</span>
+    <a id="addNewAddress" class="newadd fr address_item" href="javascript:void(0);" data-address-id="0">新增收货地址</a>
+</div>
+<div class="consignee-list p">
+    <ul>
+        <volist name="address_list" id="address">
+            <li class="addressItem <if condition='$address[is_default] eq 1'>addressDefault</if>" data-address-id="{$address[address_id]}">
+                <div class="item_select_t fl"  data-province-id="{$address.province}" data-city-id="{$address.city}" data-district-id="{$address.district}" data-town-id="{$address.twon}" data-longitude="{$address.longitude}" data-latitude="{$address.latitude}">
+                    <span>{$address[consignee]}&nbsp;{$regionList[$address[province]]}</span>
+                    <b></b>
+                </div>
+                <div class="addrdetail fl">
+                    <span class="addr-name" title="{$address[consignee]}">{$address[consignee]}</span>
+                    <span class="addr-info" title="{$regionList[$address[province]]} {$regionList[$address[city]]} {$regionList[$address[district]]} {$regionList[$address[twon]]} {$address[address]}">
+                        {$regionList[$address[province]]} {$regionList[$address[city]]} {$regionList[$address[district]]} {$regionList[$address[twon]]} {$address[address]}
+                    </span>
+                    <span class="addr-tel" title="{$address[mobile]}">{$address[mobile]}</span>
+                    <span class="addr-default">默认地址</span>
+                </div>
+                <div class="opbtns_editdel">
+                    <a href="javascript:void(0);" class="ftx address_set_default" data-address-id="{$address[address_id]}">设为默认地址</a>
+                    <a href="javascript:void(0);" data-address-id="{$address[address_id]}" class="ftx address_item">编辑</a>
+                    <a href="javascript:void(0);" data-address-id="{$address[address_id]}" class="ftx address_delete">删除</a>
+                </div>
+            </li>
+        </volist>
+    </ul>
+</div>
+<if condition="count($address_list) gt 1">
+    <div class="addr-switch">
+        <span>更多地址</span>
+        <b></b>
+    </div>
+
+</if>
+<script>
+    $(document).ready(function(){
+        address_default_init();
+    });
+    function address_default_init(){
+        var addressDefault = $('.addressDefault');
+        addressDefault.find('.item_select_t').addClass('curtr');
+        $('.addr-default').hide();
+        $('.address_set_default').show();
+        addressDefault.find('.addr-default').show();
+        addressDefault.find('.address_set_default').hide();
+    }
+</script>

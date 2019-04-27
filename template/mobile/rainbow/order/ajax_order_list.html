@@ -1,0 +1,77 @@
+<volist name="order_list" id="order">
+    <div class="mypackeg ma-to-20 getmore">
+        <div class="packeg p">
+            <div class="maleri30">
+                <div class="fl">
+                    <h1><span></span><span class="bgnum"></span></h1>
+                    <p class="bgnum"><span>订单编号:</span><span>{$order.order_sn}</span></p>
+                </div>
+                <div class="fr">
+                    <span>{$order['order_status_detail']}</span>
+                </div>
+            </div>
+        </div>
+        <div class="shop-mfive p">
+            <div class="maleri30">
+                <volist name="order.order_goods" id="goods">
+                    <div class="sc_list se_sclist paycloseto">
+                        <a href="{:U('/Mobile/Order/order_detail',array('id'=>$order['order_id']))}">
+                            <div class="shopimg fl">
+                                <img src="{$goods[goods_id]|goods_thum_images=200,200}">
+                            </div>
+                            <div class="deleshow fr">
+                                <div class="deletes">
+                                    <span class="similar-product-text">{$goods[goods_name]|getSubstr=0,20}</span>
+                                </div>
+                                <div class="deletes">
+                                    <span class="similar-product-text">{$goods.spec_key_name}</span>
+                                </div>
+                                <div class="prices  wiconfine">
+                                    <p class="sc_pri"><span>￥</span><span>{$goods[member_goods_price]}</span></p>
+                                </div>
+                                <div class="qxatten  wiconfine">
+                                    <p class="weight"><span>数量</span>&nbsp;<span>{$goods[goods_num]}</span></p>
+
+                                </div>
+                                <div class="buttondde">
+                                    <if condition="($order.return_btn eq 1) and ($goods[is_send] lt 2)">
+                                        <a href="{:U('Mobile/Order/return_goods',['rec_id'=>$goods['rec_id']])}">申请售后</a>
+                                    </if>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </volist>
+            </div>
+        </div>
+        <div class="shop-rebuy-price p">
+            <div class="maleri30">
+                <span class="price-alln">
+                    <!--<span class="red">￥{$list['order_amount']}</span><span class="threel">共{$list.goods_list|count}件</span>-->
+                    <span class="red">￥{$order['total_amount']}</span><span class="threel" id="goodsnum">共{$order.count_goods_num}件</span>
+                    <!--if condition="$list['pay_code'] eq 'cod'"><i class="tits-ions qxatten-ions">货到付款</i></if -->
+                </span>
+                <if condition="$order.pay_btn eq 1">
+                    <a class="shop-rebuy paysoon" href="{:U('Mobile/Cart/cart4',array('order_id'=>$order['order_id']))}">立即付款</a>
+                </if>
+                <if condition="$order.cancel_btn eq 1">
+                    <if condition="$order.pay_status eq 0">
+                        <a class="shop-rebuy " onClick="cancel_order({$order.order_id})">取消订单</a>
+                    </if>
+                    <if condition="$order.pay_status eq 1">
+                        <a class="shop-rebuy" href="{:U('Order/refund_order', ['order_id'=>$order['order_id']])}">取消订单</a>
+                    </if>
+                </if>
+                <if condition="$order.receive_btn eq 1">
+                    <a class="shop-rebuy paysoon" onclick="orderConfirm({$order.order_id})">确认收货</a>
+                </if>
+                <if condition="$order.comment_btn eq 1">
+                    <a class="shop-rebuy" href="{:U('/Mobile/Order/comment')}">评价</a>
+                </if>
+                <if condition="$order.shipping_btn eq 1">
+                    <a class="shop-rebuy" href="{:U('Mobile/Order/express',array('order_id'=>$order['order_id']))}">查看物流</a>
+                </if>
+            </div>
+        </div>
+    </div>
+</volist>

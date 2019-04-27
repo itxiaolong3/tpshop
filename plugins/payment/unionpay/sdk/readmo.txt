@@ -1,0 +1,3 @@
+acp_sdk.php文件中 签名证书 要对
+证书路径配置对
+	"acpsdk.signCert.path"=>"/home/wwwroot/www.xiaochabao.cn/plugins/payment/unionpay/certs/yunchabao.pfx",

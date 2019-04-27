@@ -1,0 +1,172 @@
+<include file="public/header" title="评论详情" body="g4"/>
+<include file="public/header_nav" title="评论详情" href="javascript:history.back(-1);"/>
+		<div class="assess-top detailremark">
+			<div class="maleri30">
+				<span class="user-portrait">
+                    <if condition="$comment_info['is_anonymous'] eq 1 and $comment_info['user_id'] neq $user['user_id']">
+                        <img src="__STATIC__/images/5473e62aNdb4251d8.png">
+                    <else />
+                        <img src="{$comment_info.head_pic|default='__STATIC__/images/5473e62aNdb4251d8.png'}">
+                    </if>
+				</span>
+				<span class="user-name" id="user-name">
+                    <if condition="$comment_info['is_anonymous'] eq 1 and $comment_info['user_id'] neq $user['user_id']">
+                            匿名用户
+                    <else />
+                            {$comment_info.nickname}
+                    </if>
+                </span>
+				<!--<span class="vip-icon vip-copper-icon"></span>-->            
+				<span class="assess-date">{$comment_info['add_time']|date='Y-m-d H:i:s',###}</span>
+			</div>
+		</div>
+		<div class="assess-bottom detailcomment"> 
+			<div class="maleri30">
+				<span class="comment-item-star">                
+					<span class="real-star comment-stars-width{$comment_info.goods_rank}"></span>
+				</span>            
+				<p class="assess-content">{$comment_info.content}</p>
+				<notempty name="comment_info.img">
+                    <div class="product-img-module">
+                        <a class="J_ping" report-eventid="MProductdetail_CommentPictureTab" report-pageparam="1725965683">
+                            <ul class="jd-slider-container">
+                                <foreach name="comment_info.img" item="vm" key="km">
+                                    <a href="{$vm}">
+                                        <li class="jd-slider-item product-imgs-li">
+                                            <img src="{$vm}">
+                                        </li>
+                                    </a>
+                                </foreach>
+                            </ul>
+                        </a>
+                    </div>
+				</notempty>  
+				<div class="de_font desupp p">
+					<div class="keep fr">
+						<i class="<if condition="in_array($user_id,explode(',',$comment_info.zan_userid))">red</if>""></i>
+						<span id="span_zan">{$comment_info.zan_num|default=0}</span>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="replaylist ma-to-20">
+			<div class="replay_tit">
+				<div class="maleri30">
+					<p>回复<em>(<span id="reply_count">{$reply.count}</span>)</em></p>
+				</div>
+			</div>
+                <div class="assess-top detailremark" id="replylist">
+                    <notempty name="reply.list">
+                        <foreach name="reply.list" item="vo">
+                            <div class="restrict">
+                                <div class="maleri30">
+                                    <div class="limitbox p">
+                                        <span class="user-portrait">
+                                            <img src="{$vo['head_pic']?$vo['head_pic']:'__STATIC__/images/5473e62aNdb4251d8.png'}">
+                                        </span>
+                                    <span class="user-name">{$vo['user_name']}</span>
+                                        <span class="assess-date">{$vo.reply_time|date='Y-m-d H:i:s',###}</span>
+                                    </div>
+                                    <div class="limitbox p">
+                                        <span class="">回复：{$vo['to_name']}</span>
+                                    </div>
+                                    <p class="replay_text">{$vo['content']}</p>
+                                </div>
+                            </div>
+                        </foreach>
+                    </notempty>
+                </div>
+		</div>
+        <if condition="$comment_info.user_id neq $user_id">
+            <div class="he108">
+                <div class="answersubmit">
+                    <div class="maleri30">
+                        <input class="vautxt" type="text" name="content" id="content" maxlength="180" placeholder="说点什么呗~" />
+                        <a class="send pushCommomt" href="javascript:;" data-commentid="{$comment_id}">发送</a>
+                    </div>
+                </div>
+            </div>
+        </if>
+<script type="text/javascript">
+    var comment_id = {$comment_id};
+    //点赞点亮
+    $('.de_font .keep').click(function(){
+        var user_id = getCookie('user_id');
+        if (user_id == '') {
+            layer.open({content:'请先登录',time:2});
+            return ;
+        }
+        var zan_num = parseInt($("#span_zan").text());
+        console.log(zan_num);
+        $.ajax({
+            type: "POST",
+            data: {comment_id: comment_id},
+            dataType: 'json',
+            url: "/index.php?m=Mobile&c=Order&a=ajaxZan",
+            success: function (res) {
+                if (res.status==1) {
+                    layer.open({content:res.msg,time:2})
+                    $('#span_zan').text(zan_num + 1).siblings('i').addClass('red');
+                } else {
+                    layer.open({content:res.msg,time:2})
+                }
+            },
+            error : function(res) {
+                if( res.status == "200"){ // 兼容调试时301/302重定向导致触发error的问题
+                    layer.open({content:'请先登录!',time:2})
+                    return;
+                }
+                layer.open({content:'请求失败!',time:2})
+                return;
+            }
+        });
+    })
+
+    //发布评论
+    $(document).on('click','.pushCommomt',function(){
+        var user_id = getCookie('user_id');
+        var user_name = "{$user[nickname]}";
+        var content = $('#content').val();
+        var to_name = $('#user-name').text();
+        if (user_id == '') {
+            layer.open({content:'请先登录',time:2});
+            return false;
+        }
+        if (content == ''){
+            layer.open({content:'请填写内容',time:2})
+            return false;
+        };
+        $.ajax({
+            type: "POST",
+            data: {comment_id:comment_id,parent_id:0,content:content,user_name:user_name,to_name:to_name},
+            dataType: 'json',
+            url: "/index.php?m=Mobile&c=Order&a=replyComment",
+            success: function (data) {
+                layer.open({content:data.msg,time:2});
+                if (data.status==1) {
+                var head_pic = data.result['head_pic']?data.result['head_pic']:"__STATIC__/images/5473e62aNdb4251d8.png";
+                var htmlcontent = '<div class="restrict"><div class="maleri30"><div class="limitbox p">' +
+                            '<span class="user-portrait"><img src="'+head_pic+'"></span>' +
+                            '<span class="user-name">'+user_name+'</span>' +
+                            '<span class="assess-date">'+data.result["reply_time"]+'</span>' +
+                            '<div class="limitbox p"><span class="">回复：'+data.result["to_name"]+'</span></div>'+
+                            '</div><p class="replay_text">'+data.result["content"]+'</p></div></div>';
+                    $('#replylist').prepend(htmlcontent);
+                    $('#content').val('');
+                    var reply_count = parseInt($('#reply_count').text());
+                    $('#reply_count').text(reply_count+1);
+                }
+            },
+            error : function(data) {
+                if( data.status == "200"){ // 兼容调试时301/302重定向导致触发error的问题
+                    layer.open({content:'请先登录!',time:2})
+                    return;
+                }
+                layer.open({content:'请求失败!',time:2})
+                return;
+            }
+        });
+    })
+</script>
+	</body>
+</html>

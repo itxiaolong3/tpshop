@@ -1,0 +1,142 @@
+<include file="public/header" title="{$goods_category_level_one[mobile_name]}" body="g4"/>
+<include file="public/header_nav" title="{$goods_category_level_one[mobile_name]}" href="{:U('Team/index')}"/>
+<style>
+    .addset-h .red a{
+        color: red;
+    }
+</style>
+<div class="tit-flash-sale p mytit_flash">
+    <div class="addset-wrap-h">
+        <ul class="addset-h">
+            <li class="red">
+                <a href="{:U('Mobile/Team/category',['id'=>$goods_category_level_one[id]])}" class="tab_head">全部</a>
+            </li>
+            <volist name="goods_category_level_two" id="category" >
+                <li>
+                    <a class="tab_head category_button" data-id="{$category[id]}">{$category[mobile_name]}</a>
+                </li>
+            </volist>
+        </ul>
+    </div>
+</div>
+
+<!--订单列表-s-->
+
+<!--没有内容时-s--->
+<div class="comment_con p" id="empty_list" style="display: none;">
+    <div class="none">
+        <img src="__STATIC__/images/none2.png">
+        <br><br>抱歉未查到数据！
+        <div class="paiton">
+            <div class="maleri30">
+                <a class="soon" href="{:U('Index/index')}"><span>去逛逛</span></a>
+            </div>
+        </div>
+    </div>
+</div>
+<!--没有内容时-e--->
+<div class="floor guesslike" style="padding-top: 20px;">
+    <div class="likeshop">
+        <ul id="team_list"></ul>
+    </div>
+</div>
+<!--订单列表-e-->
+<!--加载更多-s-->
+<div id="getmore" style="font-size:.32rem;text-align: center;color:#888;padding:.25rem .24rem .4rem; clear:both;display: none">
+    <a>已显示完所有记录</a>
+</div>
+<form>
+    <input type="hidden" name="id" value="{$goods_category_level_one[id]}"/>
+    <input type="hidden" name="tid" value=""/>
+    <input type="hidden" name="two_all_ids" value="{$two_all_ids}"/>
+</form>
+<script type="text/javascript" src="__STATIC__/js/sourch_submit.js"></script>
+<script type="text/javascript">
+    var id = {};
+    function indexTitle(){
+        $('.addset-h').css('width', parseInt($('.addset-h li').width()) * ($('.addset-h li').length + 1));
+        window.onresize = function(){
+            indexTitle();
+        }
+    }
+    $(document).ready(function(){
+        indexTitle();
+        ajax_sourch_submit();
+    });
+
+    /**
+     *加载更多
+     */
+    var page = 0;
+    var pageEnd = 0;
+    function ajax_sourch_submit() {
+        if(pageEnd == 1){
+            return false;
+        }
+        page += 1;
+        var id = $("input[name='id']").val();
+        var tid = $("input[name='tid']").val();
+        var two_all_ids = $("input[name='two_all_ids']").val();
+        var url = "/index.php?m=Mobile&c=Team&a=AjaxTeamList&p="+page+"&id="+id+"&two_all_ids="+two_all_ids;
+        if(id > 0){
+            url += '&tid=' + tid;
+        }
+        $.ajax({
+            type: 'POST',
+            url: url,
+            dataType: 'json',
+            data: {p: page},
+            success: function (data) {
+                if (data.status == 1) {
+                    var html = '';
+                    var goods_price,url;
+                    if (data.result.length > 0) {
+                        for (var i = 0; i < data.result.length; i++) {
+                            if (data.result[i].spec_goods_price) {
+                                goods_price = data.result[i].spec_goods_price.price;
+                            } else {
+                                goods_price = data.result[i].shop_price;
+                            }
+                            url = "/index.php?m=Mobile&c=Team&a=info&team_id=" + data.result[i].team_id + "&goods_id=" + data.result[i].goods_id;
+                            html += ' <li> <a href="'+url+'"> <div class="similer-product"> <img src="' + data.result[i].share_img + '"> ' +
+                                    '<span class="similar-product-text">' + data.result[i].act_name + '</span> ' +
+                                    '<span class="similar-product-price">¥ <span class="big-price">' + data.result[i].team_price + '</span> ' +
+                                    ' </span> </div> </a> </li>';
+                        }
+                        $("#team_list").append(html);
+                    } else {
+                        pageEnd = 1;
+                        if(page == 1){
+                            $("#empty_list").show();
+                        }else{
+                            $("#getmore").show();
+                        }
+                    }
+                } else {
+
+                }
+            }
+        });
+    }
+    // 分类按钮点击
+    $(function(){
+        $(document).on('click', '.category_button', function() {
+            var category_id = $(this).data('id');
+            var request_category_id = $("input[name='tid']").val();
+            $('.addset-h').find('li').removeClass('red');
+            $(this).parent().addClass('red');
+            if(category_id != request_category_id){
+                $("input[name='tid']").val(category_id);
+                $("#team_list").empty();
+                page = 0;
+                pageEnd = 0;
+                $("#empty_list").hide();
+                $("#getmore").hide();
+                ajax_sourch_submit();
+            }
+        });
+    })
+
+</script>
+</body>
+</html>

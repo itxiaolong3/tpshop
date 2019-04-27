@@ -1,0 +1,373 @@
+<include file="public/layout" />
+<script src="__ROOT__/public/static/js/layer/laydate/laydate.js"></script>
+<style>
+    .disabled{pointer-events: none;filter:alpha(opacity=40);-moz-opacity:0.4;-khtml-opacity: 0.4;opacity: 0.4;}
+</style>
+<body style="background-color: #FFF; overflow: auto;">
+<div id="toolTipLayer" style="position: absolute; z-index: 9999; display: none; visibility: visible; left: 95px; top: 573px;"></div>
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title"><a class="back" href="javascript:history.back();" title="返回列表"><i class="fa fa-arrow-circle-o-left"></i></a>
+            <div class="subject">
+                <h3>预售管理 - 编辑</h3>
+                <h5>网站系统预售详情页</h5>
+            </div>
+        </div>
+    </div>
+    <form class="form-horizontal" id="handleposition" method="post">
+        <input type="hidden" name="pre_sell_id" value="{$preSell.pre_sell_id}">
+        <input type="hidden" id="time" value="{$template_now_time}">
+        <div class="ncap-form-default">
+            <dl class="row">
+                <dt class="tit">
+                    <label><em>*</em>预售标题</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" name="title" value="{$preSell.title}" class="input-txt" maxlength="30">
+                    <span class="err_title"></span>
+                    <span class="err" id="err_pre_sell_id"></span>
+                    <p class="notic">请填写预售标题</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label><em>*</em>选择预售商品</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" id="goods_name" name="goods_name" value="{$preSell.goods_name}" class="input-txt" autocomplete="off">
+                    <div style="overflow: hidden" id="selected_group_goods">
+                        <if condition="$preSell['goods_id'] gt 0">
+                            <input type="hidden" id="goods_id" name="goods_id" value="{$preSell.goods_id}">
+                            <div style="float: left;margin-right: 10px" class="selected-group-goods">
+                                <div class="goods-thumb"><img style="width: 162px;height: 162px"  src="{$preSell['goods_id']|goods_thum_images=162,162}"/></div>
+                                <div class="goods-name">
+                                    <a target="_blank" href="{:U('Home/Goods/goodsInfo',array('id'=>$preSell['goods_id']))}">{$preSell.goods_name}</a>
+                                </div>
+
+                                <div class="goods-price">
+                                    <notempty name="preSell['specGoodsPrice']">
+                                        <input type="hidden" name="item_id" value="{$preSell.item_id}">
+                                        商城价：￥{$preSell['specGoodsPrice']['price']}库存:{$preSell['specGoodsPrice']['store_count']}
+                                        <else/>
+                                        商城价：￥{$preSell['goods']['shop_price']}库存:{$preSell['goods']['store_count']}
+                                    </notempty>
+                                </div>
+                            </div>
+                        </if>
+                    </div>
+                    <empty name='$preSell'>
+                        <p class="notic">
+                            <a onclick="selectGoods()" class="ncap-btn"><i class="fa fa-search"></i>选择商品</a>
+                        </p>
+                    </empty>
+                    <span class="err_goods_id"></span>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label><em>*</em>活动开始时间</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" id="sell_start_time" name="sell_start_time" value="{$preSell.sell_start_time|default=$template_now_time|date='Y-m-d H:i:s',###}"  class="input-txt">
+                    <span class="err" id="err_sell_start_time"></span>
+                    <p class="notic">预售开始时间</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label><em>*</em>活动结束时间</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" id="sell_end_time" name="sell_end_time" value="{$preSell.sell_end_time|default=$template_now_time|date='Y-m-d H:i:s',###}" class="input-txt">
+                    <span class="err" id="err_sell_end_time"></span>
+                    <p class="notic">预售结束时间</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label><em>*</em>订金</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" class="input-txt" id="deposit_price" name="deposit_price" value="{$preSell.deposit_price}" onpaste="this.value=this.value.replace(/[^\d.]/g,'')" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')"/>
+                    <span class="err" id="err_deposit_price"></span>
+                    <p class="notic">单位：元。
+                                    <br/>订金为0时，表示用户直接支付当前的预售价格不需要支付尾款，此时尾款支付时间不可设置;
+                                    <br/>预售活动结束后，系统会根据最新的预售价格返还用户已支付的差额;
+                                    <br/>商品开始预售后，不能更改订金金额</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label><em>*</em>预售库存</label>
+                </dt>
+                <dd class="opt">
+                    <input style="width: 100px;" type="text" class="input-txt" name="stock_num" id="stock_num" value="{$preSell.stock_num}" onpaste="this.value=this.value.replace(/[^\d.]/g,'')" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')"/>
+                    <span class="err" id="err_stock_num"></span>
+                    <p class="notic">达到此数量，预售活动自动结束。不能为0！</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label><em>*</em>尾款支付开始时间</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" class="input-txt" id="pay_start_time" name="pay_start_time" value="<if condition="$preSell['pay_start_time'] gt 0">{$preSell['pay_start_time']|date='Y-m-d H:i:s',###}</if>">
+                    <span class="err" id="err_pay_start_time"></span>
+                    <p class="notic">尾款支付开始时间</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label><em>*</em>尾款支付结束时间</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" class="input-txt" id="pay_end_time" name="pay_end_time" value="<if condition="$preSell['pay_end_time'] gt 0">{$preSell['pay_end_time']|date='Y-m-d H:i:s',###}</if>">
+                    <span class="err" id="err_pay_end_time"></span>
+                    <p class="notic">尾款支付结束时间</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label><em>*</em>开始发货时间描述</label>
+                </dt>
+                <dd class="opt">
+                    <textarea class="tarea" rows="4" placeholder="请输入开始发货时间描述" name="delivery_time_desc">{$preSell.delivery_time_desc}</textarea>
+                    <span class="err" id="err_delivery_time_desc"></span>
+                    <p class="notic">格式建议：1.预计 yyyy-MM-dd HH 时前发货。2.付款后 N 天内发货。</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label><em>*</em>价格阶梯</label>
+                </dt>
+                <dd class="opt">
+                    <style>
+                        .addprine{
+                            display: inline;
+                        }
+                        .alisth{
+                            margin-top: 10px
+                        }
+                        .p_plus strong{
+                            cursor: pointer;
+                            margin-left: 4px;
+                        }
+                    </style>
+                    <div class="alisth" id="alisth_0">
+                        预定个数达到<input type="text" class="input-number addprine" name="ladder_amount[]" value="{$preSell['price_ladder'][0]['amount']}" onpaste="this.value=this.value.replace(/[^\d.]/g,'')" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" style="width: 100px;" >&nbsp;
+                        价格<input type="text" class="input-number addprine" name="ladder_price[]" value="{$preSell['price_ladder'][0]['price']}" onpaste="this.value=this.value.replace(/[^\d.]/g,'')" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" style="width: 100px;" >
+                        <a class="p_plus" href="javascript:;"><strong>[+]</strong></a>
+                    </div>
+                    <volist name="preSell['price_ladder']" id="vo" offset="1">
+                        <div class="alisth">
+                            预定个数达到<input type="text" class="input-number addprine" name="ladder_amount[]" value="{$vo['amount']}" onpaste="this.value=this.value.replace(/[^\d.]/g,'')" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" style="width: 100px;" >&nbsp;
+                            价格<input type="text" class="input-number addprine" name="ladder_price[]" value="{$vo['price']}" onpaste="this.value=this.value.replace(/[^\d.]/g,'')" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" style="width: 100px;" >
+                            <a class="p_plus" onclick='$(this).parent().remove();'><strong>[-]</strong></a>
+                        </div>
+                    </volist>
+                    <span class="err" id="err_ladder_amount"></span>
+                </dd>
+                <script>
+                    $(function(){
+                        $('.p_plus').click(function() {
+                            var html = "<div class='alisth'>"
+                                    + "预定个数达到"
+                                    + "<input type='text' class='input-number addprine' name='ladder_amount[]' style='width: 100px;' value=''/>"
+                                    + "&nbsp;&nbsp;价格"
+                                    + "<input type='text' class='form-control addprine' name='ladder_price[]' style='width: 100px;' value=''>"
+                                    + "<a class='p_plus' onclick='$(this).parent().remove();'>&nbsp;<strong>[-]</strong></a>"
+                                    + "</div>";
+                            $('#alisth_0').after(html);
+                        });
+                    })
+                </script>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label>活动说明</label>
+                </dt>
+                <dd class="opt">
+                    <textarea placeholder="请输入活动介绍" name="desc" rows="6" class="tarea">{$preSell.desc}</textarea>
+                    <span class="err" id="err_desc"></span>
+                    <p class="notic">预售描述介绍</p>
+                </dd>
+            </dl>
+            <div class="bot">
+                <a id="submit" class="ncap-btn-big ncap-btn-green">保存</a>
+            </div>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+    $(document).ready(function(){
+        init();
+        laydate.render({
+            elem: '#pay_start_time',//绑定元素
+            theme: 'molv', //主题
+            type:'datetime', //控件选择类型
+            format: 'yyyy-MM-dd HH:mm:ss', //自定义格式
+            calendar: true, //显示公历节日
+            min: '1970-01-01 00:00:00', //最小日期
+            max: '2099-12-31 00:00:00', //最大日期
+            // value: new Date(),//默认当前时间
+            isInitValue: true,
+            position : 'fixed', //定位方式
+            zIndex: 99999999, //css z-index
+        });
+        laydate.render({
+            elem: '#pay_end_time',//绑定元素
+            theme: 'molv', //主题
+            type:'datetime', //控件选择类型
+            format: 'yyyy-MM-dd HH:mm:ss', //自定义格式
+            calendar: true, //显示公历节日
+            min: '1970-01-01 00:00:00', //最小日期
+            max: '2099-12-31 00:00:00', //最大日期
+            // value: new Date(),//默认当前时间
+            isInitValue: true,
+            position : 'fixed', //定位方式
+            zIndex: 99999999, //css z-index
+        });
+        laydate.render({
+            elem: '#sell_start_time',//绑定元素
+            theme: 'molv', //主题
+            type:'datetime', //控件选择类型
+            format: 'yyyy-MM-dd HH:mm:ss', //自定义格式
+            calendar: true, //显示公历节日
+            min: '1970-01-01 00:00:00', //最小日期
+            max: '2099-12-31 00:00:00', //最大日期
+            // value: new Date(),//默认当前时间
+            isInitValue: true,
+            position : 'fixed', //定位方式
+            zIndex: 99999999, //css z-index
+        });
+        laydate.render({
+            elem: '#sell_end_time',//绑定元素
+            theme: 'molv', //主题
+            type:'datetime', //控件选择类型
+            format: 'yyyy-MM-dd HH:mm:ss', //自定义格式
+            calendar: true, //显示公历节日
+            min: '1970-01-01 00:00:00', //最小日期
+            max: '2099-12-31 00:00:00', //最大日期
+            // value: new Date(),//默认当前时间
+            isInitValue: true,
+            position : 'fixed', //定位方式
+            zIndex: 99999999, //css z-index
+        });
+    });
+    function init(){
+        var pre_sell_id = $("input[name='pre_sell_id']").val();
+        var is_finished = $("input[name='is_finished']").val();
+        var sell_start_time = $("input[name='sell_start_time']");
+        var sell_end_time = $("input[name='sell_end_time']");
+        var deposit_price = $("input[name='deposit_price']");
+        var pay_start_time = $("input[name='pay_start_time']");
+        var pay_end_time = $("input[name='pay_end_time']");
+        var time =  $("#time").val();
+
+        if(is_finished > 0){
+            sell_start_time.attr('disabled', 'disabled');
+            sell_end_time.attr('disabled', 'disabled');
+        }else{
+            sell_start_time.removeAttr('disabled');
+            sell_end_time.removeAttr('disabled');
+        }
+
+        if(deposit_price.val() == 0){
+            pay_start_time.attr('disabled', 'disabled').addClass('disabled');
+            pay_end_time.attr('disabled', 'disabled').addClass('disabled');
+        }else{
+            pay_start_time.removeAttr('disabled').removeClass('disabled');
+            pay_end_time.removeAttr('disabled').removeClass('disabled');
+        }
+
+        if(pre_sell_id > 0){
+            if(getTimesTamp(sell_start_time.val()) < time){
+                deposit_price.attr('readonly','readonly');
+                pay_start_time.attr('disabled', 'disabled').addClass('disabled');
+                pay_end_time.attr('disabled', 'disabled').addClass('disabled');
+            }else{
+                deposit_price.removeAttr('readonly');
+                pay_start_time.removeAttr('disabled').removeClass('disabled');
+                pay_end_time.removeAttr('disabled').removeClass('disabled');
+            }
+        }
+    }
+    function selectGoods() {
+        var url = "{:U('Promotion/search_goods',array('tpl'=>'select_goods','prom_type'=>4))}";
+        layer.open({
+            type: 2,
+            title: '选择商品',
+            shadeClose: true,
+            shade: 0.2,
+            area: ['75%', '75%'],
+            content: url,
+        });
+    }
+    function call_back(goodsItem){
+        var html = '';
+        if(goodsItem.spec != null){
+            //有规格
+            html = '<input type="hidden" id="goods_id" name="goods_id" value="'+goodsItem.goods_id+'">' +
+                    '<input type="hidden" name="item_id" value="'+goodsItem.spec.item_id+'">' +
+                    '<div style="float: left;margin: 10px auto;" class="selected-group-goods"><div class="goods-thumb">' +
+                    '<img style="width: 162px;height: 162px" src="'+goodsItem.spec.spec_img+'"/></div> <div class="goods-name"> ' +
+                    '<a target="_blank" href="javascript:;">'+goodsItem.goods_name+goodsItem.spec.key_name+'</a> </div>' +
+                    ' <div class="goods-price">商城价：￥'+goodsItem.spec.price+'库存:'+goodsItem.spec.store_count+'</div> </div>';
+            $('input[name=goods_name]').val(goodsItem.goods_name + goodsItem.spec.key_name);
+        }else{
+            html =  '<input type="hidden" id="goods_id" name="goods_id" value="'+goodsItem.goods_id+'">' +
+                    '<div style="float: left;margin: 10px auto;" class="selected-group-goods"><div class="goods-thumb">' +
+                    '<img style="width: 162px;height: 162px" src="'+goodsItem.goods_image+'"/></div> <div class="goods-name"> ' +
+                    '<a target="_blank" href="javascript:;">'+goodsItem.goods_name+'</a> </div>' +
+                    ' <div class="goods-price">商城价：￥'+goodsItem.goods_price+'库存:'+goodsItem.store_count+'</div> </div>';
+            $('input[name=goods_name]').val(goodsItem.goods_name);
+        }
+        $('#select_goods_button').attr('data-goods-id',goodsItem.goods_id);
+        $('#selected_group_goods').empty().html(html);
+        $('.selected-group-goods').show();
+        layer.closeAll('iframe');
+    }
+    $(document).on("click", '#submit', function (e) {
+        $('#submit').attr('disabled',true);
+        verifyForm();
+    })
+    $(document).on("blur", '#deposit_price', function (e) {
+        init();
+    })
+    function getTimesTamp(date){
+        var timestamp = Date.parse(new Date(date));
+        return timestamp / 1000;
+    }
+    function verifyForm(){
+        $('span.err').empty().hide();
+        $.ajax({
+            type: "POST",
+            url: "{:U('PreSell/save')}",
+            data: $('#handleposition').serialize(),
+            async:false,
+            dataType: "json",
+            error: function () {
+                layer.alert("服务器繁忙, 请联系管理员!");
+            },
+            success: function (data) {
+                if (data.status == 1) {
+                    layer.msg(data.msg,{icon: 1,time: 2000},function(){
+                        location.href = "{:U('Admin/PreSell/index')}";
+                    });
+                } else {
+                    $('#submit').attr('disabled',false);
+                    $.each(data.result, function (index, item) {
+                        $('span.err').show();
+                        $('#err_'+index).text(item);
+                    });
+                    layer.msg(data.msg, {icon: 2,time: 3000});
+                }
+            }
+        });
+    }
+
+</script>
+</body>
+</html>

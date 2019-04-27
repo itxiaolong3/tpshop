@@ -1,0 +1,38 @@
+<include file="public/header" title="收货地址管理" body="pore_add"/>
+<include file="public/header_nav" title="收货地址管理" href="javascript:history.back(-1)"/>
+<!--地址-s-->
+<style type="text/css">
+    body {
+        min-height: auto !important;
+    }
+</style>
+<div style="height: 19.5rem; overflow: scroll;">
+    <volist name="lists" id="list">
+        <div class="jd_listaddless p">
+            <div class="maleri30">
+
+                <div class="name fl">
+                    <h1>{$list[consignee]}</h1>
+                    <if condition="$list[is_default] eq 1">
+                        <span>默认</span>
+                    </if>
+                </div>
+                <div class="numberaddress fl">
+                    <span class="number"><i class="number-dh">电话：</i> {$list[mobile]}</span>
+                    <span class="similars">{$region_list[$list['province']]},{$region_list[$list['city']]},{$region_list[$list['district']]},{$region_list[$list['twon']]}{$list['address']}</span>
+                </div>
+                <div class="editdiv fl">
+                    <a href="{:U('/Mobile/User/edit_address',array('id'=>$list[address_id]))}">
+                        <i class="eedit"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </volist>
+</div>
+<!--地址-e-->
+<div class="createnew">
+    <a href="{:U('/Mobile/User/add_address')}">+新建地址</a>
+</div>
+</body>
+</html>

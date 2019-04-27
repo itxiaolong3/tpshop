@@ -1,0 +1,179 @@
+<include file="public/layout" />
+<style>
+    .flexigrid .pReload{float:right;}
+    .flexigrid .bDiv {min-height: 0px;}
+</style>
+<body style="background-color: rgb(255, 255, 255); overflow: auto; cursor: default; -moz-user-select: inherit;">
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>运费模板</h3>
+                <h5>运费模板列表与管理</h5>
+            </div>
+        </div>
+    </div>
+    <!-- 操作说明 -->
+    <div id="explanation" class="explanation" style="color: rgb(44, 188, 163); background-color: rgb(237, 251, 248); width: 99%; height: 100%;">
+        <div id="checkZoom" class="title"><i class="fa fa-lightbulb-o"></i>
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span title="收起提示" id="explanationZoom" style="display: block;"></span>
+        </div>
+        <ul>
+            <li>运费模板, 由平台设置管理.</li>
+        </ul>
+    </div>
+    <div class="flexigrid" style="width: 987px;">
+        <div class="tDiv2">
+            <div class="fbutton">
+                <a href="{:U('Freight/info')}">
+                    <div class="add" title="新增运费模板">
+                        <span>新增运费模板</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div style="clear:both"></div>
+    </div>
+    <volist name="template_list" id="template">
+        <div class="flexigrid" style="width: 987px;">
+            <div class="mDiv">
+                <div class="ftitle">
+                    <h3>{$template.template_name}</h3>
+                    <h5>{$template.type_desc}</h5>
+                </div>
+                <div title="删除运费模板" data-template-id="{$template.template_id}" class="pReload delete_template"><i class="fa fa-trash-o"></i></div>
+                <a href="{:U('Freight/info',['template_id'=>$template.template_id])}"><div title="编辑运费模板" class="pReload"><i class="fa fa-pencil-square-o"></i></div></a>
+            </div>
+            <div class="hDiv">
+                <div class="hDivBox">
+                    <table cellspacing="0" cellpadding="0">
+                        <thead>
+                        <tr>
+                            <th align="left" abbr="article_title" axis="col3" class="">
+                                <div style="text-align: center; width: 300px;" class="">配送区域</div>
+                            </th>
+                            <th align="left" abbr="ac_id" axis="col4" class="">
+                                <div style="text-align: center; width: 150px;" class="">首{$template.type_desc}({$template.unit_desc})</div>
+                            </th>
+                            <th align="left" abbr="ac_id" axis="col4" class="">
+                                <div style="text-align: center; width: 150px;" class="">运费(元)</div>
+                            </th>
+                            <th align="center" abbr="article_show" axis="col5" class="">
+                                <div style="text-align: center; width: 150px;" class="">续{$template.type_desc}({$template.unit_desc})</div>
+                            </th>
+                            <th align="center" abbr="article_time" axis="col6" class="">
+                                <div style="text-align: center; width: 150px;" class="">运费(元)</div>
+                            </th>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+            <div class="bDiv" style="height: auto;">
+                <div>
+                    <table>
+                        <tbody>
+                        <volist name="template[freightConfig]" id="config" offset="0" length="5">
+                            <tr>
+                                <td align="left" class="">
+                                    <div style="text-align: center; width: 300px;">
+                                        <if condition="$config[is_default] eq 1">
+                                            中国
+                                            <else/>
+                                            <volist name="config[freightRegion]" id="freight_region">
+                                                {$freight_region.region.name},
+                                            </volist>
+                                        </if>
+                                    </div>
+                                </td>
+                                <td align="left" class="">
+                                    <div style="text-align: center; width: 150px;">{$config.first_unit}</div>
+                                </td>
+                                <td align="left" class="">
+                                    <div style="text-align: center; width: 150px;">{$config.first_money}</div>
+                                </td>
+                                <td align="left" class="">
+                                    <div style="text-align: center; width: 150px;">{$config.continue_unit}</div>
+                                </td>
+                                <td align="left" class="">
+                                    <div style="text-align: center; width: 150px;">{$config.continue_money}</div>
+                                </td>
+                            </tr>
+                        </volist>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </volist>
+</div>
+{$page}
+<script>
+    $(document).ready(function(){
+        // 表格行点击选中切换
+        $('#flexigrid > table>tbody >tr').click(function(){
+            $(this).toggleClass('trSelected');
+        });
+
+    });
+    //删除运费确定事件
+    $(function () {
+        $(document).on("click", '.delete_template', function (e) {
+            var template_id = $(this).data('template-id');
+            layer.confirm('确认删除？', {
+                        btn: ['确定', '取消'] //按钮
+                    }, function () {
+                        $.ajax({
+                            type: 'post',
+                            url: "{:U('Freight/delete')}",
+                            data: {template_id: template_id},
+                            dataType: 'json',
+                            success: function (data) {
+                                layer.closeAll();
+                                if (data.status == 1) {
+                                    layer.msg(data.msg, {icon: 1, time: 2000}, function () {
+                                        window.location.reload();
+                                    });
+                                } else if (data.status == -1) {
+                                    layer.confirm(data.msg, {
+                                                btn: ['确定', '取消'] //按钮
+                                            }, function () {
+                                                $.ajax({
+                                                    type: 'post',
+                                                    url: "{:U('Freight/delete')}",
+                                                    data: {template_id: template_id, action: 'confirm'},
+                                                    dataType: 'json',
+                                                    success: function (data) {
+                                                        layer.closeAll();
+                                                        if (data.status == 1) {
+                                                            layer.msg(data.msg, {icon: 1, time: 2000}, function () {
+                                                                window.location.reload();
+                                                            });
+                                                        } else if (data.status == -1) {
+                                                            layer.msg(data.msg, {icon: 2, time: 2000});
+                                                        } else {
+                                                            layer.msg(data.msg, {icon: 2, time: 2000});
+                                                        }
+                                                    }
+                                                })
+                                            }, function (index) {
+                                                layer.close(index);
+                                            }
+                                    );
+                                } else {
+                                    layer.msg(data.msg, {icon: 2, time: 2000});
+                                }
+                            }
+                        })
+                    }, function (index) {
+                        layer.close(index);
+                    }
+            );
+        })
+    })
+</script>
+</body>
+</html>

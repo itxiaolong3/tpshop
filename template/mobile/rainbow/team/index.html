@@ -1,0 +1,176 @@
+<include file="public/header" title="拼团首页"/>
+<link rel="stylesheet" href="__STATIC__/css/action.css">
+<style>
+    .addset-h .red a{
+        color: red;font-size: .72533rem;font-weight: 600;
+    }
+    .addset-h a{
+        font-size: .72533rem;
+    }
+</style>
+<div class="tit-flash-sale p mytit_flash">
+    <div class="addset-wrap-h">
+        <ul class="addset-h">
+            <li class="red"><a href="javascript:void(0);">首页</a></li>
+            <volist name="goods_category" id="category" >
+                <li>
+                    <a href="{:U('Mobile/Team/category',['id'=>$category[id]])}" class="tab_head">{$category[mobile_name]}</a>
+                </li>
+            </volist>
+        </ul>
+    </div>
+</div>
+<!--顶部滚动广告栏-s-->
+<div class="banner ban1">
+    <div class="mslide" id="slideTpshop">
+        <ul>
+            <!--广告表-->
+            <adv pid="9" limit="5" item="v">
+                <li><a href="{$v.ad_link}">
+                    <img src="{$v[ad_code]}" title="{$v[title]}" style="{$v[style]}" alt="">
+                </a></li>
+            </adv>
+        </ul>
+    </div>
+</div>
+<!--顶部滚动广告栏-e-->
+<div class="actionnav p">
+    <ul>
+        <li>
+            <a href="{:U('Mobile/Goods/ajaxSearch')}">
+                <i class="action-aa"></i>
+                <p>搜索</p>
+            </a>
+        </li>
+        <li>
+            <a href="{:U('Mobile/Activity/flash_sale_list')}">
+                <i class="action-ab"></i>
+                <p>秒杀</p>
+            </a>
+        </li>
+        <li>
+            <a href="{:U('Mobile/Activity/group_list')}">
+                <i class="action-ac"></i>
+                <p>团购</p>
+            </a>
+        </li>
+        <li>
+            <a href="{:U('Goods/brandstreet')}">
+                <i class="action-ad"></i>
+                <p>品牌街</p>
+            </a>
+        </li>
+        <li>
+            <a href="{:U('Goods/integralMall')}">
+                <i class="action-ae"></i>
+
+                <p>积分商城</p>
+            </a>
+        </li>
+    </ul>
+</div>
+<div class="g4 grandmogr p">
+    <div class="floor advertisement ma-to-20">
+        <div class="content">
+            <div class="le lefhe fr">
+                <adv limit="1" item="v" pid="301">
+                    <a href="{$v.ad_link}">
+                        <div class="td">
+                            <img src="{$v[ad_code]}">
+                        </div>
+                    </a>
+                </adv>
+                <adv limit="1" item="v" pid="302">
+                    <a href="{$v.ad_link}">
+                        <div class="td">
+                            <img src="{$v[ad_code]}">
+                        </div>
+                    </a>
+                </adv>
+            </div>
+            <div class="le re fl">
+                <adv limit="1" item="v" pid="300">
+                    <a href="{$v.ad_link}">
+                        <div class="td">
+                            <img src="{$v[ad_code]}">
+                        </div>
+                    </a>
+                </adv>
+            </div>
+        </div>
+    </div>
+    <div class="banner ma-to-20">
+        <adv limit="1" item="v" pid="400">
+            <a href="{$v.ad_link}">
+                <img src="{$v[ad_code]}"/>
+            </a>
+        </adv>
+    </div>
+    <div id="team_list"></div>
+</div>
+<!--底部导航-start-->
+<include file="public/footer_nav"/>
+<!--底部导航-end-->
+<script type="text/javascript" charset="utf-8">
+    function indexTitle(){
+        $('.addset-h').css('width', parseInt($('.addset-h li').width()) * ($('.addset-h li').length + 1));
+        window.onresize = function(){
+            indexTitle();
+        }
+    }
+    //加载更多商品
+    var page = 0;
+    var pageEnd = 0;
+    $(document).ready(function(){
+        indexTitle();
+    });
+    //滚动加载更多
+    $(window).scroll(
+        function() {
+            var scrollTop =parseInt($(this).scrollTop());
+            var scrollHeight = parseInt($(document).height());
+            var windowHeight = parseInt($(this).height());
+            if (scrollTop + windowHeight >= scrollHeight-60) {
+                if(pageEnd == 0){
+                    ajax_sourch_submit();
+                }
+                pageEnd = 1;
+            }
+        }
+    );
+    function ajax_sourch_submit() {
+
+        ++page;
+        $.ajax({
+            type: 'POST',
+            url: "{:U('Mobile/Team/AjaxTeamList')}",
+            dataType: 'json',
+            data: {p: page},
+            success: function (data) {
+                if (data.status == 1) {
+
+                    var html = '';
+                    var url;
+                    if (data.result.length > 0) {
+                        for (var i = 0; i < data.result.length; i++) {
+                            url = "/index.php?m=Mobile&c=Team&a=info&team_id=" + data.result[i].team_id + "&item_id="+data.result[i].item_id;
+                            html += '<div class="ggroup-bx"> <div class="maleri30"> <a class="cpt" href="'+url+'"><img src="' + data.result[i].share_img + '"/> ' +
+                                    '<p class="similar-product-text">' + data.result[i].goods_name + '</p></a> <div class="fgtemple p"> <div class="zeqzuo">' +
+                                    ' <span class="fg_peop"><i class="action-af"></i><em>' + data.result[i].needer + '</em>人团</span><span class="g_price">' +
+                                    '<em>￥</em>' + data.result[i].team_price + '</span> <span class="alone_price">单买￥<em>' + data.result[i].goods.shop_price + '</em></span> ' +
+                                    '</div> <div class="leok"> ' + '<a class="" href="'+url+'">去开团<i class="famfh">></i></a> </div> </div> </div> </div>';
+                        }
+                        $("#team_list").append(html);
+                        pageEnd = 0;
+                    } else {
+						$("#team_list").append('<div id="notmore"  style="font-size:.32rem;text-align: center;color:#888;padding:.25rem .24rem .4rem; clear:both;"> <a style="font-size:.50rem;">没有更多喽</a> </div>');
+                    }
+                } else {
+
+                }
+            }
+        })
+    }
+</script>
+</body>
+</html>

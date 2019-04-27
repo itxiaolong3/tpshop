@@ -1,0 +1,187 @@
+<include file="public/header" title="充值" body="g4"/>
+<include file="public/header_nav" title="充值" href="javascript:history.back(-1)"/>
+<form method="post"  id="recharge_form" action="{:U('Mobile/Payment/getPay')}">
+<div class="loginsingup-input mobil_topup" style="padding:0 0.64rem;">
+        <input type="hidden" name="order_id" value="{$order.order_id}">
+        <div class="recharge-curent">
+            <span>当前余额<span class="cash"><i>￥</i>{$user.user_money}</span></span>
+            <!--<input type="text" name="account" id="add_money" value=""  placeholder="0.00">-->
+        </div>
+        <div class="recharge-cash">
+        	<div class="lsu-recharge">
+            	<span style="float:none;">充值金额：<em>￥</em></span>
+            	<input type="number" name="account" id="add_money" value=""  placeholder="请输入充值金额">
+                <i></i>
+        	</div>
+            <div class="lsu-recharge-choose">
+            	<a href="javascript:void(0)" rel="50" class="">￥50</a>
+                <a href="javascript:void(0)" rel="100">￥100</a>
+                <a href="javascript:void(0)" rel="500">￥500</a>
+            </div>
+        </div>
+        <!--<div class="customer-messa">-->
+            <!--<div class="maleri30">-->
+                <!--<p>会员备注（50字）</p>-->
+                <!--<textarea class="tapassa" onkeyup="checkfilltextarea('.tapassa','50')" name="" rows="" cols="" placeholder="选填"></textarea>-->
+                <!--<span class="xianzd"><em id="zero">50</em>/50</span>-->
+            <!--</div>-->
+        <!--</div>-->
+        <div class="lsu-submit usedeb">
+            <input type="button" value="下一步">
+        </div>
+</div>
+<!--充值方式-s-->
+<div class="chooseebitcard" style="display: none; height:100%; background-color:rgba(0,0,0,0.5);">
+    <div class="maleri30" style="width:100%; position:absolute; left:0; bottom:0; background-color:#fff; margin:0; padding:0 0.64rem;">
+        <div class="choose-titr" style="margin-top:0.64rem; border-bottom:1px solid #dedede;">
+            <span>确认充值</span>
+            <em>￥<i>999</i></em>
+            <i class="gb-close"></i>
+        </div>
+        <h3 style="font-size:0.768rem; color:#333; margin-bottom:0.64rem; margin-top:1.28rem; font-weight:normal;">选择充值方式：</h3>
+        <div style="overflow: hidden">
+        <foreach name="paymentList" item="v"  key="k">
+        <div class="card">
+                <div class="card-list">
+                    <input type="radio" style="display: none;" value="pay_code={$v['code']}" name="pay_radio" <if condition="$k eq $alipay">checked</if> >
+                    <div class="radio fl radioixy">
+                        <span name="{$v[name]}"  class="che  <if condition="$k eq $alipay">check_t</if>" >
+                            <i></i>
+                        </span>
+                    </div>
+                    <!-- width="110" height="40" -->
+                    <p class="fl">&nbsp;&nbsp;<span><img src="/plugins/{$v['type']}/{$v['code']}/{$v['icon']}" style="width:2.346666rem;height:0.853333rem" /></span></p>
+                </div>
+            </div>
+        </foreach>
+
+    </div>
+        <div class="teuse"><input type="button" class="xyz" value="确认充值" ></div>
+    </div>
+</div>
+</form>
+<!--充值方式-e-->
+<div class="mask-filter-div" style="display: none;"></div>
+
+<script type="text/javascript">
+    $(function(){
+
+        // 下一步
+        $('.usedeb').click(function(){
+
+            var add_money = $('#add_money').val();
+            if ( add_money == ''){
+
+                layer.open({content: '充值金额不能为空',time:2});
+                return false;
+            }
+
+            if (isNaN(add_money) || Number(add_money) <= 0){
+
+                layer.open({content: '请输入正确的充值金额ne'+add_money,time:2});
+                return false;
+            }
+
+            $('.choose-titr').children('em').children('i').text(add_money)
+            $('.chooseebitcard').show();
+            $('.submit').hide();
+        })
+        $('.gb-close').click(function(){
+            $('.chooseebitcard').hide();
+        })
+        // 点确定
+        $('.teuse').click(function(){
+            $('.chooseebitcard').hide();
+            $('.submit').show();
+            recharge_submit();
+        })
+    })
+    $(function(){
+        $('.card-list').click(function(){
+            var _this = $(this);
+            _this.find('input').prop('checked',true).parents('.card').siblings().find('input').prop('checked',false);
+            //_this.find('.che').toggleClass('check_t').parents('.card').siblings().find('.che').removeClass('check_t');
+            _this.find('.che').addClass('check_t').parents('.card').siblings().find('.che').removeClass('check_t');
+            _this.parent(".card").addClass("checkbord").siblings().removeClass("checkbord");
+        })
+    })
+	$(".check_t").parent().parent().parent(".card").addClass("checkbord").siblings().removeClass("checkbord");
+    $(".lsu-recharge i").hide();
+    setTimeout(function() {
+        $('#add_money').focus();
+    }, 500);
+
+
+    //提交表单
+  var submit_status=1;
+  function recharge_submit(){
+      if (submit_status == 0){
+          return false;
+      }
+      submit_status = 0;
+      var account = $('#add_money').val();
+      if(isNaN(account) || Number(account)<=0 || account==''){
+          layer.open({content: '请输入正确的充值金额ok',time:2});
+          submit_status =1;
+          return false;
+      }
+      $('#recharge_form').submit();
+      submit_status=1;
+  }
+	//清除输入金额
+	$(".lsu-recharge i").click(function(){
+        $('#add_money').val("").focus();
+        $(".lsu-recharge-choose a").removeClass("cash-choosed");
+        $(".lsu-recharge i").hide();
+    })
+
+
+
+    // 选金额
+	$(".lsu-recharge-choose a").click(function(){
+		$('#add_money').val($(this).attr('rel'));
+		$(this).addClass("cash-choosed").siblings().removeClass("cash-choosed");
+        show_delete_btn();
+
+    })
+
+    // 输入金额时：显示（￥ + 输入的金额 + 光标 + 清除）
+    $("#add_money").keydown(function(){
+        show_delete_btn();
+        $(".lsu-recharge-choose a").removeClass("cash-choosed");
+    });
+    $("#add_money").keyup(function(){
+        if ($('#add_money').val()=="") {
+            $(".lsu-recharge i").hide();
+        }else{
+            show_delete_btn();
+        }
+    });
+
+    function show_delete_btn(){
+        $(".lsu-recharge i").show().unbind('click');
+        $(".lsu-recharge i").click(function(){
+            $('#add_money').val("").focus();
+            $(".lsu-recharge-choose a").removeClass("cash-choosed");
+            $(".lsu-recharge i").hide();
+        })
+
+    }
+
+
+</script>
+
+<style type="text/css">
+    .card{
+        width: 33%;
+		float:left;
+		padding:0.128rem 0 0.128rem 0.384rem;
+    }
+	.checkbord{ border:1px solid #0171d9; border-radius:0.128rem;}
+	.choose-titr em{ display:block; font-size:.68267rem; margin-top:0.64rem;}
+	.choose-titr em i{ font-size:1.024rem;}
+	.teuse .xyz{ width:12.8rem; height:1.92rem; border:none; background-color:#ff594a; border-radius:6px; color:#fff; margin:0 auto; margin-top:0.64rem}
+</style>
+
+</body>
+</html>

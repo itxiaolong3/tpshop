@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>新手必看</title>
+		<link rel="stylesheet" type="text/css" href="__STATIC__/distribut/css/main.css"/>
+		<script src="__STATIC__/js/mobile-util.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body>
+		<!--<div class="greenhand_question">
+			<a href="">
+				<p>1、什么是TPshop商城微分销？</p>
+				<i class="icon-arrow_r"></i>
+			</a>
+		</div>
+		<div class="greenhand_answer">
+			TPshop商城微分销是一款由开源商城研发团队自
+			主开发的一体化微信分销交易平台，基于朋友圈传
+			播，帮助企业打造“企业微商城 +粉丝微店 +员工
+			微店”的多层级营销模式，轻松带领微信用户一起
+			为您的商品进行宣传及销售。
+		</div>
+		<div class="greenhand_question">
+			<a href="">
+				<p>2、如何申请成为微销商？</p>
+				<i class="icon-arrow_r"></i>
+			</a>
+		</div>-->
+        <foreach name="article" item="v" key="k">
+            <div class="greenhand_question" style="white-space:nowrap;overflow:hidden;">
+                <a>
+                    <p>{$k+1}、{$v['title']}</p>
+                    <!--<i class="icon-arrow_r"></i>-->
+                </a>
+            </div>
+            <div class="greenhand_answer" style="word-wrap:break-word">
+                {$v['content']|htmlspecialchars_decode}
+            </div>
+        </foreach>
+	</body>
+</html>

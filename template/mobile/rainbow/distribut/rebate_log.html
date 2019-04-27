@@ -1,0 +1,137 @@
+<include file="public/header" title="分成明细" body=""/>
+<include file="public/header_nav" title="分成明细" href="{:U('Mobile/Distribut/index')}"/>
+<style>
+    .fll_acc ul li{
+        font-size: .4rem;
+    }
+</style>
+<div class="allaccounted">
+    <div class="maleri30">
+        <!--排序按钮-s-->
+        <nav class="storenav p search_list_dump" id="head_search_box product_sort">
+            <ul>
+                <li style="width: 22%;">
+                    <span class="lb <if condition="$Request.param.status neq ''">on red</if>"></span>
+                    <i></i>
+                </li>
+                <!--<li class="<if condition="$Request.param.status eq 'sales_sum'">red</if>">-->
+                    <!--<a href="{:U('Mobile/Distribut/rebate_log',array('id'=>$vo[goods_id]))}" >-->
+                        <!--<span class="dq" >销量</span>-->
+                    <!--</a>-->
+                <!--</li>-->
+                <li class="<if condition="$Request.param.sort eq 'money'">red</if>">
+                <if condition="$Request.param.sort_asc eq 'asc'">
+                    <a href="{:U('Mobile/Distribut/rebate_log',array('sort'=>'money','sort_asc'=>'desc'))}">
+                <else/>
+                    <a href="{:U('Mobile/Distribut/rebate_log',array('sort'=>'money','sort_asc'=>'asc'))}">
+                </if>
+                        <span class="jg dq">佣金</span>
+                    </a>
+                    <i  class="pr <if condition="$Request.param.sort_asc eq 'asc'">bpr2</if>  <if condition="$Request.param.sort_asc eq 'desc'"> bpr1 </if>"></i>
+                </li>
+            </ul>
+        </nav>
+        <!--排序按钮-e-->
+        <!--综合排序-s-->
+        <div class="fil_all_comm">
+            <div class="maleri30">
+                <ul>
+                    <li>
+                        <a href="{:U('Mobile/Distribut/rebate_log',array('status'=>''))}" class="<if condition="$Request.param.status eq ''">on red </if>"  >综合</a>
+                    </li>
+                    <li>
+                        <a href="{:U('Mobile/Distribut/rebate_log',array('status'=>0))}" class="<if condition="$Request.param.status eq '0'">on red </if>"  >未付款</a>
+                    </li>
+                    <li>
+                        <a href="{:U('Mobile/Distribut/rebate_log',array('status'=>1))}" class="<if condition="$Request.param.status eq '1'">on red</if>">已付款</a>
+                    </li>
+                    <li>
+                        <a href="{:U('Mobile/Distribut/rebate_log',array('status'=>2))}" class="<if condition="$Request.param.status eq '2'">on red</if>">等待分成</a>
+                    </li>
+                    <li>
+                        <a href="{:U('Mobile/Distribut/rebate_log',array('status'=>3))}" class="<if condition="$Request.param.status eq '3'">on red</if>">已分成</a>
+                    </li>
+                    <li>
+                        <a href="{:U('Mobile/Distribut/rebate_log',array('status'=>4))}" class="<if condition="$Request.param.status eq '4'">on red</if>">已取消</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!--综合排序-e-->
+        <empty name="lists">
+            <!--没有内容时-s-->
+            <div class="comment_con p">
+                <div style="padding:1rem;text-align: center;font-size: .59733rem;color: #777777;"><img src="__STATIC__/images/none.png"/><br /><br />亲，没找到你要的数据！</div>
+            </div>
+            <!--没有内容时-e-->
+        <else />
+            <div class="allpion">
+                <foreach name="lists" item="v">
+                    <div class="fll_acc">
+                        <ul>
+                            <li style="width: 45%;">
+                                <p>订单号：{$v[order_sn]}</p>
+                                <p>购买人：{$v[nickname]|getsubStr=0,10}</p>
+                            </li>
+                            <li style="width: 25%;">
+                                <p><span>订单金额: </span><span class="red">{$v[goods_price]}</span></p>
+                                <p><span>分成金额: </span><span class="red">{$v[money]}</span></p>
+                            </li>
+                            <li style="width: 30%;">
+                                <p><span>状态: </span>
+                                    <span class="red">
+                                        <if condition="$v[status] eq 0">未付款</if>
+                                        <if condition="$v[status] eq 1">已付款(未结算)</if>
+                                        <if condition="$v[status] eq 2">等待分成(未结算)</if>
+                                        <if condition="$v[status] eq 3">已分成</if>
+                                        <if condition="$v[status] eq 4">已取消</if>
+                                    </span>
+                                </p>
+                                <p class="coligh"><span>{:date('Y-m-d H:i:s',$v[create_time])}</span></p>
+                            </li>
+                        </ul>
+                        <noempty name="v['return_desc']">
+	                        <ul>{$v.return_desc}</ul>
+                        </noempty>
+                        
+                    </div>
+                </foreach>
+            </div>
+        </empty>
+    </div>
+</div>
+<script type="text/javascript" src="__STATIC__/js/sourch_submit.js"></script>
+<script type="text/javascript">
+    //    var record=$('.record').val();   //获取记录类型
+    //加载更多记录
+    var page = 1;
+    function ajax_sourch_submit()
+    {
+        page ++;
+        $.ajax({
+            type : "GET",
+            url:"/index.php?m=Mobile&c=Distribut&a=rebate_log&is_ajax=1&p="+page,//+tab,
+            data:{sort_asc:"{$Request.param.sort_asc}",sort:"{$Request.param.sort}",status:"{$Request.param.status}"},
+            success: function(data)
+            {
+                if($.trim(data) == '') {
+                    $('#getmore').hide();
+                }else{
+                    $(".allpion").append(data);
+                }
+            }
+        });
+    }
+
+    $(function(){
+        //显示综合筛选弹窗
+        $('.search_list_dump .lb').click(function(){
+            $('.fil_all_comm').show();
+            cover();
+            $('.classreturn,.search_list_dump').addClass('pore');
+        });
+        $('.lb').text($('.on').text());
+    })
+</script>
+</body>
+</html>

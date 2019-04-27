@@ -1,0 +1,211 @@
+<include file="public/layout" />
+<script type="text/javascript" src="__ROOT__/public/static/js/layer/laydate/laydate.js"></script>
+
+<body style="background-color: rgb(255, 255, 255); overflow: auto; cursor: default; -moz-user-select: inherit;">
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+  <div class="fixed-bar">
+    <div class="item-title">
+      <div class="subject">
+        <h3>虚拟订单</h3>
+        <h5>商城虚拟商品交易订单查询及管理</h5>
+      </div>
+		<ul class="tab-base nc-row">
+			<li><a class="current" href="{:U('admin/Order/virtual_list')}"><span>虚拟订单</span></a></li>
+			<li><a class="" href="{:U('admin/Order/verify_code')}"><span>兑换码兑换</span></a></li>
+		</ul>
+    </div>
+  </div>
+  <!-- 操作说明 -->
+  <div id="explanation" class="explanation" style="color: rgb(44, 188, 163); background-color: rgb(237, 251, 248); width: 99%; height: 100%;">
+    <div id="checkZoom" class="title"><i class="fa fa-lightbulb-o"></i>
+      <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+      <span title="收起提示" id="explanationZoom" style="display: block;"></span>
+    </div>
+     <ul>
+      <li>点击查看操作将显示订单（包括电子兑换码）的详细信息</li>
+      <li>未付款的订单可以点击取消操作来取消订单</li>
+      <li>如果平台已确认收到买家的付款，但系统支付状态并未变更，可以点击收到货款操作，并填写相关信息后更改订单支付状态</li>
+    </ul>
+  </div>
+  <div class="flexigrid">
+    <div class="mDiv">
+      <div class="ftitle">
+        <h3>订单列表</h3>
+        <h5>(共{$total_count}条记录)</h5>
+      </div>
+      <div title="刷新数据" class="pReload"><i class="fa fa-refresh"></i></div>
+	  <form class="navbar-form form-inline"  method="post" action="{:U('Order/export_order')}"  name="search-form2" id="search-form2">
+          <input type="hidden" name="prom_type" id="prom_type" value="5">
+          <input type="hidden" name="order_ids" id="order_ids" value="">
+          <div class="sDiv">
+            <div class="sDiv2">
+                <input type="text" size="30" id="start_time" name="start_time" value="{$start_time}" class="qsbox"  placeholder="下单开始时间">
+            </div>
+            <div class="sDiv2">
+                <input type="text" size="30" id="end_time" name="end_time" value="{$end_time}" class="qsbox"  placeholder="下单结束时间">
+            </div>
+            <div class="sDiv2">
+                <select name="pay_status" class="select" style="width:100px;margin-right:5px;margin-left:5px">
+                        <option value="">支付状态</option>
+                        <option value="0">未支付</option>
+                        <option value="1">已支付</option>
+                </select>
+            </div>
+            <div class="sDiv2">
+                <select name="pay_code" class="select" style="width:100px;margin-right:5px;margin-left:5px">
+                    <option value="">支付方式</option>
+                    <option value="alipay">支付宝支付</option>
+                    <option value="weixin">微信支付</option>
+                    <option value="miniAppPay">微信小程序支付</option>
+                    <option value="unionpay">银联在线支付</option>
+                    <option value="tenpay">PC端财付通</option>
+                    <option value="余额支付">余额支付</option>
+                    <!--<option value="cod">货到付款</option>-->
+                 </select>
+             </div>
+             <div class="sDiv2">
+              <select  name="key_type" class="select">
+                <option value="mobile">接收手机</option>
+                <option value="order_sn">订单编号</option>
+                </foreach>
+              </select>
+             </div>
+             <div class="sDiv2">
+                <input type="text" size="30" name="keywords" class="qsbox" placeholder="搜索相关数据...">
+            </div>
+            <div class="sDiv2">
+              <input type="button"  onclick="ajax_get_table('search-form2',1)" class="btn" value="搜索">
+            </div>
+          </div>
+     </form>
+    </div>
+    <div class="hDiv">
+      <div class="hDivBox" id="ajax_return">
+        <table cellspacing="0" cellpadding="0">
+          <thead>
+	        	<tr>
+	              <th class="sign" axis="col0">
+	                <div style="width: 24px;"><i class="ico-check"></i></div>
+	              </th>
+	              <th align="left" abbr="order_sn" axis="col3" class="">
+	                <div style="text-align: left; width: 140px;" class="">订单编号</div>
+	              </th>
+	              <th align="left" abbr="consignee" axis="col4" class="">
+	                <div style="text-align: left; width: 100px;" class="">接收手机</div>
+	              </th>
+	              <th align="center" abbr="article_show" axis="col5" class="">
+	                <div style="text-align: center; width: 80px;" class="">订单金额</div>
+	              </th>
+	              <th align="center" abbr="article_time" axis="col6" class="">
+	                <div style="text-align: center; width: 60px;" class="">订单状态</div>
+	              </th>
+	              <th align="center" abbr="article_time" axis="col6" class="">
+	                <div style="text-align: center; width: 60px;" class="">支付状态</div>
+	              </th>
+	              <th align="center" abbr="article_time" axis="col6" class="">
+	                <div style="text-align: center; width: 80px;" class="">支付方式</div>
+	              </th>
+	              <th align="center" abbr="article_time" axis="col6" class="">
+	                <div style="text-align: center; width: 120px;" class="">下单时间</div>
+	              </th>
+	              <th align="center" abbr="article_time" axis="col6" class="">
+	                <div style="text-align: center; width: 120px;" class="">支付时间</div>
+	              </th>
+	              <th align="center" axis="col1" class="handle">
+	                <div style="text-align: center; width: 150px;">操作</div>
+	              </th>
+	              <th style="width:100%" axis="col7">
+	                <div></div>
+	              </th>
+	            </tr>
+	          </thead>
+        </table>
+      </div>
+    </div>
+    <div class="tDiv">
+      <div class="tDiv2">
+        <div class="fbutton">
+            <a href="javascript:export_order()">
+              <div class="add" title="选定行数据导出excel文件,如果不选中行，将导出列表所有数据">
+                <span><i class="fa fa-plus"></i>导出数据</span>
+              </div>
+            </a>
+          </div>
+      </div>
+      <div style="clear:both"></div>
+    </div>
+    <div class="bDiv" style="height: auto;">
+      <div id="flexigrid" cellpadding="0" cellspacing="0" border="0">
+
+      </div>
+      <div class="iDiv" style="display: none;"></div>
+    </div>
+    <!--分页位置--> 
+   	</div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function(){
+
+        $('#start_time').layDate();
+        $('#end_time').layDate();
+        ajax_get_table('search-form2',1);
+		// 点击刷新数据
+		$('.fa-refresh').click(function(){
+			location.href = location.href;
+		});
+
+		$('.ico-check ' , '.hDivBox').click(function(){
+			$('tr' ,'.hDivBox').toggleClass('trSelected' , function(index,currentclass){
+	    		var hasClass = $(this).hasClass('trSelected');
+	    		$('tr' , '#flexigrid').each(function(){
+	    			if(hasClass){
+	    				$(this).addClass('trSelected');
+	    			}else{
+	    				$(this).removeClass('trSelected');
+	    			}
+	    		});  
+	    	});
+		});
+		 
+	});
+    
+	$('#flexigrid > table>tbody >tr').click(function(){
+		$(this).toggleClass('trSelected');
+	});
+
+    function ajax_get_table(tab,page){
+        cur_page = page; //当前页面 保存为全局变量
+        $.ajax({
+            type : "POST",
+            url:"/index.php/Admin/order/ajaxVirtualList/p/"+page,//+tab,
+            data : $('#'+tab).serialize(),//
+            success: function(data){
+                $("#flexigrid").html('');
+                $("#flexigrid").append(data);
+                // 表格行点击选中切换
+                $('#flexigrid > table>tbody >tr').click(function(){
+                    $(this).toggleClass('trSelected');
+                });
+
+            }
+        });
+    }
+
+    /**
+     * 导出数据
+     */
+    function export_order(){
+		var selected_ids = '';
+		$('.trSelected' , '#flexigrid').each(function(i){
+			selected_ids += $(this).data('order-id')+',';
+		});
+		if(selected_ids != ''){
+			$('input[name="order_ids"]').val(selected_ids.substring(0,selected_ids.length-1));
+		}
+		$('#search-form2').submit();
+	}
+</script>
+</body>
+</html>

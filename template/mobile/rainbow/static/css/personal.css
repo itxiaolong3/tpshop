@@ -1,0 +1,185 @@
+/*p, form, ul, ol, dl{
+	margin: 0;
+}*/
+
+.cont_fl{
+	float: left;
+}
+.cont_fr{
+	float: right;
+}
+.padd10{
+	padding: 0 0.64rem;
+}
+.z_user_li_wrap{
+	padding-bottom: 2.16rem;
+}
+.border10{
+	border-bottom: .426rem solid #f8f8f8;
+}
+.z_user_vs{
+	width: 16rem;
+	height: 28.458666666666666rem;
+}
+.z_user_head{
+	width: 100%;
+	position: relative;
+	height: 8.428rem;
+	background-color: #2e69c1;
+}
+.z_user_icon{
+	position: absolute;
+	right: .64rem;
+    top: .64rem;
+}
+.z_user_icon a{
+	display: block;
+}
+.z_user_icon a i{
+	background-image: url(../images/set.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 1.28rem;
+    height: 1.28rem;
+    display: block;
+    background-position: 0 0;
+}    
+.z_user_top{
+	width: 100%;
+	padding-top: 0.64rem;
+	height: 5.973333333333334rem;
+	text-align: center;
+	color: #FFFFFF;
+}
+.user_top_tx{
+	width: 2.88rem;
+	height: 2.88rem;
+	margin: 0 auto;
+	border-radius: 50%;
+	overflow: hidden;
+}
+.user_top_tx img{
+	width: 100%;
+	height: 100%;
+}
+.user_top_name{
+	padding-top: 0.256rem;
+	font-size: 0.64rem;
+}
+.user_top_title{
+	font-size: 0.4266666666666667rem;
+}
+.user_top_name a,.user_top_title a{
+	width: 100%;
+	height: 100%;
+	color: #FFFFFF;
+}
+.z_user_down{
+	height: 2.432rem;
+	position: relative;
+	padding: 0 0.4266666666666667rem;
+}
+.user_down_bg {
+	background-color: #000000;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	left: 0;
+	top: 0;
+	z-index: 8;
+	opacity: 0.6;
+}
+
+.z_user_down ul{
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	z-index: 9;
+}
+.z_user_down ul li{
+	text-align: center;
+	width: 50%;
+	float: left;
+	color: #ffffff;
+}
+.z_user_down ul li a{
+	width: 100%;
+}
+.user_down_dev{
+	font-size: 0.64rem;
+	margin-top: 0.4266666666666667rem;
+	color: #ffff;
+}
+.user_down_name{
+	margin-top: 0.213rem;
+    font-size: 0.46466rem;
+}
+.user_down_name {
+	color: #FFFFFF;
+}
+.user_list_cont{
+	line-height: 1.92rem;
+	border-bottom: 0.0213rem solid #ddd;
+	overflow: hidden;
+}
+.user_list_cont .cont_fl img{
+	width:0.9386666666666666rem;
+	height: 0.9386666666666666rem;
+	vertical-align: middle;
+}
+.user_list_cont .cont_fl span{
+	font-size: 0.64rem;
+    vertical-align: middle;
+    font-weight: normal;
+    margin-left: 0.4266666666666667rem;
+}
+.user_list_cont .cont_fr i{
+	margin-top: 0.6826666666666666rem;
+	margin-left: 0.4266666666666667rem;
+}
+.user_list_cont .cont_fr span{
+	vertical-align: middle;
+    font-weight: normal;
+    color: #4c4c4c;
+    font-size: 0.64rem;
+    float: left;
+    margin-top: 0.042666666666666665rem;
+}
+.zMright{
+	background-image: url(../images/zLEFTS.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 0.2986666666666667rem;
+    height: 0.5973333333333334rem;
+    display: block;
+    float: left;
+}
+.z_user_nav {
+	padding:0 0.64rem;
+}
+.z_user_nav ul{
+	overflow: hidden;
+	margin: 0;
+}
+.z_user_nav ul li{
+	position: relative;
+    float: left;
+    width: 25%;
+    text-align: center;
+}
+.z_user_nav ul li a{
+	padding: 0.8533333333333334rem 0;
+    display: block;
+}
+.z_user_nav ul li a img{
+	width: 1.0666666666666667rem;
+	height: 0.8533333333333334rem;
+}  
+.z_user_nav ul li a p{
+	font-size: 0.5546666666666666rem;
+	margin-top: 0.21333333333333335rem;
+	color: #666666;
+} 

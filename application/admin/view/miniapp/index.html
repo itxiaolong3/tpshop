@@ -1,0 +1,93 @@
+<include file="public/layout"/>
+<body style="background-color: rgb(255, 255, 255); overflow: auto; cursor: default; -moz-user-select: inherit;">
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>小程序设置</h3>
+                <h5>小程序授权</h5>
+            </div>
+            <ul class="tab-base nc-row">
+                <li><a href="{:U('miniapp/index')}" class="current">
+                    <span>小程序授权</span></a>
+                </li>
+                <li><a href="{:U('miniapp/tester')}">
+                    <span>体验者设置</span></a>
+                </li>
+                <li><a href="{:U('miniapp/template')}">
+                    <span>小程序基本信息</span></a>
+                </li>
+                <li><a href="{:U('miniapp/release_manage')}" >
+                    <span>上线管理</span></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- 操作说明 -->
+    <div id="explanation" class="explanation" style="color: rgb(44, 188, 163); background-color: rgb(237, 251, 248); width: 99%; height: 100%;">
+        <div id="checkZoom" class="title"><i class="fa fa-lightbulb-o"></i>
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span title="收起提示" id="explanationZoom" style="display: block;"></span>
+        </div>
+    </div>
+    <div class="authorization_before">
+        <if condition="$miniapp['is_auth'] == 1">
+            <span class="autbe_tips">你已授权绑定"{$miniapp['nickname']}"小程序，如需更换小程序可解绑后重新授权绑定，更换绑定小程序会导致已发布的小程序不可用，请谨慎操作。</span>
+            <div class="autbe_btn" style="margin-top: 20px;">
+                <a href="JavaScript:void(0);" class="ncap-btn-big ncap-btn-green" onclick="unbind_miniapp()">解绑小程序</a>
+            </div>
+        <else/>
+            <span class="autbe_tips">小程序尚未授权，授权后可避免复杂的设置，并能更安全、更便捷地使用我们的系统</span>
+            <img src="__PUBLIC__/static/images/wechatpay.png">
+            <b>微信小程序授权</b>
+            <div class="autbe_btn">
+                <a href="http://{$saas['saas_domain']}/client/miniapp/auth/user_id/{$app_service['user_id']}/service_id/{$app_service['service_id']}" class="ncap-btn-big ncap-btn-green" target="_blank">已有小程序，立即授权</a>
+                <a href="https://mp.weixin.qq.com" class="ncap-btn-big" target="_blank">注册小程序账号</a>
+            </div>
+        </if>
+    </div>
+ </div>
+<script>
+    function addMiniapp() {
+        $.ajax({
+            url:"{:U('miniapp/auth_url')}",
+            dataType: 'json',
+            success: function(data){
+                if (data.status === 1) {
+                    top.location.href = data.result;
+                    //window.open(data.result);
+                } else {
+                    var msg = (typeof data.status === 'undefined') ? '系统繁忙，请联系客服' : data.msg;
+                    return layer.alert(msg, {icon:2});
+                }
+            }
+        });
+    }
+    function unbind_miniapp(){
+        layer.confirm('确定解绑小程序？', {icon: 3, title:'提示'}, function (index) {
+            layer.close(index);
+            $.ajax({
+                url: "{:U('app/unbind_miniapp')}",
+                type: 'get',
+                dataType: 'json',
+                success: function (data) {
+                    if (data.status === 1) {
+                        layer.msg(data.msg, {time: 1000, icon: 1}, function () {
+                            window.location.reload(true);
+                        });
+                    } else {
+                        var msg = (typeof data.status === 'undefined') ? '系统繁忙，请联系客服' : data.msg;
+                        return layer.alert(msg, {icon: 2});
+                    }
+                },
+                error: function () {
+                    layer.alert('系统繁忙，请联系客服', {icon: 2});
+                }
+            });
+        });
+    }
+</script>
+</body>
+</html>

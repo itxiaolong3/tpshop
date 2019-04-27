@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>账户余额</title>
+		<link rel="stylesheet" type="text/css" href="__STATIC__/css/tpshop.css" />
+		<link rel="stylesheet" type="text/css" href="__STATIC__/css/myaccount.css" />
+		<link rel="stylesheet" type="text/css" href="__STATIC__/css/jh.css" />
+		<script src="__STATIC__/js/jquery-1.11.3.min.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<style>
+		.topup-money {
+			background-color: #ffffff;
+			padding: 15px;
+		}
+		.usermoney {
+			border: 1px solid #dedede;
+			overflow: hidden;
+		}
+		.userdown-top {
+			width:100%;
+		}
+		.userdown-top span{
+			display:inline-block;
+			 cursor: pointer;
+			 width: 120px;
+			 height:36px;
+			 line-height:36px;
+			 text-align: center;
+			 border: 1px solid #dedede;
+			 border-bottom:1px solid #fff;
+			 color:#333;
+			 font-size:16px;
+			 font-weight:bold;
+			 letter-spacing:3px;
+		 }
+		.choicetu {
+			overflow: hidden;
+			padding: 10px;
+			margin-top: 16px;
+		}
+		.fop-main {
+			overflow: hidden;
+			margin-bottom: 50px;
+		}
+		
+
+		.m-tagbox {
+			margin-top:20px;
+			overflow:hidden;
+		}
+		.m-tagbox .tag-define, .m-tagbox .tag-item {
+			float: left;
+			width: 98px;
+			height: 38px;
+			line-height: 38px;
+			border: 1px solid #e0e0e0;
+			margin-right: 20px;
+			text-align: center;
+			color: #333;
+		}
+		.m-tagbox .tag-item {
+			position: relative;
+			overflow: hidden;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+		}
+		.m-tagbox .t-check {
+			display: none;
+			position: absolute;
+			right: 0;
+			bottom: 0;
+			width: 16px;
+			height: 16px;
+			background-position: -40px 0;
+		}
+		.m-tagbox .tptig {
+			display: inline-block;
+			background-image: url(__STATIC__/images/sprite-operate.png);
+			background-repeat: no-repeat;
+		}
+		.orde-sjyy {
+			font-family: 'Tahoma','\5FAE\8F6F\96C5\9ED1';
+		}
+		.titls {
+			font-size: 14px;
+			border-left: 3px solid #e5e5e5;
+			padding-left: 6px;
+			line-height: 20px;
+			margin-bottom: 20px;
+		}
+		.bsjy-g dl {
+			border: 1px solid #dedede;
+			border-bottom: 0 none;
+		}
+	</style>
+	<body class="bg-f5">
+	<include file="user/header"/>
+		<div class="home-index-middle">
+			<div class="w1224">
+				<div class="g-crumbs">
+			       	<a href="{:U('Home/User/index')}">我的商城</a>
+			       	<i class="litt-xyb"></i>
+			       	<span>账户余额</span>
+			    </div>
+			    <div class="home-main">
+					<include file="user/menu"/>
+			    	<div class="ri-menu fr">
+						<div class="menumain p mywallets" style="display: block;">
+							<div class="goodpiece">
+								<h1>账户余额</h1>
+								<!--<a href=""><span class="co_blue">账户余额说明</span></a>-->
+							</div>
+							<div class="shopcard frozen-cha ma-to-20 p">
+								<div class="cuschan">
+									<span class="kycha"><i class="money"></i>可用余额</span><br />
+									<span class="co"><em>￥</em>{$user.user_money}</span>
+								</div>
+								<div class="cuschan">
+									<span class="kycha"><i class="frozen"></i>冻结金额</span><br />
+									<span class="co"><em>￥</em>{$user.frozen_money}</span>
+								</div>
+								<div class="cuschan jhove">
+									<span class="kycha">
+										账户状态：<em><if condition="$user['is_lock'] eq 1">被冻结<else/>已激活</if></em>
+									</span>
+								</div>
+								<div class="cuschan tc-uic">
+									<a class="topup-mom" href="{:U('Home/User/withdrawals')}">提现</a>
+									<a class="topup-mom" href="javascript:" onclick="mywalletstopup()">充值</a>
+								</div>
+							</div>
+							<div class="time-sala">
+								<ul>
+                                    <li <if condition="$Request.param.type eq ''">class="red"<else />class="mal-l"</if>><a href="{:U('Home/User/recharge',array(''))}">充值记录</a></li>
+                                    <li <if condition="$Request.param.type eq 1">class="red"<else />class="mal-l"</if>><a href="{:U('Home/User/recharge',array('type'=>1))}">消费记录</a></li>
+                                    <li <if condition="$Request.param.type eq 2">class="red"<else />class="mal-l"</if>><a href="{:U('Home/User/recharge',array('type'=>2))}">提现记录</a></li>
+								</ul>
+							</div>
+							<div class="he"></div>
+							<div class="card-list accbala">
+								<ul>
+									<li><a href="javascript:void(0);">日期</a></li>
+									<li><a href="javascript:void(0);">金额</a></li>
+									<if condition="$Think.get.type eq '2'"><li><a href="javascript:void(0);">手续费</a></li><else /></if>
+									<if condition="$Think.get.type eq ''"><li><a href="javascript:void(0);">状态</a></li><else /><li><a href="javascript:void(0);">订单号</a></li></if>
+									<li><a href="javascript:void(0);">备注</a></li>
+								</ul>
+							</div>
+							<if condition="$Think.get.type eq ''">
+                                <!--无记录时-s-->
+                                <empty name="lists">
+                                    <p class="ncyekjl">--暂无记录--</p>
+                                </empty>
+                                <!--无记录时-e-->
+								<foreach name="lists" item="vo">
+									<div class="card-list c_contan accbala-list">
+										<ul>
+											<li><a href="javascript:void(0);">{$vo.ctime|date='Y-m-d H:i:s',###}</a></li>
+											<li><a href="javascript:void(0);">{$vo.account}</a></li>
+											<li><a href="javascript:void(0);">{$status[$vo.pay_status]}</a></li>
+											<li><a href="javascript:void(0);">{$vo.pay_name}</a></li>
+										</ul>
+									</div>
+								</foreach>
+							</if>
+                        <!--消费记录-s-->
+							<if condition="$Think.get.type eq 1">
+
+                                <!--无记录时-s-->
+                                <empty name="lists">
+                                    <p class="ncyekjl">--暂无记录--</p>
+                                </empty>
+                                <!--无记录时-e-->
+								<foreach name="lists" item="account">
+									<div class="card-list c_contan accbala-list">
+										<ul>
+											<li><a href="javascript:void(0);">{$account.change_time|date='Y-m-d H:i:s',###}</a></li>
+											<li><a href="javascript:void(0);">{$account.user_money}</a></li>
+											<li><a href="javascript:void(0);">{$account.order_sn|default="--"}</a></li>
+											<li><a href="javascript:void(0);">{$account.desc}</a></li>
+										</ul>
+									</div>
+								</foreach>
+							</if>
+                        <!--消费记录-e-->
+
+                        <!--提现记录-s-->
+                            <if condition="$Request.param.type eq 2">
+                                <!--无记录时-s-->
+                                <empty name="lists">
+                                    <p class="ncyekjl">--暂无记录--</p>
+                                </empty>
+                                <!--无记录时-e-->
+                                <foreach name="lists" item="withdrawals">
+                                    <div class="card-list c_contan accbala-list">
+                                        <ul>
+                                            <li><a href="javascript:void(0);">{$withdrawals.create_time|date='Y-m-d H:i:s',###}</a></li>
+                                            <li><a href="javascript:void(0);">{$withdrawals.money}</a></li>
+                                            <li><a href="javascript:void(0);">{$withdrawals.taxfee}</a></li>
+                                            <li><a href="javascript:void(0);">{$withdrawals.id}</a></li>
+                                            <li><a href="javascript:void(0);">{$withdrawals.remark}</a></li>
+                                            <li><a href="javascript:void(0);">{$status[$withdrawals.status]}</a></li>
+                                        </ul>
+                                    </div>
+                                </foreach>
+                            </if>
+                        <!--提现记录-e-->
+						</div>
+                        <!--充值-s-->
+						<div class="aboutmoney addmon" style="display:none">
+							<div class="usermoney topup-money">
+								<div class="userdown-top"><span>充值</span></div>
+								<hr style="height: 1px; background: #dedede; border: none; margin-top: -1px;" />
+								<div class="choicetu">
+                                    <form method="post"  id="recharge_form" action="">
+									<div class="monettu">
+										<div class="fop-main">
+                                        	<div class="remain-cash">
+                                            	当前余额：<em>￥</em><b>{$user.user_money}</b>
+                                            </div>
+                                        	<div class="tag-define" data_id="tag_157">
+												<span class="define-label">充值金额：<em>￥</em></span>
+												<input type="text" name="account" class="define-input" value="" placeholder="请输入充值金额" id="input_val">
+                                                <i></i>
+											</div>
+											<div class="m-tagbox m-multi-tag">
+												<a href="javascript:void(0)" rel="50" class="tag-item">￥50.00<i class="t-check "></i></a>
+												<a href="javascript:void(0)" rel="100" class="tag-item">￥100.00<i class="t-check"></i></a>
+												<a href="javascript:void(0)" rel="200" class="tag-item">￥200.00<i class="t-check"></i></a>
+												<a href="javascript:void(0)" rel="500" class="tag-item">￥500.00<i class="t-check"></i></a>
+											</div>
+										</div>
+                                    <div class="fop-choice">
+                                            <div class="orde-sjyy">
+                                                <h3 class="titls">选择支付方式</h3>
+                                                <div class="bsjy-g">
+                                                    <dl>
+                                                        <dd>
+                                                            <div class="order-payment-area">
+                                                                <div class="po-re dsfzf-ee">
+                                                                    <ul>
+                                                                        <foreach name="paymentList" item="v"  key="k">
+                                                                            <li>
+                                                                                <div class="payment-area">
+                                                                                    <input type="radio"  value="pay_code={$v['code']}" class="radio vam" name="pay_radio" <if condition="$k eq $alipay">checked</if>>
+                                                                                    <label for="">
+                                                                                        <img src="/plugins/{$v['type']}/{$v['code']}/{$v['icon']}" width="120" height="40" onClick="change_pay(this);" />
+                                                                                    </label>
+                                                                                </div>
+                                                                            </li>
+                                                                        </foreach>
+                                                                    </ul>
+                                                                </div>
+                                                            </div>
+                                                            <!--第三方网银支付 start-->
+                                                            <foreach name="bankCodeList" item="v"  key="k">
+                                                                <div class="order-payment-area">
+                                                                    <div class="dsfzfpte">
+                                                                        <b>{$paymentList[$k]['name']}</b>
+                                                                        <em>网银支付</em>
+                                                                    </div>
+                                                                    <div class="po-re dsfzf-ee">
+                                                                        <ul>
+                                                                            <foreach name="v" item="v2"  key="k2">
+                                                                                <li>
+                                                                                    <div class="payment-area">
+                                                                                        <input type="radio" name="pay_radio" class="radio vam" value="pay_code={$k}&bank_code={$v2}" id="input-ALIPAY-1">
+                                                                                        <label for="">
+                                                                                            <img src="__STATIC__/images/images-out/{$bank_img[$k2]}" width="120" height="40" onClick="change_pay(this);"/>
+                                                                                        </label>
+                                                                                    </div>
+                                                                                </li>
+                                                                            </foreach>
+                                                                        </ul>
+                                                                    </div>
+                                                                </div>
+                                                            </foreach>
+                                                            <!--第三方网银支付 end -->
+                                                        </dd>
+                                                    </dl>
+                                                    <input type="hidden" name="account" id="add_money" value="50">
+                                                    <div class="order-payment-action-area">
+                                                    	<a href="javascript:void(0);" class="return-wallet" onclick="mywalletsa();">取消并返回</a>
+                                                        <a class="button-style-5 button-confirm-payment" href="javascript:void(0);" onclick="recharge_submit();">立即支付</a>
+                                                    </div>
+                                                </div>
+                                        </div>
+										</div>
+									</div>
+                                    </form>
+								</div>
+							</div>
+						</div>
+                        <!--充值-e-->
+						<div class="operating fixed consume_log" id="bottom">
+							<div class="fn_page clearfix">
+                                {$page}
+							</div>
+						</div>
+			    	</div>
+			    </div>
+			</div>
+		</div>
+		<!--footer-s-->
+		<div class="footer p"><include file="public/footer" /> </div>
+		<!--footer-e-->
+		<script type="text/javascript">
+            //切换充值记录，消费记录
+			$(function(){
+				$('.time-sala ul li').click(function(){
+					$(this).addClass('red').siblings().removeClass('red');
+				})
+                //选择充值金额
+                $('.m-multi-tag a').click(function(){
+                    $('#input_val').val($(this).attr('rel'));
+					show_delete_btn();
+					$("#input_val").focus();
+                })
+			})
+
+			$(document).ready(function() {
+				$(document).on('click','.tag-item',function(){
+					$(this).find('.t-check').addClass('tptig').parent().siblings().find('.t-check').removeClass('tptig');
+					$('#add_money').val($(this).attr('rel'));
+				});
+//				$('.tag-define').click(function(){
+//					var goods_id = $(this).attr('data_id').substr(4);
+//					$(this).find('.define-input').show().focus();
+//					$(this).find('.define-input').blur(function(){
+//						var ce = $(this).val();
+//						ce = ce.replace(/\D|^0/g,'')
+//
+//						$(this).parent('.tag-define').siblings('.tag-item').each(function(){
+//							var a_text = $(this).text();
+//							if(ce == a_text && ce != ''){
+//								layer.alert('已有该标签!',{icon:2});
+//								ce = '';
+//							}
+//						});
+//					})
+//				});
+			});
+			// 点充值时
+            function mywalletstopup() {
+                $('.addmon').show();
+                $('.mywallets').hide();
+                $('#bottom').hide()
+				$("#input_val").focus();
+				var input_val = Number($('#input_val').val());
+				if (input_val > 0){
+					show_delete_btn();
+				}
+            }
+            //返回我的钱包
+            function mywalletsa() {
+                $('.mywallets').show();
+                $('#bottom').show();
+                $('.addmon').hide();
+            }
+			function recharge_submit(){
+				// 直接判断输入金额
+				var input_val = $('#input_val').val();
+				if ( input_val == ''){
+					layer.alert('充值金额不能为空',{icon:2});
+					return false;
+				}
+
+				if(isNaN(input_val) || Number(input_val) <= 0){
+					layer.alert('请输入正确的充值金额',{icon:2});
+					return false;
+				}else{
+					$('#add_money').val(Number(input_val));
+				}
+
+				$('#recharge_form').submit();
+			}
+            //选择支付方式
+            function change_pay(obj)
+            {
+                $(obj).parent().siblings('input[name="pay_radio"]').trigger('click');
+            }
+
+			// 输入金额时：显示（￥ + 输入的金额 + 光标 + 清除）
+		    $("#input_val").keydown(function(){
+		        show_delete_btn();
+		        $('.t-check').removeClass('tptig');
+		    });
+		    $("#input_val").keyup(function(){
+		        if ($('#input_val').val()=="") {
+		            $(".tag-define i").hide();
+		        }else{
+		            show_delete_btn();
+		        }
+		    });
+			function show_delete_btn(){
+				$(".tag-define i").show();
+				$(".tag-define i").unbind('click');
+				$(".tag-define i").click(function(){
+					$('#input_val').val('').focus();
+					$(".tag-define i").hide();
+					$('.t-check').removeClass('tptig');
+
+				})
+			}
+
+		</script>
+	</body>
+</html>

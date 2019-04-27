@@ -1,0 +1,193 @@
+<include file="public/layout"/>
+<link href="__PUBLIC__/static/css/weixin-mp.css" rel="stylesheet"/>
+<body style="background-color: #FFF; overflow: auto;">
+<div id="toolTipLayer" style="position: absolute; z-index: 9999; display: none; visibility: visible; left: 95px; top: 573px;"></div>
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <if condition="$type == 'keyword'">
+                <a class="back" href="javascript:history.back();" title="微信公众号配置"><i class="fa fa-arrow-circle-o-left"></i></a>
+            </if>
+            <div class="subject">
+                <h3>自动回复</h3>
+                <h5>添加或编辑回复内容</h5>
+            </div>
+            <if condition="$type != 'keyword'">
+                <ul class="tab-base nc-row">
+                    <foreach name="types" item="v" key="k">
+                        <li><a href="{$v.url}" <if condition="$k==$type">class="current"</if>>
+                            <span>{$v.menu}</span></a>
+                        </li>
+                    </foreach>
+                </ul>
+            </if>
+        </div>
+    </div>
+    <form class="form-horizontal" method="post" id="handlepost" action="">
+        <div class="ncap-form-default">
+            <if condition="$type == 'keyword'">
+                <dl class="row">
+                    <dt class="tit">
+                        <label><em>*</em>规则</label>
+                    </dt>
+                    <dd class="opt">
+                        <input type="text" name="rule" value="{$reply.rule}" class="input-txt">
+                        <p class="notic">最多32个字</p>
+                    </dd>
+                </dl>
+                <dl class="row">
+                    <dt class="tit">
+                        <label><em>*</em>关键词</label>
+                    </dt>
+                    <dd class="opt">
+                        <input type="text" name="keywords" value="{$reply.keywords}" class="input-txt">
+                        <p class="notic">多个关键字，请以英文逗号隔开(',')</p>
+                    </dd>
+                </dl>
+            </if>
+            <dl class="row">
+                <dt class="tit">
+                    <label><em></em>回复类型</label>
+                </dt>
+                <dd class="opt">
+                    <input type="radio" name='msg_type' value="text" onchange="selectType('text')" <if condition="!$reply.msg_type || $reply.msg_type=='text'">checked</if>> 文本
+                    <input type="radio" name='msg_type' value="news" onchange="selectType('news')" <if condition="$reply.msg_type=='news'">checked</if>> 图文
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label><em>*</em>回复内容</label>
+                </dt>
+                <dd class="opt">
+                    <textarea name="content" rows="6" placeholder="回复内容" class="tarea" id="content_text" style="display: none">{$reply.data}</textarea>
+                    <div id="content_news" style="display: none" onclick="popupNews()">
+                        <if condition="$reply.msg_type=='news'">
+                            <div class="ma-card" style="cursor: pointer;">
+                                <if condition="count($news.wx_news) === 1">
+                                    <!--单图文-->
+                                    <div class="title ellipsis-1">{$news.wx_news.0.title}</div>
+                                    <div class="time">{$news.update_time}</div>
+                                    <div class="card-item no-line">
+                                        <div class="cover">
+                                            <img src="{$news.wx_news.0.thumb_url}"/>
+                                        </div>
+                                    </div>
+                                    <div class="desc ellipsis-2">{$news.wx_news.0.digest?:$news.wx_news.0.content_digest}</div>
+                                    <else/>
+                                    <!--多图文-->
+                                    <div class="time">{$news.update_time}</div>
+                                    <volist name="news.wx_news" id="news" key="i">
+                                        <div class="card-item">
+                                            <if condition="$i==1">
+                                                <div class="cover cover-sm">
+                                                    <img src="{$news.thumb_url}"/>
+                                                    <div class="title-in ellipsis-1">{$news.title}</div>
+                                                </div>
+                                                <else/>
+                                                <div class="post">
+                                                    <div class="post-title ellipsis-2">{$news.title}</div>
+                                                    <div class="post-cover">
+                                                        <img src="{$news.thumb_url}"/>
+                                                    </div>
+                                                </div>
+                                            </if>
+                                        </div>
+                                    </volist>
+                                </if>
+                            </div>
+                        <else/>
+                            <a href="JavaScript:void(0);" class="ncap-btn ncap-btn-green">选择</a>
+                        </if>
+                    </div>
+                    <input type="hidden" id='material_id' value="{$reply.material_id}" name="material_id">
+                    <input type="hidden" value="{$type}" name="type">
+                </dd>
+            </dl>
+            <div class="bot">
+                <a href="JavaScript:void(0);" onClick="formSubmit()" class="ncap-btn-big ncap-btn-green">提 交</a>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- 图文素材弹框 -->
+<div class="ncap-form-default" id="news-select" style="display: none">
+    <div id="news-list"></div>
+    <div class="bot" style="text-align:right;padding-right: 20px;">
+        <a href="JavaScript:void(0);" onClick="selectNews()" class="ncap-btn-big ncap-btn-green">确定</a>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        selectType("{$reply.msg_type|default='text'}");
+    });
+    function formSubmit() {
+        var url = "{$reply.id ? U('update_auto_reply') : U('add_auto_reply')}";
+        $.ajax({
+            url: url + '?id={$reply.id}',
+            type: 'POST',
+            data: $("#handlepost").serialize(),
+            dataType: 'json',
+            success: function (res) {
+                if (res.status === 1) {
+                    return layer.msg(res.msg, {time: 500, icon: 1});
+                }
+                var msg = (typeof res.status === 'undefined') ? '数据格式出错' : res.msg;
+                layer.alert(msg, {icon:2});
+            },
+            error: function () {
+                layer.alert('服务器繁忙！', {icon: 2});
+            }
+        });
+    }
+    function selectType(type) {
+        console.log(type);
+        if (type === 'text') {
+            $('#content_news').hide();
+            $('#content_text').show();
+        } else {
+            $('#content_text').hide();
+            $('#content_news').show();
+            if (!$('#content_news').children('.ma-card').length) {
+                popupNews();
+            }
+        }
+    }
+
+    function ajaxNews(page) {
+        $.ajax({
+            type : "POST",
+            url:"{:U('ajax_news')}?p=" + page,
+            success: function (data) {
+                $("#news-list").html(data);
+            }
+        });
+    }
+    function popupNews() {
+        ajaxNews(1);
+        layer.open({
+            type: 1,
+            title: '选择图文素材',
+            shadeClose: true,
+            shade: 0.8,
+            area: ['750px', '600px'],
+            content: $('#news-select')
+        });
+    }
+    function selectNews() {
+        var selectNews = $('.ma-card-mask:not(.hidden)');
+        if ( ! selectNews.length) {
+            return;
+        }
+        var news = selectNews.parent().clone();
+        news.children('.ma-card-mask').remove();
+        $('#content_news').html('').append(news);
+        $('#material_id').val(news.data('mid'));
+        layer.closeAll();
+    }
+</script>
+</body>
+</html>

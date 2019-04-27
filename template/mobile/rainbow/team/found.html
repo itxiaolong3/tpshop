@@ -1,0 +1,493 @@
+<include file="public/header" title="{$team[share_title]}"/>
+<style>
+	.no_more{
+		font-size:.32rem;text-align: center;color:#888;padding:.25rem .24rem .4rem; clear:both;
+	}
+</style>
+<div class="he_sustain">
+	<div class="classreturn loginsignup detail">
+		<div class="content">
+			<div class="ds-in-bl return">
+				<a href="javascript:history.back(-1)"><img src="__STATIC__/images/return.png" alt="返回"></a>
+			</div>
+			<div class="page-title1">拼单详情</div>
+			<!--<a class="btn-share-ico" id="share_button" href="javascript:;"></a>-->
+		</div>
+	</div>
+</div>
+<div class="goods-info-p p">
+	<div class="goods-pic-p"><img src="{$team.goods_id|goods_thum_images=257,257}" /></div>
+	<div class="goods-mes-p">
+		<div class="goods-name-p">{$team[goods_name]}</div>
+		<div class="use-num-p">{$teamFound[join]}人拼单·已拼{$team[virtual_sale_num]}件</div>
+		<div class="goods-price-p"><span>￥{$teamFound[price]}</span>拼单省{$teamFound[cut_price]|round=2}元</div>
+	</div>
+</div>
+<ul class="service-list-q">
+	<if condition="$tpshop_config.shopping_auto_service_date gt 0">
+		<li>
+			<img src="__STATIC__/images/ico-check-red1.png" alt="" />
+			<span>{$tpshop_config.shopping_auto_service_date}天退货</span>
+		</li>
+	</if>
+	
+	<li>
+		<img src="__STATIC__/images/ico-check-red1.png" alt="" />
+		<span>成团后48小时内发货</span>
+	</li>
+	<li>
+		<img src="__STATIC__/images/ico-check-red1.png" alt="" />
+		<span>正品保障</span>
+	</li>
+	<!--<li>-->
+		<!--<img src="__STATIC__/images/ico-check-red1.png" alt=""/>-->
+		<!--<span>全场包邮</span>-->
+	<!--</li>-->
+</ul>
+<div class="groups-users-q">
+	<ul class="users-list-p">
+		<li class="master-p">
+			<span class="tips-p">拼主</span>
+			<div class="pic-wrap">
+				<img src="{$teamFound[head_pic]}" alt="" />
+			</div>
+		</li>
+		<volist name="teamFollow" id="follow">
+			<li>
+				<img src="{$follow[follow_user_head_pic]}" alt="会员">
+			</li>
+		</volist>
+		<for start="0" end="$teamFound[surplus]">
+			<li>
+				<img src="__STATIC__/images/pic-member1.png" alt="">
+			</li>
+		</for>
+	</ul>
+
+	<if condition="$teamFound[status] eq 0">
+		<div class="groupsed"><img src="__STATIC__/images/ico-groupsed.png" alt="">待开团</div>
+		<a class="join-groups-p choise_num team" href="javascript:;">一键发起拼单</a>
+	<elseif condition="$teamFound[status] eq 1"/>
+		<div class="groupsing">仅剩<span>{$teamFound[surplus]}</span>个名额，<i id="rest_time" data-end-time="{$teamFound[found_time] + $team[time_limit]}">00:00:00</i>后结束</div>
+		<a class="join-groups-p choise_num found" data-id="{$teamFound[found_id]}"  href="javascript:;">一键参团</a>
+	<elseif condition="$teamFound[status] eq 2"/>
+		<div class="groupsed"><img src="__STATIC__/images/ico-groupsed.png" alt="">拼单已满</div>
+		<a class="join-groups-p choise_num team" href="javascript:;">一键发起拼单</a>
+	<else/>
+		<div class="groupsed"><img src="__STATIC__/images/ico-groupsed.png" alt="">拼单失败</div>
+		<a class="join-groups-p choise_num team" href="javascript:;">一键发起拼单</a>
+	</if>
+	<if condition="$team['team_type'] eq 2">
+		<a class="join-groups-p lottery-button" href="{:U('Team/lottery',['team_id'=>$team['team_id']])}">
+			<if condition="$team['is_lottery']">查看中奖名单<else/>未开奖</if>
+		</a>
+	</if>
+</div>
+<div class="buy-notes-p">
+	<div class="notes-wrap">
+		<div class="notes-title">拼单须知</div>
+		<div class="notes-cont">· 好友拼单 · 人满发货 · 人不满退货</div>
+	</div>
+</div>
+<div class="nav-list-p">
+	<a href="{:U('Mobile/Index/index')}">
+		<div class="ico-wrap"><img src="__STATIC__/images/pic-sy.png" alt="" /></div>
+		<span>首页逛逛</span>
+	</a>
+	<a href="{:U('Mobile/Activity/flash_sale_list')}">
+		<div class="ico-wrap"><img src="__STATIC__/images/pic-ms.png" alt="" /></div>
+		<span>秒杀</span>
+	</a>
+	<a href="{:U('Mobile/Activity/promote_goods')}">
+		<div class="ico-wrap"><img src="__STATIC__/images/pic-qc.png" alt="" /></div>
+		<span>促销</span>
+	</a>
+	<a href="{:U('Mobile/Activity/group_list')}">
+		<div class="ico-wrap"><img src="__STATIC__/images/pic-tg.png" alt="" /></div>
+		<span>团购</span>
+	</a>
+</div>
+<div>
+	<div class="goods-list-p p" id="team_list"></div>
+	<div class="loadbefore">
+		<img class="ajaxloading" src="__STATIC__/images/category/loader.gif" alt="loading...">
+	</div>
+</div>
+<!--底部-start-->
+<include file="public/footer"/>
+<!--底部-end-->
+<!--所选弹窗-s-->
+<form name="buy_goods_form" method="post" id="buy_goods_form">
+	<input type="hidden" name="spec_goods_price" value='{$team.goods.spec_goods_price|json_encode=true}' disabled>
+	<input type="hidden" name="goods_id" value="{$team.goods_id}"/>
+	<input type="hidden" name="item_id" value=""/>
+	<input type="hidden" name="team_id" value="{$team.team_id}" disabled/>
+	<div class="choose_shop_aready p" id="choose_spec">
+		<div class="shop-top-under p">
+			<div class="maleri30">
+				<div class="shopprice">
+					<div class="img_or fl"><img src="{$team.goods_id|goods_thum_images=146,146}"></div>
+					<div class="fon_or fl">
+						<h2 class="similar-product-text">{$team[goods_name]}</h2>
+
+						<div class="price_or"><span>￥</span><span class="team_price">{$teamFound[price]}</span></div>
+						<div class="dqkc_or"><span>当前库存：</span><span class="stock" id="spec_store_count">{$team.goods.store_count}</span></div>
+					</div>
+					<div class="price_or fr">
+						<i class="xxgro" id="choose_spec_close"></i>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="shop-top-under p">
+			<div class="maleri30">
+				<div class="shulges p">
+					<p>数量</p>
+
+					<div class="plus">
+						<span class="mp_minous">-</span>
+						<span class="mp_mp"><input type="tel" id="goods_num" name="goods_num" value="1"></span>
+						<span class="mp_plus">+</span>
+					</div>
+				</div>
+				<volist name="team['goods']['spec']" id="spec">
+					<div class="shulges p choicsel spec">
+						<p>{$spec['name']}</p>
+						<!-------商品属性值-s------->
+						<volist name="spec['spec_item']" id="spec_item">
+							<div class="plus choic-sel">
+								<a id="goods_spec_a_{$spec_item['id']}" class="spec_item" title="{$spec_item['item']}" data-item-id="{$spec_item['id']}"
+								<volist name="team['goods']['spec_image']" id="spec_image">
+									<if condition="$spec_image['spec_image_id'] eq $spec_item['id']">
+										data-img-src="{$spec_image['src']}"
+									</if>
+								</volist>
+								>
+									<input id="goods_spec_{$spec_item['id']}" type="radio" style="display:none;" name="goods_spec[{$spec['name']}]" value="{$spec_item['id']}" disabled/>{$spec_item['item']}</a>
+							</div>
+						</volist>
+						<!-------商品属性值-e-------->
+					</div>
+				</volist>
+			</div>
+		</div>
+		<div class="plusshopcar-buy p">
+			<a class="pb_buy" href="javascript:void(0);" onClick="addTeamOrder();">立即购买</a>
+		</div>
+	</div>
+</form>
+<!--所选弹窗-e-->
+<!--分享弹窗-s-->
+<!--分享弹窗-s-->
+<!--<div class="share-bottom-wrap" id="share_bottom">-->
+	<!--&lt;!&ndash; 百度分享 Button BEGIN &ndash;&gt;-->
+	<!--<div class="bdsharebuttonbox" data-tag="share_1">-->
+		<!--<a class="ico-share-wechat" data-cmd="weixin"></a>-->
+		<!--<a class="ico-share-qq" data-cmd="sqq"></a>-->
+		<!--<a class="ico-share-kj" data-cmd="qzone" href="#"></a>-->
+		<!--<a class="ico-share-weibo" data-cmd="tsina"></a>-->
+	<!--</div>-->
+	<!--&lt;!&ndash; 百度分享 Button END &ndash;&gt;-->
+	<!--<i class="xxgro" id="share_bottom_close"></i>-->
+<!--</div>-->
+<!--分享弹窗-e-->
+<!--分享弹窗-e-->
+<div class="mask-filter-div" style="display: none;"></div>
+<include file="public/wx_share"/>
+<script type="text/javascript" src="__STATIC__/js/sourch_submit.js"></script>
+<script>
+	var form = $("#buy_goods_form");
+	var spec_goods_price = $.parseJSON(form.find("input[name='spec_goods_price']").val());//规格库存价格
+	var team_id = form.find("input[name='team_id']").val();
+	$(document).ready(function () {
+		initSpec();
+	});
+	function initSpec() {
+		var item_id = form.find("input[name='item_id']").val();
+		if (!$.isEmptyObject(spec_goods_price)) {
+			$.each(spec_goods_price, function (i, o) {
+				if ((item_id > 0 && o.prom_id == item_id) || (team_id == o.prom_id)) {
+					var spec_key_arr = o.key.split("_");
+					$.each(spec_key_arr, function (index, item) {
+						var spec_radio = $("#goods_spec_" + item);
+						var goods_spec_a = $("#goods_spec_a_" + item);
+						spec_radio.attr("checked", "checked");
+						goods_spec_a.addClass('red');
+					})
+					return false;
+				}
+			})
+		}
+		initGoodsPrice();
+	}
+	//初始化商品价格库存
+	function initGoodsPrice() {
+		var goods_id = $('input[name="goods_id"]').val();
+		if (!$.isEmptyObject(spec_goods_price)) {
+			var goods_spec_arr = [];
+			$("input[name^='goods_spec']").each(function () {
+				if($(this).attr('checked') == 'checked'){
+					goods_spec_arr.push($(this).val());
+				}
+			});
+			if(goods_spec_arr.length == 0){
+				return false;
+			}
+			var spec_key = goods_spec_arr.sort(sortNumber).join('_');  //排序后组合成 key
+			var spec_goods_price_item = search_spec_goods_price(spec_key);
+			var item_id = spec_goods_price_item['item_id'];
+			$('input[name=item_id]').val(item_id);
+		}
+		$.ajax({
+			type: 'post',
+			dataType: 'json',
+			data: {goods_id: goods_id, item_id: item_id},
+			url: "{:U('Mobile/Team/ajaxCheckTeam')}",
+			success: function (data) {
+				if (data.status == 1) {
+					var goods = data.result.team_goods_item.goods;
+					var spec_goods = data.result.team_goods_item.spec_goods_price;
+					team_price = data.result.team_goods_item.team_price;
+					if(spec_goods){
+						stock = spec_goods.store_count;
+					}else{
+						stock = goods.store_count;
+					}
+					goods_activity_theme();
+				}
+			}
+		});
+	}
+	//商品价格库存显示
+	function goods_activity_theme(){
+		$('.team_price').html(team_price);
+		$('.stock').html(stock);
+		$('#number').attr('residuenum',stock);
+		if (stock <= 0) {
+			$('.dis_btn').addClass('dis');
+			$('.buyNum').val(stock);
+		} else {
+			$('.dis_btn').removeClass('dis');
+			$('.buyNum').val(1);
+		}
+	}
+	//点击切换规格
+	$(document).on('click', '.spec_item', function () {
+		//切换选择
+		if(!$(this).hasClass('disable')){
+			$(this).addClass('red').parent().siblings().find('a').removeClass('red');
+		}
+		var spec_item_img_src = $(this).data('img-src');
+		if (spec_item_img_src != '') {
+			$('#zoomimg').attr('src', spec_item_img_src);
+		}
+		if(!$(this).hasClass('disable')){
+			$(this).siblings().removeClass('hover');
+			$(this).addClass('hover');
+			$(this).parent().parent().find('input').removeAttr('checked');
+			$(this).children('input').attr('checked', 'checked');
+			$('.team-pies').hide();
+			//商品价格库存显示
+			var spec = $('.spec');
+			if(spec.length == 0 || spec.length == spec.find('.red').length){
+				initGoodsPrice();
+			}
+		}
+	})
+	// 倒计时
+	setInterval(activityTime, 1000);
+	function activityTime() {
+		var end_time = parseInt($("#rest_time").data('end-time'));
+		var timestamp = Date.parse(new Date());
+		var now = timestamp/1000;
+		var end_time_date = formatDate(end_time*1000);
+		var text = GetRTime(end_time_date);
+		//活动时间到了就刷新页面重新载入
+		if(now > end_time){
+            layer.open({content: data.msg,time:2,end:function () {
+                location.reload();
+            }});
+
+		}
+		$("#rest_time").text(text);
+	}
+	/**
+	 * 继续加载猜您喜欢
+	 * */
+
+	var before_request = 1; // 上一次请求是否已经有返回来, 有才可以进行下一次请求
+	var page = 0;
+	function ajax_sourch_submit(){
+		// 上一次请求没回来 不进行下一次请求
+		if(before_request == 0){
+			return false;
+		}
+		before_request = 0;
+		++page;
+		$('.loadbefore').show();
+		$.ajax({
+			type : "post",
+			data:{p:page},
+			dataType:'json',
+			url:"{:U('Mobile/Team/ajaxGetMore')}",
+			success: function(data)
+			{
+				if(data.status == 1){
+					var teams = data.result;
+					var html = '',url;
+					for(var i = 0;i < teams.length;i++){
+						url = "/index.php?m=Mobile&c=Team&a=info&team_id=" + teams[i].team_id + "&goods_id=" + teams[i].goods_id;
+						html += '<a class="goods-item-p" href="'+url+'">' +
+								' <div class="item-pic-p"><img src="'+teams[i].share_img+'"/></div> ' +
+								'<div class="item-name">'+teams[i].act_name+'</div> ' +
+								'<div class="item-cont-p"> <span class="items-price">￥'+teams[i].team_price+'</span> ' +
+								'<span class="items-num">已拼'+teams[i].team_activity.virtual_sale_num+'件</span> </div> </a>';
+					}
+					$('#team_list').append(html);
+					before_request = 1;
+				}else{
+					$('#team_list').append('<div class="no_more"><a >已显示完所有记录</a></div>');
+					$('.get_more').hide();
+				}
+				$('.loadbefore').hide();
+			}
+		});
+	}
+	//所选
+	$(function () {
+		$('.choise_num').click(function () {
+			$("input[name=found_id]").remove();
+			if($(this).hasClass('found')){
+				//拼单
+				var input = document.createElement('input');  //创建input节点
+				input.setAttribute('type', 'hidden');  //定义类型是文本输入
+				input.setAttribute('value', $(this).data('id'));
+				input.setAttribute('name', "found_id");
+				document.getElementById('buy_goods_form').appendChild(input); //添加到form中显示
+			}
+			cover();
+			$('#choose_spec').show();
+			$('.podee').hide();
+		})
+		$('#choose_spec_close').click(function () {
+			undercover();
+			$('#choose_spec').hide();
+			$('.podee').show();
+		})
+	});
+	//添加评团订单
+	function addTeamOrder(){
+		var spec = $('.spec');
+		if(spec.length > 0 && spec.length != spec.find('.red').length){
+			layer.open({content:'请选择规格',time: 2});
+			return false;
+		}
+		var goods_num = $("input[name='goods_num']").val();
+		if (goods_num <= 0) {
+			layer.open({content:'请至少购买一份~',time: 2});
+			return false;
+		}
+		$.ajax({
+			type : "POST",
+			url:"{:U('Mobile/Team/addOrder')}",
+			dataType:'json',
+			data: $('#buy_goods_form').serialize(),
+			success: function(data){
+				if(data.status == 1){
+					location.href = "/index.php?m=Mobile&c=Team&a=order&order_id=" + data.result.order_id; // 跳转到结算页
+				}else{
+					layer.open({content:data.msg,time: 2,end:function(){
+						if(!$.isEmptyObject(data.result)){
+							if(!$.isEmptyObject(data.result.url)){
+								location.href = data.result.url;
+								return false;
+							}
+						}
+					}});
+				}
+			}
+		});
+	}
+	//加减数量
+	$(function () {
+		$('.mp_minous').click(function () {
+			var inputs = $(this).siblings('.mp_mp').find('input');
+			var val = inputs.val();
+			if (val > 1) {
+				val--;
+				inputs.val(val);
+			}else if(val == 1){
+				$(this).parent().find('.mp_minous').addClass('disable');
+				inputs.val(val);
+			}else{
+				layer.open({content:'请至少购买一份~',time: 2});
+			}
+		})
+		$('.mp_plus').click(function () {
+			var inputs = $(this).siblings('.mp_mp').find('input');
+			var val = inputs.val();
+			val++;
+			inputs.val(val);
+			if(val > 1){
+				$(this).parent().find('.mp_minous').removeClass('disable');
+			}
+		})
+
+		$(document).on("blur", '#goods_num', function (e) {
+			initDecrement();
+		})
+	});
+	function initDecrement(){
+		var goods_num = $("input[name='goods_num']");
+		var goods_num_val = parseInt(goods_num.val());
+		if(goods_num_val <= 0){
+			layer.open({content:'请至少购买一份~',time: 2});
+			$(this).val($(this).attr('value'));
+		}else if(goods_num_val == 1){
+			$(this).parent().find('.mp_minous').addClass('disable');
+		}else{
+			$(this).parent().find('.mp_minous').removeClass('disable');
+		}
+	}
+	function sortNumber(a, b) {
+		return a - b;
+	}
+</script>
+<!--<script>-->
+	<!--//分享-->
+	<!--$(function () {-->
+		<!--$('#share_button').click(function () {-->
+			<!--cover();-->
+			<!--$('#share_bottom').addClass('share-bottom-show');-->
+		<!--})-->
+		<!--$('#share_bottom_close').click(function () {-->
+			<!--undercover();-->
+			<!--$('#share_bottom').removeClass('share-bottom-show');-->
+		<!--})-->
+	<!--});-->
+	<!--window._bd_share_config = {-->
+		<!--common : {-->
+			<!--//此处放置通用设置-->
+			<!--bdText : '{$team[share_title]}',-->
+			<!--bdDesc : '{$team[share_desc]}',-->
+			<!--bdUrl : "{:U('Mobile/Team/found',['id'=>$teamFound[found_id]],'',true)}",-->
+			<!--bdPic : 'http://{$Think.server.SERVER_NAME}{$team[share_img]}'-->
+		<!--},-->
+		<!--share : [{-->
+			<!--"bdSize" : 32-->
+		<!--}],-->
+		<!--image : [{-->
+			<!--viewType : 'list',-->
+			<!--viewPos : 'top',-->
+			<!--viewColor : 'black',-->
+			<!--viewSize : '16',-->
+			<!--viewList : ['weixin','sqq','qzone','tsina']-->
+		<!--}],-->
+		<!--selectShare : [{-->
+			<!--"bdselectMiniList" : ['weixin','sqq','qzone','tsina']-->
+		<!--}]-->
+	<!--}-->
+	<!--with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];-->
+<!--</script>-->
+</body>
+</html>

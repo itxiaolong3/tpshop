@@ -1,0 +1,26 @@
+<!--商品-s-->
+<foreach name="goods_list" item="vo" key="k">
+    <div class="orderlistshpop p"  >
+        <div class="maleri30">
+            <div class="sc_list se_sclist">
+                <div class="shopimg fl">
+                    <a href="{:U('Mobile/Goods/goodsInfo',array('id'=>$vo[goods_id]))}" class="item"><img src="{$vo.goods_id|goods_thum_images=400,400}"></a>
+                </div>
+                <div class="deleshow fr">
+                    <div class="deletes">
+                        <a href="{:U('Mobile/Goods/goodsInfo',array('id'=>$vo[goods_id]))}" class="item"><span class="similar-product-text fl">{$vo.goods_name|getSubstr=0,20}</span></a>
+                    </div>
+                    <div class="prices">
+                        <p class="sc_pri fl"><span>￥</span><b>{$vo[shop_price]}元</b></p>
+                    </div>
+                    <p class="weight">
+                        <span>{$vo[comment_count]}条评价</span>
+                        <span class="proli-eva">{$vo['comment_statistics']['high_rate']}%好评</span>
+                        <span goods_id="{$vo.goods_id}" class="add_cart"><img src="__STATIC__/images/red-icon-cart.png" alt=""></span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</foreach>
+<!--商品-e-->

@@ -1,0 +1,15 @@
+<foreach name="lists" item="v">
+    <div class="my_team_alon p">
+        <a href="">
+            <div class="team_head">
+                <img src="{$v[head_pic]|default="__STATIC__/images/hi.jpg"}"/>
+            </div>
+            <div class="team_name_time">
+                <span class="t_n">{$v[nickname]}</span>
+                <span class="t_t">加入时间：{:date('Y-m-d',$v[reg_time])}</span>
+            </div>
+            <span class="team_price">{$v[rebate_money]}元</span>
+            <!--<i class="icon-arrow_r"></i>-->
+        </a>
+    </div>
+</foreach>

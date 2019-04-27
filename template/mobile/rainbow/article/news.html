@@ -1,0 +1,50 @@
+<include file="public/header" title="{$news.title}"/>
+<style>
+    html,body,div,p{
+        font-size: .7rem;
+    }
+    a{
+        color: steelblue;
+    }
+    img{
+        max-width: 100%;
+        margin: 0.1rem 0;
+    }
+    .title{
+        font-size: 1rem;
+        padding: 0.8rem 0.5rem 0.2rem;
+    }
+    .state{
+        color: #aaa;
+        font-size: .6rem;
+        margin: 0.4rem 0.8rem 0.6rem;
+    }
+    .content{
+        font-size: .65rem;
+        padding: 0.2rem;
+        line-height: 0.95rem;
+    }
+    .source{
+        font-size: .65rem;
+        margin: 1rem 0.5rem 1.5rem;
+    }
+
+</style>
+<div class="title">{$news.title}</div>
+
+<div class="state">
+    <span>{:date('Y年m月d日', strtotime($news.update_time))}</span>
+    <span>{$news.author}</span>
+</div>
+<div class="content">
+    <notempty name="news.show_cover_pic">
+        <img src="{$news.thumb_url}">
+    </notempty>
+    {$news.content}
+</div>
+<notempty name="news.content_source_url">
+    <div class="source"><a href="{$news.content_source_url}">阅读原文</a></div>
+</notempty>
+
+</body>
+</html>

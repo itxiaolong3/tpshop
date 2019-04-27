@@ -1,0 +1,201 @@
+<include file="public/layout" />
+<body style="background-color: #FFF; overflow: auto;">
+<div id="toolTipLayer" style="position: absolute; z-index: 9999; display: none; visibility: visible; left: 95px; top: 573px;"></div>
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title"><a class="back" href="javascript:history.back();" title="返回列表"><i class="fa fa-arrow-circle-o-left"></i></a>
+            <div class="subject">
+                <h3>机构管理 - 添加机构</h3>
+                <h5>网站系统添加机构</h5>
+            </div>
+        </div>
+    </div>
+    <form class="form-horizontal" method="post" id="add_form">
+        <input type="hidden" name="act" value="{$act}">
+        <input type="hidden" name="mechanism_id" value="{$info.mechanism_id}">
+        <div class="ncap-form-default">
+            <dl class="row">
+                <dt class="tit">
+                    <label for="company_name"><em>*</em>公司名称</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" name="company_name" value="{$info.company_name}" id="company_name" class="input-txt">
+                    <span class="err"></span>
+                    <p class="notic"></p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label for="social_code"><em>*</em>社会信用代码</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" name="social_code" value="{$info.social_code}"  id="social_code" class="input-txt">
+                    <span class="err"></span>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label for="phone"><em>*</em>手机号码</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" name="phone" value="{$info.phone}" id="phone" class="input-txt">
+                    <span class="err"></span>
+                    <p class="notic">负责人手机号</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label for="username"><em>*</em>负责人姓名</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" name="username" value="{$info.username}" id="username" class="input-txt">
+                    <span class="err"></span>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label for="idcard">身份证号</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text"  name="idcard" value="{$info.idcard}" id="idcard" class="input-txt">
+                    <span class="err"></span>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label for="yinyep_img">营业执照</label>
+                </dt>
+                <dd class="opt">
+                    <div class="input-file-show">
+                        <span class="show">
+                            <a id="img_a" class="nyroModal" rel="gal" href="{$info.yinyep_img}">
+                                <i id="img_i" class="fa fa-picture-o" onmouseover="layer.tips('<img src={$info.yinyep_img}>',this,{tips: [1, '#fff']})" onmouseout="layer.closeAll()"></i>
+                            </a>
+                        </span>
+                        <span class="type-file-box">
+                            <input type="text" id="yinyep_img" name="yinyep_img" value="{$info.yinyep_img}" class="type-file-text">
+                            <input type="button" name="button" id="button1" value="选择上传..." class="type-file-button">
+                            <input class="type-file-file" onClick="GetUploadify(1,'','link','img_call_back')" size="30" hidefocus="true" nc_type="change_site_logo" title="点击前方预览图可查看大图，点击按钮选择文件并提交表单后上传生效">
+                        </span>
+                    </div>
+                    <span class="err"></span>
+                    <p class="notic">营业执照</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label for="idcard_img">身份证照片</label>
+                </dt>
+                <dd class="opt">
+                    <div class="input-file-show">
+                        <span class="show">
+                            <a id="img_b" class="nyroModal" rel="gal" href="{$info.idcard_img}">
+                                <i id="img_i1" class="fa fa-picture-o" onmouseover="layer.tips('<img src={$info.idcard_img}>',this,{tips: [1, '#fff']})" onmouseout="layer.closeAll()"></i>
+                            </a>
+                        </span>
+                        <span class="type-file-box">
+                            <input type="text" id="idcard_img" name="idcard_img" value="{$info.idcard_img}" class="type-file-text">
+                            <input type="button" name="button" id="button2" value="选择上传..." class="type-file-button">
+                            <input class="type-file-file" onClick="GetUploadify(1,'','link','img_call_back1')" size="30" hidefocus="true" nc_type="change_site_logo" title="点击前方预览图可查看大图，点击按钮选择文件并提交表单后上传生效">
+                        </span>
+                    </div>
+                    <span class="err"></span>
+                    <p class="notic">手持身份证照片</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label for="auditing">审核状态</label>
+                </dt>
+                <dd class="opt">
+                    <input id="auditing" name="auditing" type="radio" value="1" <if condition="$info[auditing] eq 1"> checked="checked"</if>>直接通过  &nbsp;&nbsp;&nbsp;&nbsp;
+                    <input name="auditing" type="radio" value="0" <if condition="$info[auditing] eq 0"> checked="checked"</if>>待审核  &nbsp;&nbsp;&nbsp;&nbsp;
+                    <input name="auditing" type="radio" disabled="disabled" value="0" <if condition="$info[auditing] eq 2"> checked="checked"</if>>已拒绝  &nbsp;&nbsp;&nbsp;&nbsp;
+                </dd>
+            </dl>
+            <div class="bot"><a href="JavaScript:void(0);" onclick="checkUserUpdate();" class="ncap-btn-big ncap-btn-green" id="submitBtn">确认提交</a></div>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+    function img_call_back(fileurl_tmp)
+    {
+        $("#yinyep_img").val(fileurl_tmp);
+        $("#img_a").attr('href', fileurl_tmp);
+        $("#img_i").attr('onmouseover', "layer.tips('<img src="+fileurl_tmp+">',this,{tips: [1, '#fff']});");
+    }
+    function img_call_back1(fileurl_tmp)
+    {
+        $("#idcard_img").val(fileurl_tmp);
+        $("#img_b").attr('href', fileurl_tmp);
+        $("#img_i1").attr('onmouseover', "layer.tips('<img src="+fileurl_tmp+">',this,{tips: [1, '#fff']});");
+    }
+    var ajax_return_status=1;
+    function checkUserUpdate(){
+        if (ajax_return_status == 0) {
+            return false;
+        }
+        ajax_return_status = 0;
+        var company_name = $('input[name="company_name"]').val();
+        var phone = $('input[name="phone"]').val();
+        var social_code = $('input[name="social_code"]').val();
+        var username = $.trim($('input[name="username"]').val());
+        var idcard = $.trim($('input[name="idcard"]').val());
+        var yinyep_img = $.trim($('input[name="yinyep_img"]').val());
+        var idcard_img = $.trim($('input[name="idcard_img"]').val());
+        var error ='';
+        if(company_name == ''){
+            error += "公司名称不能为空\n";
+        }
+        if(social_code == ''){
+            error += "社会信用代码不能为空\n";
+        }
+        if(username == ''){
+            error += "姓名不能为空\n";
+        }
+        if(idcard == ''){
+            error += "身份证号不能为空\n";
+        }
+        if(yinyep_img == ''){
+            error += "营业执照不能为空\n";
+        }
+        if(idcard_img == ''){
+            error += "身份证照不能为空\n";
+        }
+        if(!checkMobile(phone) && phone != ''){
+            error += "手机号码填写有误\n";
+        }
+
+        if(error){
+            layer.alert(error, {icon: 2});  //alert(error);
+            ajax_return_status = 1;
+            return false;
+        }
+        $.ajax({
+            type: "POST",
+            url: "{:U('Admin/User/addEdit_mechanism')}",
+            data: $('#add_form').serialize(),
+            dataType: "json",
+            error: function () {
+                layer.alert("服务器繁忙, 请联系管理员!");
+                ajax_return_status = 1;
+            },
+            success: function (data) {
+                console.log(data,'后台返回的数据')
+                if (data.status === 1) {
+                    layer.msg(data.msg, {icon: 1,time: 1000}, function() {
+                        location.href = data.url;
+                    });
+                } else {
+                    layer.msg(data.msg, {icon: 2,time: 1000});
+                    ajax_return_status = 1;
+                }
+            }
+        });
+        //$('#add_form').submit();
+    }
+</script>
+</body>
+</html>

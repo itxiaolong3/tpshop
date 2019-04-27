@@ -1,0 +1,159 @@
+<include file="public/layout" />
+<body style="background-color: rgb(255, 255, 255); overflow: auto; cursor: default; -moz-user-select: inherit;">
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>文本素材列表</h3>
+                <h5>微信素材显示与管理</h5>
+            </div>
+            <ul class="tab-base nc-row">
+                <foreach name="tabs" item="v" key="k">
+                    <li><a href="{:U('materials',['tab'=> $k])}" <if condition="$k==$tab">class="current"</if>>
+                        <span>{$v}</span></a>
+                    </li>
+                </foreach>
+            </ul>
+        </div>
+    </div>
+    <!-- 操作说明 -->
+    <div id="explanation" class="explanation" style="color: rgb(44, 188, 163); background-color: rgb(237, 251, 248); width: 99%; height: 100%;">
+        <div id="checkZoom" class="title"><i class="fa fa-lightbulb-o"></i>
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span title="收起提示" id="explanationZoom" style="display: block;"></span>
+        </div>
+        <ul>
+            <li>发送消息请移步粉丝列表</li>
+        </ul>
+    </div>
+    <div class="flexigrid">
+        <div class="mDiv">
+            <div class="ftitle">
+                <h3>文本素材列表</h3>
+                <h5>(共{$page->totalRows}条记录)</h5>
+            </div>
+            <div title="刷新数据" class="pReload"><i class="fa fa-refresh"></i></div>
+        </div>
+        <div class="hDiv">
+            <div class="hDivBox">
+                <table cellspacing="0" cellpadding="0">
+                    <thead>
+                    <tr>
+                        <th class="sign" axis="col6">
+                            <div style="width: 24px;"><i class="ico-check"></i></div>
+                        </th>
+                        <th align="center" axis="col6" class="">
+                            <div style="text-align: center; width:120px;" class="">标题</div>
+                        </th>
+                        <th align="center" axis="col6" class="">
+                            <div style="text-align: center; width:300px;" class="">内容</div>
+                        </th>
+                        <th align="center" abbr="update_time" axis="col6" class="">
+                            <div style="text-align: center; width: 150px;" class="">更新时间</div>
+                        </th>
+                        <th align="center" abbr="article_time" axis="col6" class="">
+                            <div style="text-align: center; width: 150px;">操作</div>
+                        </th>
+                        <th style="width:100%" axis="col7">
+                            <div></div>
+                        </th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        <div class="tDiv">
+            <div class="tDiv2">
+                <div class="fbutton">
+                    <a href="{:url('text_edit')}">
+                        <div class="add">
+                            <span><i class="fa fa-plus"></i>新增文本素材</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div style="clear:both"></div>
+        </div>
+        <div  id="flexigrid" class="bDiv" style="height: auto;">
+            <!--ajax 返回 -->
+            <table>
+                <tbody>
+                <empty name="list">
+                    <tr>
+                        <td class="no-data" align="center" axis="col0" colspan="50">
+                            <i class="fa fa-exclamation-circle"></i>没有符合条件的记录
+                        </td>
+                    </tr>
+                </empty>
+                <volist name="list" id="item">
+                    <tr>
+                        <td class="sign" axis="col6">
+                            <div style="width: 24px;"><i class="ico-check"></i></div>
+                        </td>
+                        <td align="center" axis="col0">
+                            <div style="text-align: center; width: 120px;">{$item.data.title}</div>
+                        </td>
+                        <td align="center" axis="col0">
+                            <div style="text-align: center; width: 300px;">{$item.data.content}</div>
+                        </td>
+                        <td align="center" axis="col0">
+                            <div style="text-align: center; width: 150px;">{$item.update_time}</div>
+                        </td>
+                        <td align="center" class="handle">
+                            <div style="text-align: center; width: 150px; max-width: 150px" >
+                                <a href="{:U('text_edit',array('material_id'=>$item.id))}" class="btn blue"><i class="fa fa-edit"></i>编辑</a>
+                                <a href="javascript:;" onclick="deleteText('{$item.id}')" class="btn blue"><i class="fa fa-trash-o"></i>删除</a>
+                            </div>
+                        </td>
+                        <td align="" class="" style="width: 100%;">
+                            <div>&nbsp;</div>
+                        </td>
+                    </tr>
+                </volist>
+                </tbody>
+            </table>
+        </div>
+        {$page->show()}
+    </div>
+</div>
+
+<script>
+    $(document).ready(function(){
+        // 表格行点击选中切换
+        $('#flexigrid>table>tbody>tr').click(function(){
+            $(this).toggleClass('trSelected');
+        });
+
+        // 点击刷新数据
+        $('.fa-refresh').click(function(){
+            location.href = location.href;
+        });
+    });
+
+    function deleteText(id) {
+        layer.confirm("确定删除文本素材吗？", function(){
+            $.ajax({
+                url: "{:url('delete_text')}",
+                data:{material_id : id},
+                type: 'POST',
+                dataType: 'json',
+                success: function (res) {
+                    if (res.status === 1) {
+                        return layer.msg(res.msg, {time: 500, icon: 1}, function () {
+                            window.location.reload();
+                        });
+                    }
+                    var msg = (typeof res.status === 'undefined') ? '数据格式出错' : res.msg;
+                    layer.alert(msg, {icon:2});
+                },
+                error: function () {
+                    layer.alert('服务器繁忙！', {icon: 2});
+                }
+            });
+        });
+    }
+</script>
+</body>
+</html>

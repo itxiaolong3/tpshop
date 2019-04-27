@@ -1,0 +1,39 @@
+<include file="public/layout"/>
+<body style="background-color: rgb(255, 255, 255); overflow: auto; cursor: default; -moz-user-select: inherit;">
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>商品模型</h3>
+                <h5>商品模型列表</h5>
+            </div>
+        </div>
+    </div>
+    <!-- 操作说明 -->
+    <div id="explanation" class="explanation" style="color: rgb(44, 188, 163); background-color: rgb(237, 251, 248); width: 99%; height: 100%;">
+        <div id="checkZoom" class="title"><i class="fa fa-lightbulb-o"></i>
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span title="收起提示" id="explanationZoom" style="display: block;"></span>
+        </div>
+        <ul>
+            <li>商品模型是用来规定某一类商品共有规格和属性的集合，其中规格会影响商品价格，同一个商品不同的规格价格会不同，而属性仅仅是商品的属性特质展示</li>
+            <li>首次发布将需要小程序授权，请使用小程序管理员账号进行操作。<!--<a href="">了解更多</a>--></li>
+        </ul>
+    </div>
+    <div class="authorization_before">
+    	<span class="autbe_tips">小程序尚未授权，授权后可避免复杂的设置，并能更安全、更便捷地使用我们的系统</span>
+    	<img src="../../../../public/static/images/wechatpay.png">
+    	<b>微信小程序授权</b>
+    	<div class="autbe_btn">
+    		<a href="JavaScript:void(0);" class="ncap-btn-big ncap-btn-green" id="submitBtn">已有小程序，立即授权</a>
+    		<a href="JavaScript:void(0);" class="ncap-btn-big" id="submitBtn">注册小程序账号</a>
+    	</div>
+    </div>
+ </div>
+<script>
+    
+</script>
+</body>
+</html>

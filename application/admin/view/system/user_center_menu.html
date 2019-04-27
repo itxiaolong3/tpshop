@@ -1,0 +1,236 @@
+<include file="public/layout"/>
+	<link rel="stylesheet" type="text/css" href="__PUBLIC__/static/css/base.css"/>
+	<link rel="stylesheet" type="text/css" href="__PUBLIC__/bootstrap/css/bootstrap.min.css"/>
+	<link rel="stylesheet" type="text/css" href="__PUBLIC__/bootstrap/css/bootstrap-colorpicker.css"/>
+	<link rel="stylesheet" type="text/css" href="__PUBLIC__/static/css/personal.css"/>
+<style>
+	.colorpicker-alpha {
+		display: none !important;
+	}
+</style>
+	<body>
+	<div class="z_cont_wrap">
+		<div class="z_title_name"> 个人中心设置</div>
+		<div class="z_user_wrap cont_fl">
+			<div class="z_user_img">
+				<img src="__PUBLIC__/static/images/z-ip6.png" />
+			</div>
+			<div class="z_views_wrap">
+				<div class="z_user_views">
+					<div class="z_user_vs">
+						<div class="z_user_head">
+							<div class="z_user_top">
+								<div class="user_top_tx">
+									<img src="__PUBLIC__/static/images/zTX.png" />
+								</div>
+								<div class="user_top_name">
+									<a href="">会员名称</a>
+								</div>
+								<div class="user_top_title">
+									<a href="">砖石会员</a>
+								</div>
+							</div>
+							<div class="z_user_down">
+								<div class="user_down_bg"></div>
+								<ul>
+									<li>
+										<a href="">
+											<div class="user_down_dev">1980.00</div>
+											<div class="user_down_name">余额</div>
+										</a>
+									</li>
+									<li>
+										<a href="">
+											<div class="user_down_dev">2886.00</div>
+											<div class="user_down_name">积分</div>
+										</a>
+									</li>
+								</ul>
+							</div>
+						</div>
+						<div class="z_user_li_wrap">
+							<div class="z_user_list border10" id="menu_item_id_1">
+								<div class="user_list_cont padd10">
+									<div class="cont_fl">
+										<img src="__PUBLIC__/static/images/mlist.png"/>
+										<span>我的订单</span>
+									</div>
+									<div class="cont_fr">
+										<span>
+											查看全部
+										</span>
+										<i class="zMright"></i>
+									</div>	
+								</div>
+								<div class="z_user_nav">
+									<ul>
+										<li>
+											<a href="">
+												<img src="__PUBLIC__/static/images/q1.png" />
+												<p>待付款</p>
+											</a>
+										</li>
+										<li>
+											<a href="">
+												<img src="__PUBLIC__/static/images/q2.png" />
+												<p>待收货</p>
+											</a>
+										</li>
+										<li>
+											<a href="">
+												<img src="__PUBLIC__/static/images/q3.png" />
+												<p>待评价</p>
+											</a>
+										</li>
+										<li>
+											<a href="">
+												<img src="__PUBLIC__/static/images/q4.png" />
+												<p>售后服务</p>
+											</a>
+										</li>
+									</ul>
+								</div>
+							</div>
+							<div id="menu_div">
+	
+							</div>
+						</div>
+					</div>	
+				</div>
+			</div>
+		</div>
+		<form id="menu">
+			<div class="z_user_right cont_fl">
+				<div class="user_right_color" >
+					<p class="cont_fl">颜色选择：</p>
+					<div id="cp2" class="input-group colorpicker-component cont_fl" title="Using input value">
+					  <input type="hidden" name="header_background" id="textNavBgcolor" value="{$tpshop_config['basic_header_background']|default='#DD0F20'}"/>
+					  <span class="input-group-addon"><i></i></span>
+					</div>
+				</div>
+				<div class="user_right_list">
+					<ul>
+						<volist name="menu_list" id="menu">
+							<li data-menu-id="{$menu.menu_id}">
+								<input name="menu[{$key}][menu_id]" type="hidden" value="{$menu.menu_id}">
+								<input name="menu[{$key}][is_show]" type="hidden" value="{$menu.is_show}">
+								<input name="menu[{$key}][is_tab]" type="hidden" value="{$menu.is_tab}">
+								<div class="right_list_btn cont_fl">
+									<div class="right_list_name cont_fl">
+										{$menu.default_name}
+									</div>
+									<div class="right_list_kg cont_fl <if condition='$menu.is_show eq 1'>right_click</if>">
+										<div class="right_list_clase">
+										</div>
+									</div>
+								</div>
+								<div class="right_list_title cont_fl">
+									<span>标题</span>
+									<input type="text" name="menu[{$key}][menu_name]" value="{$menu.menu_name}">
+								</div>
+								<div class="right_list_qk  cont_fl">
+									<div class="right_list_name cont_fl">
+										切块
+									</div>
+									<div class="right_list_kg cont_fl <if condition='$menu.is_tab eq 1'>right_click</if>">
+										<div class="right_list_clase">
+
+										</div>
+									</div>
+								</div>
+							</li>
+						</volist>
+					</ul>
+				</div>
+				<a href="JavaScript:void(0);" id="submit" class="ncap-btn-big ncap-btn-green" style="height: 36px;">立即更新</a>
+			</div>
+		</form>
+	</div>
+	</body>
+	<script src="__PUBLIC__/bootstrap/js/bootstrap-colorpicker.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+		$(document).ready(function () {
+			$('#cp2, #cp3a, #cp3b').colorpicker({'preferredFormat': 'hex'});
+			init_menu();
+		});
+		$(document).on("click","#submit",function  () {
+			$.ajax({
+				type: "post",
+				data: $('#menu').serialize(),
+				dataType: 'json',
+				url: "{:U('System/user_center_menu_save')}",
+				success: function (data) {
+					if (data.status == 1) {
+						location.reload();
+					} else {
+						layer.msg(data.msg, {icon: 2, time: 2000});
+					}
+				}
+			})
+		})
+		$(document).on("click",".right_list_btn .right_list_kg",function  () {
+			if ($(this).hasClass("right_click")) {
+				$(this).removeClass("right_click");
+				$(this).parents("li").find("input[name$='[is_show]']").val(0);
+			}else{
+				$(this).addClass("right_click");
+				$(this).parents("li").find("input[name$='[is_show]']").val(1);
+			}
+			init_menu();
+		})
+		$(document).on("click",".right_list_qk .right_list_kg",function  () {
+			if ($(this).hasClass("right_click")) {
+				$(this).removeClass("right_click");
+				$(this).parents("li").find("input[name$='[is_tab]']").val(0);
+			}else{
+				$(this).addClass("right_click");
+				$(this).parents("li").find("input[name$='[is_tab]']").val(1);
+			}
+			init_menu();
+		})
+		function init_menu()
+		{
+			var menu_list = $('.user_right_list ul').find('li');
+			var html = '';
+			$.each(menu_list, function (index, item) {
+				var menu_id = parseInt($(item).find("input[name$='[menu_id]']").val());
+				var is_show = parseInt($(item).find("input[name$='[is_show]']").val());
+				var is_tab = parseInt($(item).find("input[name$='[is_tab]']").val());
+				var menu_name = $(item).find("input[name$='[menu_name]']").val();
+				switch(menu_id)
+				{
+					case 1:
+						if(is_show){
+							console.log('#menu_item_id_'+menu_id);
+							$('#menu_item_id_'+menu_id).show();
+						}else{
+							$('#menu_item_id_'+menu_id).hide();
+						}
+						if(is_tab){
+							$('#menu_item_id_'+menu_id).addClass("border10");
+						}else{
+							$('#menu_item_id_'+menu_id).removeClass("border10");
+						}
+						break;
+					default:
+							var tab_html = '';
+							if(is_tab){
+								tab_html = 'border10';
+							}
+							if(is_show){
+								html += '<div class="z_user_list '+tab_html+'" id="menu_item_id_'+menu_id+'"> <div class="user_list_cont padd10"> <div class="cont_fl"> ' +
+										'<img src="__PUBLIC__/static/images/w'+menu_id+'.png"/><span>'+menu_name+'</span> </div> <div class="cont_fr"> ' +
+										'<i class="zMright"></i> </div> </div> </div>';
+							}
+				}
+			});
+			$('#menu_div').empty().html(html);
+		}
+		var colordata = document.querySelector('#textNavBgcolor');
+		colordata.onchange = function(e) {
+			console.log(e)
+		    var bgcolor= this.value;
+		    $('.z_user_head').css("background-color",bgcolor);
+		}
+	</script>
+</html>

@@ -1,0 +1,239 @@
+<include file="public/header" title="待收货详情" body="f3"/>
+<include file="public/header_nav" title="待收货详情" href="javascript:history.back(-1)"/>
+<div class="quedbox overdeta">
+    <div class="shpmi p">
+        <div class="maleri30">
+            <div class="dinaot">
+                <span class="naem">订单号：<em>{$order.order_sn}</em></span>
+                <span class="red">{$order.order_status_detail}</span>
+            </div>
+            <if condition="$order.shipping_status gt 0">
+                <foreach name="order_info['delivery_doc']" item="v">
+                <a href="{:U('Order/express',array('order_id'=>$order['order_id']))}">
+                    <!--物流信息-s-->
+                    <div class="wuliumess">
+                        <script>
+                            queryExpress();
+                            function queryExpress()
+                            {
+                                $.ajax({
+                                    type : "GET",
+                                    dataType: "json",
+                                    url:"/index.php?m=Home&c=Api&a=queryExpress&shipping_code={$v['shipping_code']}&invoice_no={$v['invoice_no']}",//+tab,
+                                    success: function(data){
+                                        var html = '';
+                                        if(data.status == 200){
+                                            html +="<i class='yg'></i><p class='naem'>"+ data.data[0].context +"</p><p class='time'><span>"+ data.data[0].time +"</span></p>";
+                                        }else{
+                                            html +="<i class='yg'></i><p class='naem'>"+ data.message+"</p>";
+                                        }
+                                        $('.wuliumess').html(html);
+                                    }
+                                });
+                            }
+                        </script>
+                    </div>
+                </a>
+                </foreach>
+            </if>
+        </div>
+    </div>
+
+    <div class="edit_gtfix ma-to-20">
+        <div class="namephone fl">
+            <div class="top">
+                <div class="le fl">{$order.consignee}</div>
+                <div class="lr fl">{$order.mobile}</div>
+            </div>
+            <div class="bot">
+                <i class="dwgp"></i>
+                <span>{$order.full_address}</span>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="quedbox">
+<!--订单商品-s-->
+    <foreach name="$order.order_goods" item="good">
+        <div class="fukcuid oversetimh">
+            <div class="maleri30">
+                <div class="shopprice">
+                    <div class="img_or fl"><img src="{$good[goods_id]|goods_thum_images=100,100}"></div>
+                    <div class="fon_or fl">
+                        <h2 class="similar-product-text">
+                            <a href="{:U('Goods/goodsInfo',['id'=>$good.goods_id])}">{$good.goods_name}</a>
+                            <p>{$good.spec_key_name}</p>
+                        </h2>
+                        <p><span>数量：</span><span>{$good.goods_num}</span></p>
+                    </div>
+                    <div class="pricangec">
+                        <p><span>￥</span><span>{$good.member_goods_price}</span></p>
+                        <p class="buttondde">
+                        </p>
+                        <input type="hidden" value="{$good[spec_key]}" ><!--订单商品规格-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </foreach>
+<!--订单商品-e-->
+    <div class="liaxkf">
+        <div class="maleri30">
+            <a href="tel:{$tpshop_config['shop_info_phone']}"><i class="kef"></i>联系客服</a>
+        </div>
+    </div>
+</div>
+<div class="information_dr ma-to-20">
+    <div class="maleri30">
+        <div class="xx-list inftwic">
+            <p class="p">
+                <span class="fl">支付方式</span>
+                <span class="fr dark">{$order.pay_name}</span>
+            </p>
+            <p class="p">
+                <span class="fl">配送信息</span>
+                <span class="fr dark">{$order.shipping_name}</span>
+            </p>
+        </div>
+    </div>
+</div>
+<div class="information_dr ma-to-20">
+    <div class="maleri30">
+        <div class="xx-list inftwic">
+            <p class="p">
+                <span class="fl">发票类型</span>
+                <span class="fr dark"><if condition="($order.invoice_desc neq '') or ($order.invoice_desc neq '不开发票')">普通发票</if></span>
+            </p>
+            <p class="p">
+                <span class="fl">发票抬头</span>
+                <span class="fr dark">{$order.invoice_title}</span>
+            </p>
+            <p class="p">
+                <span class="fl">纳税人识别号</span>
+                <span class="fr dark">{$order.taxpayer}</span>
+            </p>
+        </div>
+
+    </div>
+    <div class="maleri30">
+        <div class="xx-list inftwic inftwic-b">
+            <p class="p">
+                <span class="fl">买家留言</span>
+                <span class="fr dark">{$order.user_note}</span>
+            </p>
+        </div>
+    </div>
+</div>
+<div class="information_dr ma-to-20">
+    <div class="maleri30">
+        <div class="xx-list inftwic">
+            <p class="p">
+                <span class="fl">下单时间</span>
+                <span class="fr"><span>{:date('Y-m-d  H:i:s',$order.add_time)}</span></span>
+            </p>
+
+            <p class="p">
+                <span class="fl">商品总价</span>
+                <span class="fr"><span>￥</span><span>{$order.goods_price}</span>元</span>
+            </p>
+            <p class="p">
+                <span class="fl">运费</span>
+                <span class="fr"><span>￥</span><span>{$order.shipping_price}</span>元</span>
+            </p>
+            <p class="p">
+                <span class="fl">优惠券</span>
+                <span class="fr"><span>-￥</span><span>{$order.coupon_price}</span>元</span>
+            </p>
+            <p class="p">
+                <span class="fl">积分</span>
+                <span class="fr"><span>-￥</span><span>{$order.integral_money}</span>元</span>
+            </p>
+            <p class="p">
+                <span class="fl">余额</span>
+                <span class="fr"><span>-￥</span><span>{$order.user_money}</span>元</span>
+            </p>
+            <p class="p">
+                <span class="fl">活动优惠</span>
+                <span class="fr"><span>-￥</span><span>{$order.order_prom_amount}</span>元</span>
+            </p>
+            <p class="p">
+                <span class="fl">实付金额</span>
+                <span class="fr red"><span>￥</span><span>{$order.order_amount}</span>元</span>
+            </p>
+        </div>
+    </div>
+</div>
+<div class="shijefu backba p">
+    <div class="maleri30">
+        <p class="butna">
+            <if condition="$order['receive_btn'] eq 1 && $order['pay_status'] eq 1">
+                <a class="red receipt" href="javascript:void(0);" onclick="confirmReceive('{$order.order_id}'">确认收货</a>
+                </if>
+            <if condition="$order['shipping_btn'] eq 1 && $order.shipping_name neq '' ">
+                <a href="{:U('Order/express',array('order_id'=>$order['order_id']))}" class="on_comment">查看物流</a>
+            </if>
+        </p>
+    </div>
+</div>
+
+<!--确认收货弹窗-s-->
+    <div class="surshko" id="surshko{$order.order_id}">
+        <p>是否收到该订单商品？</p>
+        <div class="weiyi p">
+            <a href="javascript:void(0);">未收货</a>
+            <a class="eno" href="{:U('Mobile/Order/order_confirm',array('id'=>$order.order_id))}">已收货</a>
+        </div>
+    </div>
+<!--确认收货弹窗-e-->
+
+<div class="mask-filter-div" style="display: none;"></div>
+<!--添加购物车JS-->
+<script src="__PUBLIC__/js/mobile_common.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+    //取消订单按钮
+    $('.closeorder_butt').click(function(){
+        $('.mask-filter-div').show();
+        $('.losepay').show();
+    })
+    //取消取消订单
+    $('.qx-rebd .ax').click(function(){
+        $('.mask-filter-div').hide();
+        $('.losepay').hide();
+    })
+
+    //确认取消订单
+    function cancel_order(id){
+        $.ajax({
+            type: 'GET',
+            url:"/index.php?m=Mobile&c=Order&a=cancel_order&id="+id,
+            success:function(data){
+                if(data.code == 1){
+                    //成功
+                    layer.open({content:data.msg,time:2});
+                    location.href = "/index.php?m=Mobile&c=Order&a=order_detail&id="+id;
+                }else{
+                    //状态不允许
+                    layer.open({content:data.msg,time:2});
+                    return false;
+                }
+            },
+            error:function(){
+                layer.open({content:'网络异常，请稍后重试',time:3});
+            },
+        });
+        $('.mask-filter-div').hide();
+        $('.losepay').hide();
+    }
+
+
+//        $('.loginsingup-input .lsu i').click(function(){
+//            $(this).toggleClass('eye');
+//            if ($(this).hasClass('eye')) {
+//                $(this).siblings('input').attr('type','text')
+//            } else{
+//                $(this).siblings('input').attr('type','password')
+//            }
+//        });
+</script>
+</body>
+</html>

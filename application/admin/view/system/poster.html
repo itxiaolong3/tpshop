@@ -1,0 +1,240 @@
+<include file="public/layout" />
+<style>
+    .span_1 {
+        float: left;
+        margin-left: 0px;
+        height: 130px;
+        line-height: 130px;
+    }
+
+    .span_1 ul {
+        list-style: none;
+        padding: 0px;
+    }
+
+    .span_1 ul li {
+        border: 1px solid #CCC;
+        height: 40px;
+        padding: 0px 10px;
+        margin-left: -1px;
+        margin-top: -1px;
+        line-height: 40px;
+    }
+    .tab-base a{
+        height: 35px !important;
+    }
+    a.ncap-btn-big{
+        height: 35px !important;
+    }
+    .ncap-form-default dd.opt input{
+        /*margin-right: 10px;*/
+    }
+    .item-title h3{
+        margin-top: 0;
+    }
+    .item-title .subject{
+        padding: 0;
+    }
+</style>
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/static/css/base.css"/>
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/bootstrap/css/bootstrap.min.css"/>
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/bootstrap/css/bootstrap-colorpicker.css"/>
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/static/css/personal.css"/>
+<body style="background-color: #FFF; overflow: auto;">
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject" style="height: 36px;">
+                <h3>海报设置</h3>
+                <h5>自定义海报配置</h5>
+            </div>
+            <ul class="tab-base nc-row">
+                <foreach name="group_list" item="v" key="k">
+                    <li><a href="{:U('System/index',['inc_type'=> $k])}" <if condition="$k==$inc_type">class="current"</if>><span>{$v}</span></a></li>
+                </foreach>
+            </ul>
+        </div>
+    </div>
+    <div class="z_cont_wrap">
+
+        <div class="z_user_wrap cont_fl">
+            <div class="z_user_img">
+                <img src="/public/static/images/z-ip6.png">
+            </div>
+            <div class="z_views_wrap">
+                <div class="z_user_views" >
+
+                    </div>
+            </div>
+        </div>
+        <div class="z_form_wraps cont_fl">
+		<h5 style="font-size:25px">请联系客服查看是否支持此功能(海报设置)</h5>
+        </div>
+    </div>
+
+
+
+</div>
+<div id="goTop"> <a href="JavaScript:void(0);" id="btntop"><i class="fa fa-angle-up"></i></a><a href="JavaScript:void(0);" id="btnbottom"><i class="fa fa-angle-down"></i></a></div>
+</body>
+<script>
+
+    //全局背景图
+    var img = new Image();
+    //全局二维码模型
+    var qrcode = new Image();
+    //全局海报数据
+    var data = {
+        id:"{$poster.id|default=0}",
+        poster_name:"",                                                       //海报名称
+        canvas_width: "{$poster.canvas_width|default=375}",                   //画布宽度
+        canvas_height: "{$poster.canvas_height|default=675}",                 //画布高度
+        poster_width: "{$poster.poster_width|default=0}",                     //海报宽度
+        poster_height: "{$poster.poster_height|default=0}",                   //海报高度
+        back_url: "{$poster.back_url|default=''}",                            //海报路径
+        canvas_x: "{$poster.canvas_x|default=0}",                             //canvas移动的x轴
+        canvas_y: "{$poster.canvas_y|default=0}",                             //canvas移动的y轴
+        enabled: 1,                                                           //是否启用海报
+    }
+
+
+    $(function(){
+        var canvas = document.createElement('canvas');
+        canvas.id = "myCanvas";
+        canvas.width = data.canvas_width;
+        canvas.height = data.canvas_height;
+        $('.z_user_views').append(canvas);
+
+        //在事件外声明需要用到的变量
+        let ax,ay,x,y;
+        var c = document.getElementById("myCanvas");
+        var t = c.getContext("2d");
+
+        //渲染海报
+        if(data.id > 0){
+            console.log(data.back_url)
+            img.src=  data.back_url;
+            qrcode.src=  '/public/images/poster/qrcode80.png';
+            img.onload = function(){
+                t.drawImage(img,0,0,data.poster_width,data.poster_height,0,0,data.canvas_width,data.canvas_height);
+                t.drawImage(qrcode,data.canvas_x,data.canvas_y,80,80);
+            }
+
+            $('.keyup_qrcode').val(data.canvas_x+','+data.canvas_y);
+        }
+
+        c.onmousedown=function (e) {
+            c.onmousemove = function(e){
+                x= e.clientX -100;y=e.clientY - 162;
+                x < 295 ? x =e.clientX -100: x =295;
+                y < 587 ? y=e.clientY -162 : y=587;
+
+                //canvas移动的时候记录x和y轴数据
+                data.canvas_x = x;
+                data.canvas_y = y;
+                $('.keyup_qrcode').val(x+','+y);
+
+                //先清除之前的然后重新绘制
+                t.clearRect(0,0,canvas.width,canvas.height);
+                console.log(x,y)
+                t.drawImage(img,0,0,data.canvas_width,data.canvas_height);
+                t.drawImage(qrcode,x,y,80,80);
+            };
+            c.onmouseup = function(){
+                c.onmousemove = null;
+                c.onmouseup = null;
+            };
+        }
+
+    })
+
+    // 上传图片成功回调函数
+    function call_back(fileurl_tmp,val,img_data){
+        let cvs = document.getElementById("myCanvas");
+        let cst = cvs.getContext("2d");
+
+        data.poster_width = img_data.width;
+        data.poster_height = img_data.height;
+        data.back_url = fileurl_tmp;
+
+        cst.clearRect(0,0,cvs.width,cvs.height);
+
+        //初始化到canvas上的背景海报
+        img.src=  fileurl_tmp;
+        img.onload = function(){
+            cst.drawImage(img,0,0,img_data.width,img_data.height,0,0,data.canvas_width,data.canvas_height);
+            //判断上传海报之前是否已启用二维码,true则二维码移动的位置记录在海报上
+            qrcode.src && cst.drawImage(qrcode,data.canvas_x,data.canvas_y,80,80);
+        }
+
+        $("#background_img").val(fileurl_tmp);
+        $("#img_a").attr('href', fileurl_tmp);
+        $("#img_i").attr('onmouseover', "layer.tips('<img src="+fileurl_tmp+">',this,{tips: [1, '#fff']});");
+    }
+
+
+
+    //启用二维码模板
+   $('.enableQrcode').click(function(){
+       let cvs = document.getElementById("myCanvas");
+       let cst = cvs.getContext("2d");
+       if(!!$(this).attr('checked')){
+           qrcode.src=  '/public/images/poster/qrcode80.png';
+           qrcode.onload = function(){
+               cst.drawImage(qrcode,data.canvas_x,data.canvas_y,80,80);
+           }
+       }else{
+           //先清除之前的然后重新绘制
+           cst.clearRect(0,0,data.canvas_width,data.canvas_height);
+           if(data.back_url != ''){
+               cst.drawImage(img,0,0,data.canvas_width,data.canvas_height);
+           }
+       }
+   })
+
+    function adsubmit(){
+        if(!data.back_url){
+            layer.alert('请上传海报背景图', {icon: 2});
+            return false;
+        }
+
+        if(!$('.enableQrcode').attr('checked')){
+            layer.alert('请启用二维码', {icon: 2});
+            return false;
+        }
+
+        //data.enabled = $("input[name='enabled']:checked").val();
+        data.poster_name = $("input[name='poster_name']").val();
+
+        $.ajax({
+            type: 'POST',
+            url: "{:U('Admin/System/poster_add')}",
+            data: data,
+            success: function (res) {
+                    layer.alert('操作成功', {icon: 1});
+            }
+        });
+    }
+
+    //手动输入x,y轴
+    function keyup(obj){
+        let cvs = document.getElementById("myCanvas");
+        let cst = cvs.getContext("2d");
+
+        let px = $(obj).val();
+        let strs = px.split(","); //字符分割
+
+        if(px.indexOf(',') == -1){
+            $('.keyup_qrcode').val(strs[0]+','+ '0');
+            return;
+        }
+        data.canvas_x = strs[0];
+        data.canvas_y = strs[1] > 0?strs[1]:0;
+
+        cst.clearRect(0,0,cvs.width,cvs.height);
+        img.src && cst.drawImage(img,0,0,data.canvas_width,data.canvas_height);
+        qrcode.src && cst.drawImage(qrcode,strs[0],strs[1],80,80);
+    }
+</script>
+</html>

@@ -1,0 +1,79 @@
+<include file="public/layout" />
+<load href="__ROOT__/public/plugins/Ueditor/ueditor.config.js"/>
+<load href="__ROOT__/public/plugins/Ueditor/ueditor.all.min.js"/>
+<script type="text/javascript" charset="utf-8" src="__ROOT__/public/plugins/Ueditor/lang/zh-cn/zh-cn.js"></script>
+<style type="text/css">
+html, body {overflow: visible;}
+</style>  
+<body style="background-color: #FFF; overflow: auto;">
+<div id="toolTipLayer" style="position: absolute; z-index: 9999; display: none; visibility: visible; left: 95px; top: 573px;"></div>
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+  <div class="fixed-bar">
+    <div class="item-title"><a class="back" href="javascript:history.back();" title="返回列表"><i class="fa fa-arrow-circle-o-left"></i></a>
+      <div class="subject">
+        <h3>会员协议 - 编辑文章“{$info.doc_title}”</h3>
+        <h5>网站会员协议设置管理</h5>
+      </div>
+    </div>
+  </div>
+  <form class="form-horizontal" action="" id="add_post" method="post">    
+    <div class="ncap-form-default">
+      <dl class="row">
+        <dt class="tit">
+          <label><em>*</em>标题</label>
+        </dt>
+        <dd class="opt">
+          <input type="text" value="{$info.doc_title}" name="doc_title" id="doc_title" class="input-txt">
+          <span class="err" id="err_title"></span>
+          <p class="notic"></p>
+        </dd>
+      </dl>
+  
+      <dl class="row">
+        <dt class="tit">
+          <label><em>*</em>帮助内容</label>
+        </dt>
+        <dd class="opt">          
+            <textarea class="span12 ckeditor" id="post_content" name="doc_content" title="">
+                {$info.doc_content}
+            </textarea>          
+            <span class="err"  id="err_content"></span>
+            <p class="notic"></p>
+        </dd>
+      </dl>
+     
+      <div class="bot"><a href="JavaScript:void(0);" class="ncap-btn-big ncap-btn-green" id="submitBtn">确认提交</a></div>
+    </div>
+        <input type="hidden" name="doc_id" value="{$info.doc_id}">
+  </form>
+</div>
+<script type="text/javascript">
+    var url="{:url('Ueditor/index',array('savePath'=>'article'))}";
+    var ue = UE.getEditor('post_content',{
+        serverUrl :url,
+        zIndex: 999,
+        initialFrameWidth: "80%", //初化宽度
+        initialFrameHeight: 300, //初化高度            
+        focus: true, //初始化时，是否让编辑器获得焦点true或false
+        maximumWords: 99999, removeFormatAttributes: 'class,style,lang,width,height,align,hspace,valign',//允许的最大字符数 'fullscreen',
+        pasteplain:false, //是否默认为纯文本粘贴。false为不使用纯文本粘贴，true为使用纯文本粘贴
+        autoHeightEnabled: true
+    });
+
+    $(document).on("click", '#submitBtn', function () {
+        if($('#doc_title').val() == ''){
+        	alert('协议标题不能为空');
+        	return false;
+        }
+        
+        if($('#post_content').html() == ''){
+        	alert('协议内容不能为空');
+        	return false;
+        }
+        $('#add_post').submit();
+    });
+</script>
+</body>
+</html>

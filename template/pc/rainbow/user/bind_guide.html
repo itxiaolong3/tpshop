@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>联合登录</title>
+    <link rel="shortcut  icon" type="image/x-icon" href="{$tpshop_config.shop_info_store_ico|default='/public/static/images/logo/storeico_default.png'}" media="screen"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/css/base.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/css/correlation.css"/>
+    <script src="__STATIC__/js/jquery-1.11.3.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__PUBLIC__/js/layer/layer.js" type="text/javascript"></script>
+    <script src="__PUBLIC__/js/global.js" type="text/javascript"></script>
+    <script src="__PUBLIC__/js/md5.min.js"></script>
+</head>
+<body>
+<!--关联手机号-->
+<div class="tp-correlation-wrap">
+    <div class="tp-correlation">
+        <div class="tp_correlation_warp">
+            <form id="form">
+                <input type="hidden" name="auth_code" value="{$Think.config.AUTH_CODE}"/>
+                <input id="sms_sms_time_out" type="hidden" value="{$tpshop_config['sms_sms_time_out']|default=60}"/>
+                <input name="nickname" type="hidden" value="{$nickname}"/>
+                <div class="tp-correlation-container">
+                    <div class="correlation-left fl">
+                        <a href="#"><img src="__STATIC__/images/gllogo.png"/></a>
+                    </div>
+                    <div class="container-right fr">
+                        <div class="container-head">
+                            <a href="#">
+                                <img src="{$head_pic}"/>
+                                <!--<img src="__STATIC__/images/tx-qq.png" />
+                                <img src="__STATIC__/images/tx-zhifubao.png" />-->
+                            </a>
+                        </div>
+                        <div class="container-right-cont">
+                            <h3 class="container-yh-id">{$nickname}</h3>
+                            <div class="container-yh-icon">
+                            	<i>
+                                <if condition="$oauth eq 'weixin'">
+                                	<img src="__STATIC__/images/weixitu.png">
+                                        <elseif condition="$oauth eq 'qq'"/>
+                                        <img src="__STATIC__/images/tx-qq.png">
+                                        <else/>
+                                        	<img src="__STATIC__/images/tx-zhifubao.png">
+                                    </if>
+                                </i>    
+                                <span>
+                                    <if condition="$oauth eq 'weixin'"> 微信
+                                        <elseif condition="$oauth eq 'qq'"/>
+                                        QQ
+                                        <else/>
+                                        支付宝
+                                    </if>
+                                </span>
+                            </div>
+                            <p class="container-alt">
+                                为了给你更好的服务，请关联一个{$tpshop_config['shop_info_store_name']}账号若还没有{$tpshop_config['shop_info_store_name']}账号，则注册后默认完成关联
+                            </p>
+                            <ul class="container-list clearfix">
+                                <li class="fl"><a href="#" class="bind">关联已有账号</a></li>
+                                <li class="fl"><a href="#" class="reg">注册并关联账号</a></li>
+                            </ul>
+                        </div>
+                        <!--绑定模块-->
+                        <div class="items-warp">
+                            <div class="item_cont mb10">
+                                <i><img src="__STATIC__/images/ptuser.png"></i>
+
+                                <div class="item-inputs">
+                                    <span>手机号码</span><input name="mobile" type="text" id="mobile" placeholder="请输入手机号码">
+                                </div>
+                            </div>
+                            <div class="item_cont reg_div">
+                                <i><img src="__STATIC__/images/tppsw.png"></i>
+
+                                <div class="item-inputs">
+                                    <span>设置密码</span><input maxlength="16" type="password" id="password" placeholder="由字母和数字组成的6-16位字符">
+                                    <input name="password" type="hidden" value=""/>
+                                </div>
+                            </div>
+                            <div class="item_cont mb10">
+                                <i><img src="__STATIC__/images/tpyanzhen.png"></i>
+
+                                <div class="item-inputs item-input-yz">
+                                    <span>验&nbsp;证&nbsp;&nbsp;码</span> <input name="verify_code" id="verify_code" placeholder="请输入验证码">
+                                </div>
+                                <div class="tp-get-gode">
+                                    <input type="button" class="correlation-get-gode" id="count_down" value="获取验证码">
+                                </div>
+                            </div>
+                            <div class="item-cont cont15">
+                                <input type="button" class="correlation-submit submit" value="立即绑定">
+                            </div>
+                            <div class="tp-chenboxs reg_div">
+                                <input type="checkbox" name="checkbox" value="checkbox" id="checktxt" checked/>
+                                <label>我已阅读并同意</label>
+                                <a href="javascript:open_agreement()" target="_blank">《{$store_name|default='时代万网'}用户注册协议》</a>
+                            </div>
+                        </div>
+                </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript">
+    function  open_agreement(){
+        layer.open({
+            title:'用户服务协议',
+            type:2,
+            area: ['1000px', '650px'],
+            content:"{:U('Home/Article/agreement',['doc_code'=>'agreement'])}",
+            btn: ['取消', '同意'],
+            btnAlign: 'c',
+            success: function(layero, index){
+                /*layer.style(index, {
+                 top: '50px'
+                 });*/
+                console.log(index)
+                var lay = '#layui-layer'+index
+                $(lay).find('.layui-layer-btn').css("text-align","center")
+                $(lay).find('.layui-layer-btn').find('.layui-layer-btn0').removeClass('layui-layer-btn0')
+                $(lay).find('.layui-layer-btn').find('.layui-layer-btn1').addClass('layui-layer-btn0')
+            },
+            yes: function(index, layero){
+                //按钮【按钮一】的回调
+                layer.close(index)
+                $("#checktxt").prop('checked', false)
+            },
+            btn2: function(index, layero){
+                //按钮【按钮二】的回调
+                $("#checktxt").prop('checked', true)
+                //return false 开启该代码可禁止点击该按钮关闭
+            },
+            cancel: function(){
+
+            }
+        })
+    }
+    $(".container-right .items-warp").show(); //让绑定手机号的显示
+    $(".container-right-cont .container-list li").eq(0).children("a").addClass("tp-list-bg");
+    $(".reg_div").hide();
+    //手机号码绑定和手机号码绑定并注册切换
+    $(".container-right-cont .container-list li").click(function () {
+        $(this).children("a").addClass("tp-list-bg");
+        $(this).siblings("li").children("a").removeClass("tp-list-bg");
+        if($(this).children("a").hasClass("bind")){
+            $(".reg_div").hide();
+        }else{
+            $(".reg_div").show();
+        }
+    })
+
+    var intAs = $("input[id='sms_sms_time_out']").val();
+    // 发送手机短信
+    function send_sms_reg_code(){
+        var form = $('#form');
+        var mobile = form.find("input[name='mobile']").val();
+        if (!checkMobile(mobile)) {
+            layer.alert("请输入正确的手机号码", {icon: 2});
+            return;
+        }
+        var url = "/index.php?m=Home&c=Api&a=send_validate_code&scene=1&type=user_reg&mobile="+mobile;
+        $.ajax({
+            url: url,
+            dataType: "json",
+            success: function (data) {
+                if (data.status == 1) {
+                    $('#count_down').attr("disabled", "disabled");
+                    jsInnerTimeout('count_down', intAs);
+                    layer.alert(data.msg, {icon: 1});
+                } else {
+                    layer.alert(data.msg, {icon: 2});
+                }
+            }
+        });
+    }
+    function jsInnerTimeout(id, intAs) {
+        var codeObj = $("#" + id);
+        intAs--;
+        if (intAs <= -1) {
+            codeObj.removeAttr("disabled");
+            codeObj.attr("value","获取验证码");
+            return true;
+        }
+        codeObj.attr("value",intAs + '秒');
+        setTimeout("jsInnerTimeout('" + id + "'," + intAs + ")", 1000);
+    }
+    //绑定提交
+    function bind_submit() {
+        var form = $("#form");
+        var mobile = form.find("input[name='mobile']").val();
+        var verify_code = form.find("input[name='verify_code']").val();
+        //绑定账号
+        if (mobile == '') {
+            layer.alert("请输入手机号码", {icon: 2});
+            form.find("input[name='mobile']").focus();
+            return;
+        }
+        if (!checkMobile(mobile)) {
+            layer.alert("手机号码格式不正确", {icon: 2});
+            form.find("input[name='mobile']").focus();
+            return;
+        }
+        if (verify_code == '') {
+            layer.alert("请输入验证码", {icon: 2});
+            form.find("input[name='verify_code']").focus();
+            return;
+        }
+        $.ajax({
+            type: "POST",
+            url:"{:U('Home/User/bind_account')}",
+            data: {mobile: mobile,verify_code:verify_code},
+            dataType: "json",
+            success: function(data){
+                console.log(data);
+                if (data.status == 1) {
+                    layer.msg(data.msg, {icon: 1},function(){
+                        window.location.href = "{:U('Home/User/index')}";
+                    });
+                } else {
+                    layer.alert(data.msg, {icon: 2});
+                }
+            }
+        });
+    }
+
+    //注册提交
+    function reg_submit(){
+        var form = $("#form");
+        if(form.find("input[name='mobile']").val() == ''){
+            layer.alert("请输入手机号码", {icon: 2});
+            form.find("input[name='mobile']").focus();
+            return;
+        }
+        if (!checkMobile(form.find("input[name='mobile']").val())) {
+            layer.alert("手机号码格式不正确", {icon: 2});
+            form.find("input[name='mobile']").focus();
+            return;
+        }
+        if(form.find("input[name='password']").val() == ''){
+            layer.alert("请输入密码", {icon: 2});
+            form.find("input[name='password']").focus();
+            return;
+        }
+        if(form.find("input[id='password']").val().length < 6){
+            layer.alert("密码要求6-16位字符，建议由字母、数字和符号两种以上组合", {icon: 2});
+            form.find("input[name='password']").focus();
+            return;
+        }
+        if(form.find("input[name='verify_code']").val() == ''){
+            layer.alert("请输入短信验证码", {icon: 2});
+            form.find("input[name='verify_code']").focus();
+            return;
+        }
+        if($('input:checkbox').is(':checked')){
+            $.ajax({
+                type: "POST",
+                url:"{:U('Home/User/bind_reg')}",
+                data: form.serialize(),
+                dataType: "json",
+                success: function(data){
+                    console.log(data);
+                    if (data.status == 1) {
+                        layer.msg(data.msg, {icon: 1},function(){
+                            window.location.href = "{:U('Home/User/index')}";
+                        });
+                    } else {
+                        layer.alert(data.msg, {icon: 2});
+                    }
+                }
+            });
+        }else{
+            layer.alert("请阅读并同意注册协议", {icon: 2});
+        }
+    }
+
+    $(function () {
+        $(document).on("click", '.submit', function (e) {
+            var bind = $(".tp-list-bg").hasClass('bind');
+            if (bind) {
+                bind_submit();
+            }else{
+                reg_submit();
+            }
+        })
+    })
+    //发送验证码
+    $(function () {
+        $(document).on("click", '#count_down', function (e) {
+            var bind = $(".tp-list-bg").hasClass('bind');
+            if (bind) {
+                check_bind_mobile();
+            }else{
+                check_reg_mobile();
+            }
+        })
+    })
+    $(document).on('keyup', '#password', function() {
+        var password = md5($("input[name='auth_code']").val() + this.value);
+        $('input[name="password"]').val(password);
+    })
+    //检查要绑定的手机
+    function check_bind_mobile(){
+        var mobile = $("input[name='mobile']").val();
+        var form = $("#form");
+        if(mobile == ''){
+            layer.alert("请输入手机号码", {icon: 2});
+            form.find("input[name='mobile']").focus();
+            return;
+        }
+        if (!checkMobile(mobile)) {
+            layer.alert("手机号码格式不正确", {icon: 2});
+            form.find("input[name='mobile']").focus();
+            return;
+        }
+        $.ajax({
+            type: "POST",
+            url:"{:U('Home/Api/checkBindMobile')}",
+            data: {mobile: mobile},
+            dataType: "json",
+            success: function(data){
+                console.log(data);
+                if (data.status == 1) {
+                    send_sms_reg_code();
+                } else {
+                    layer.alert(data.msg, {icon: 2});
+                }
+            }
+        });
+    }
+
+    function check_reg_mobile()
+    {
+        var mobile = $("input[name='mobile']").val();
+        var form = $("#form");
+        if(mobile == ''){
+            layer.alert("请输入手机号码", {icon: 2});
+            form.find("input[name='mobile']").focus();
+            return;
+        }
+        if (!checkMobile(mobile)) {
+            layer.alert("手机号码格式不正确", {icon: 2});
+            form.find("input[name='mobile']").focus();
+            return;
+        }
+        $.ajax({
+            type: "POST",
+            url:"{:U('Home/Api/checkRegMobile')}",
+            data: {mobile: mobile},
+            dataType: "json",
+            success: function(data){
+                console.log(data);
+                if (data.status == 1) {
+                    send_sms_reg_code();
+                } else {
+                    layer.alert(data.msg, {icon: 2});
+                }
+            }
+        });
+    }
+</script>
+</html>

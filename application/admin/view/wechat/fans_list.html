@@ -1,0 +1,359 @@
+<include file="public/layout"/>
+<link href="__PUBLIC__/static/css/weixin-mp.css" rel="stylesheet"/>
+<body style="background-color: rgb(255, 255, 255); overflow: auto; cursor: default; -moz-user-select: inherit;">
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>粉丝列表</h3>
+                <h5>粉丝列表管理</h5>
+            </div>
+        </div>
+    </div>
+    <!-- 操作说明 -->
+    <div id="explanation" class="explanation" style="color: rgb(44, 188, 163); background-color: rgb(237, 251, 248); width: 99%; height: 100%;">
+        <div id="checkZoom" class="title"><i class="fa fa-lightbulb-o"></i>
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span title="收起提示" id="explanationZoom" style="display: block;"></span>
+        </div>
+        <ul>
+            <li>关注本公众号的粉丝在此列表显示</li>
+            <li>若要同步粉丝信息，请清除缓存，自动同步</li>
+            <li>服务号才可以按选定的多个用户进行群发，订阅号没这个权限</li>
+            <li>服务号和订阅号都可以使用发送所有粉丝功能，群发的次数一个月最多4次，一天最多1次</li>
+        </ul>
+    </div>
+    <div class="flexigrid">
+        <div class="mDiv">
+            <div class="ftitle">
+                <h3>粉丝列表</h3>
+                <h5>(共{$page->totalRows}条记录)</h5>
+            </div>
+            <div title="刷新数据" class="pReload"><i class="fa fa-refresh"></i></div>
+            <form action="{:U('fans_list')}" id="search-form2" class="navbar-form form-inline" method="get">
+                <div class="sDiv">
+                    <div class="sDiv2">
+                        <input type="text" size="100" name="keyword" class="qsbox" placeholder="用户昵称或者openid" value="{$Request.param.keyword}" style="width: 250px">
+                        <input type="submit" class="btn" value="搜索">
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="hDiv">
+            <div class="hDivBox">
+                <table cellspacing="0" cellpadding="0">
+                    <thead>
+                    <tr>
+                  <th axis="col0">
+                    <div style="width: 24px;"><i class="ico-check"></i></div>
+                  </th>
+                        <th align="left" axis="col6" class="">
+                            <div style="text-align: center; width:60px;" class="">头像</div>
+                        </th>
+                        <th align="left" axis="col6" class="">
+                            <div style="text-align: center; width:250px;" class="">openID</div>
+                        </th>
+                        <th align="left" axis="col4" class="">
+                            <div style="text-align: center; width: 100px;" class="">昵称</div>
+                        </th>
+                        <th align="center" axis="col6" class="">
+                            <div style="text-align: center; width: 50px;" class="">性别</div>
+                        </th>
+                        <th align="left" axis="col6" class="">
+                            <div style="text-align: center; width: 150px;" class="">所在地</div>
+                        </th>
+                        <th align="center" axis="col6" class="">
+                            <div style="text-align: center; width: 50px;" class="">用户语言</div>
+                        </th>
+                        <th align="center" axis="col6" class="">
+                            <div style="text-align: center; width: 150px;" class="">关注时间</div>
+                        </th>
+                        <th align="center" axis="col6" class="">
+                            <div style="text-align: center; width: 150px;">操作</div>
+                        </th>
+                        <th style="width:100%" axis="col7">
+                            <div></div>
+                        </th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        <div class="tDiv">
+            <div class="tDiv2">
+                <div class="fbutton">
+                    <a onclick="sendMessage();">
+                        <div class="add">
+                            <span><i class="fa fa-plus"></i>发送文本信息</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="fbutton">
+                    <a onclick="popupNews();">
+                        <div class="add">
+                            <span><i class="fa fa-plus"></i>发送图文信息</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div style="clear:both"></div>
+        </div>
+        <div id="flexigrid" class="bDiv" style="height: auto;">
+            <table>
+                <tbody>
+                <empty name="user_list">
+                    <div class="no-data">
+                        <i class="fa fa-exclamation-circle"></i>没有相关数据~
+                    </div>
+                </empty>
+                <volist name="user_list" id="list">
+                    <tr data-id="{$list.openid}">
+                        <td class="sign" axis="col6">
+                            <div style="width: 24px;"><i class="ico-check"></i></div>
+                        </td>
+                        <td align="center" axis="col0">
+                            <div style="width: 60px;"><img src="{$list.headimgurl}" width="30" height="30"></div>
+                        </td>
+                        <td align="center" axis="col0">
+                            <div style="text-align: center; width: 250px;">{$list.openid}</div>
+                        </td>
+                        <td align="center" axis="col0">
+                            <div style="text-align: center; width: 100px;">{$list.nickname}</div>
+                        </td>
+                        <td align="center" axis="col0">
+                            <div style="text-align: center; width: 50px;">{$list.sex_name}</div>
+                        </td>
+                        <td align="center" axis="col0">
+                            <div style="text-align: center; width: 150px;">{$list.country} -
+                                {$list.province} - {$list.city}
+                            </div>
+                        </td>
+                        <td align="center" axis="col0">
+                            <div style="text-align: center; width: 50px;">{$list.language}</div>
+                        </td>
+                        <td align="center" axis="col0">
+                            <div style="text-align: center; width: 150px;">
+                                {$list.subscribe_time ? date('Y-m-d H:i:s',$list.subscribe_time) : '无'}
+                            </div>
+                        </td>
+                        <td align="center" class="handle">
+                            <div style="text-align: center; width: 150px; max-width: 150px">
+                                <a  <if condition='$list[user_id] gt 0'>href=" {:U('admin/user/detail',array('id'=>$list['user_id']))}"  target="_blank"<else> onclick="isNotMember()" </if>
+                                   class="btn blue" style="{$list[user_id]==0?'background:#999':''}"><i class="fa fa-user"></i>会员</a>
+                                <a href="{:U('wechat/fan_info',array('id'=>$list['openid']))}" target="_blank"
+                                   class="btn blue"><i class="fa fa-search"></i>微信</a>
+                            </div>
+                        </td>
+                        <td align="" class="" style="width: 100%;">
+
+
+                            <div>&nbsp;</div>
+                        </td>
+                    </tr>
+                </volist>
+                </tbody>
+            </table>
+        </div>
+        {$page->show()}
+    </div>
+</div>
+
+<!--发送文本消息弹框-->
+<div class="ncap-form-default" id="editer" style="display: none">
+    <dl class="row">
+        <dt class="tit">
+            <label><em></em>发送范围:</label>
+        </dt>
+        <dd class="opt">
+            <input type="radio" name='to_all' value="0" checked> 已选择粉丝
+            <input type="radio" name='to_all' value="1"> 所有粉丝
+        </dd>
+    </dl>
+    <dl class="row">
+        <dt class="tit">
+            <label><em></em>选择模板:</label>
+        </dt>
+        <dd class="opt">
+            <select id="tpl_select" onchange="selectTemplate()">
+                <option value="">选择模板</option>
+                <volist name="texts" id="text">
+                    <option value="{$text.data.content}">{$text.data.title}</option>
+                </volist>
+            </select>
+        </dd>
+    </dl>
+    <dl class="row">
+        <dt class="tit">
+            <label><em></em>发送内容:</label>
+        </dt>
+        <dd class="opt">
+            <textarea name="text" rows="6" placeholder="发送内容" id="submit-text" class="tarea"></textarea>
+        </dd>
+    </dl>
+    <div class="bot"><a href="JavaScript:void(0);" onClick="submitMsg()" class="ncap-btn-big ncap-btn-green">发送</a>
+    </div>
+</div>
+
+<!-- 发送图文消息弹框 -->
+<div class="ncap-form-default" id="news-select" style="display: none">
+    <form class="form-horizontal" id="add_post">
+        <div class="ncap-form-default">
+            <dl class="row">
+                <dt class="tit">
+                    <label><em></em>发送范围:</label>
+                </dt>
+                <dd class="opt">
+                    <input type="radio" name='to_all' value="0" checked> 已选择粉丝
+                    <input type="radio" name='to_all' value="1"> 所有粉丝
+                </dd>
+            </dl>
+        </div>
+    </form>
+    <div id="news-list"></div>
+    <div class="bot" style="text-align:right; padding-right: 20px;">
+        <a href="JavaScript:void(0);" onClick="sendNews()" class="ncap-btn-big ncap-btn-green">发送</a>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        // 表格行点击选中切换
+        $('#flexigrid>table>tbody>tr').click(function () {
+            $(this).toggleClass('trSelected');
+        });
+
+        // 点击刷新数据
+        $('.fa-refresh').click(function () {
+            location.href = location.href;
+        });
+    });
+
+    $('.ico-check ' , '.hDivBox').click(function(){
+        $('tr' ,'.hDivBox').toggleClass('trSelected' , function(index,currentclass){
+            var hasClass = $(this).hasClass('trSelected');
+            $('tr' , '#flexigrid').each(function(){
+                if(hasClass){
+                    $(this).addClass('trSelected');
+                }else{
+                    $(this).removeClass('trSelected');
+                }
+            });  
+        });
+    });
+
+    function selectTemplate() {
+        $('textarea[name=text]').val($('#tpl_select').val());
+    }
+
+    function isNotMember() {
+        layer.msg('该用户还不是会员', {icon: 2});
+    }
+
+    //发送站内信
+    function sendMessage() {
+        var obj = $('#flexigrid  .trSelected');
+        if (obj.length > 0) {
+            layer.open({
+                type: 1,
+                title: '发送文本消息 (已选中 ' + obj.length + ' 位粉丝)',
+                shadeClose: true,
+                shade: 0.8,
+                area: ['580px', '350px'],
+                content: $('#editer')
+            });
+        } else {
+            layer.msg('请选择粉丝', {icon: 2});
+        }
+    }
+
+    function submitMsg() {
+        var openids = [];
+        $('#flexigrid  .trSelected').each(function () {
+            openids.push($(this).attr('data-id'));
+        });
+        $.ajax({
+            type: 'post',
+            url: "{:U('Admin/Wechat/send_text_msg')}",
+            dataType: 'json',
+            data: {
+                openids: openids.join(),
+                msg: $('#submit-text').val(),
+                to_all: $('input[name=to_all]:checked').val()
+            },
+            success: function (data) {
+                if (data.status === 1) {
+                    layer.msg(data.msg, {icon: 1});
+                } else {
+                    layer.msg(data.msg, {icon: 2});
+                }
+            },
+            error: function () {
+                layer.msg('网络错误，发送失败！', {icon: 2});
+            }
+        });
+        layer.closeAll();
+    }
+
+    function ajaxNews(page) {
+        $.ajax({
+            type : "POST",
+            url:"{:U('ajax_news')}?p=" + page,
+            success: function (data) {
+                $("#news-list").html(data);
+            }
+        });
+    }
+
+    function popupNews() {
+        var obj = $('#flexigrid  .trSelected');
+        if (obj.length > 0) {
+            ajaxNews(1);
+            layer.open({
+                type: 1,
+                title: '发送图文消息 (已选中 ' + obj.length + ' 位粉丝)',
+                shadeClose: true,
+                shade: 0.8,
+                area: ['750px', '600px'],
+                content: $('#news-select')
+            });
+        } else {
+            layer.msg('请选择粉丝', {icon: 2});
+        }
+    }
+    function sendNews() {
+        if ( ! $('.ma-card-mask:not(.hidden)').length) {
+            return layer.alert('请选择一个图文素材', {icon: 2});
+        }
+        var materialId = $('.ma-card-mask:not(.hidden)').data('mid');
+        var openids = [];
+        $('#flexigrid  .trSelected').each(function () {
+            openids.push($(this).attr('data-id'));
+        });
+        $.ajax({
+            url: "{:url('send_news_msg')}",
+            data: {
+                material_id: materialId,
+                openids: openids.join(),
+                to_all: $('input[name=to_all]:checked').val()
+            },
+            type: 'POST',
+            dataType: 'json',
+            success: function (res) {
+                if (res.status === 1) {
+                    return layer.msg(res.msg, {time: 500, icon: 1}, function () {
+                        layer.closeAll();
+                    });
+                }
+                var msg = (typeof res.status === 'undefined') ? '数据格式出错' : res.msg;
+                layer.alert(msg, {icon:2});
+            },
+            error: function () {
+                layer.alert('服务器繁忙！', {icon: 2});
+            }
+        });
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,69 @@
+<div class="foohi">
+    <div class="footer">
+        <ul>
+            <li>
+                <a <if condition="CONTROLLER_NAME eq 'Index'">class="yello" </if>  href="{:U('Index/index')}">
+                    <div class="icon">
+                        <div class="icon_tp1 icon_tps"><img src="__STATIC__/images/home1.png"/> </div>
+                        <div class="icon_tp2 icon_tps"><img src="__STATIC__/images/home2.png"/> </div>
+                        <p>首页</p>
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a <if condition="CONTROLLER_NAME eq 'Goods'">class="yello" </if> href="{:U('Goods/categoryList')}">
+                    <div class="icon">
+                    	<div class="icon_tp1 icon_tps"><img src="__STATIC__/images/category1.png"/> </div>
+                        <div class="icon_tp2 icon_tps"><img src="__STATIC__/images/category2.png"/> </div>
+                        <p>分类</p>
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a <if condition="CONTROLLER_NAME eq 'Cart'">class="yello" </if> href="{:U('Cart/index')}">
+                    <div class="icon">
+                        <div class="icon_tp1 icon_tps"><img src="__STATIC__/images/cart1.png"/> </div>
+                        <div class="icon_tp2 icon_tps"><img src="__STATIC__/images/cart2.png"/> </div>
+                        <p>购物车</p>
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a <if condition="CONTROLLER_NAME eq 'User'">class="yello" </if> href="{:U('User/index')}">
+                    <div class="icon">
+                        <div class="icon_tp1 icon_tps"><img src="__STATIC__/images/user1.png"/> </div>
+                        <div class="icon_tp2 icon_tps"><img src="__STATIC__/images/user2.png"/> </div>
+                        <p>我的</p>
+                    </div>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+<script src="__PUBLIC__/js/jqueryUrlGet.js"></script><!--获取get参数插件-->
+<script type="text/javascript">
+$(document).ready(function(){
+	  var cart_cn = getCookie('cn');
+	  if(cart_cn == ''){
+		$.ajax({
+			type : "GET",
+			url:"/index.php?m=Home&c=Cart&a=header_cart_list",//+tab,
+			success: function(data){								 
+				cart_cn = getCookie('cn');
+				$('#cart_quantity').html(cart_cn);						
+			}
+		});	
+	  }
+	  $('#cart_quantity').html(cart_cn);
+});
+
+set_first_leader();//设置推荐人
+if($(".footer ul li a").hasClass("yello")){
+	$(".footer ul li .yello").find(".icon_tp2").show();
+	$(".footer ul li .yello").find(".icon_tp1").hide();
+}
+
+</script>
+<!-- 微信浏览器 调用微信 分享js-->
+<include file="public/wx_share"/>
+<!-- 微信浏览器 调用微信 分享js  end-->

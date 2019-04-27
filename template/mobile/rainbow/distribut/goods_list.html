@@ -1,0 +1,378 @@
+<include file="public/header" title="分销商品列表"/>
+<include file="public/header_nav" title="分销商品列表" href="{:U('Mobile/Distribut/index')}"/>
+<div class="p search_pl">
+    <div class="maleri30">
+        <div class="search2">
+            <form method="get" action="" id="sourch_form">
+                <input id="sort" name="sort" type="hidden"/>
+                <input id="sort_asc" name="sort_asc" type="hidden" value="desc"/>
+                <input id="cat_id" name="cat_id" type="hidden"/>
+                <input id="brand_id"  name="brand_id"  type="hidden"/>
+                <input id="p"  name="p"  type="hidden" value="0"/>
+                <div class="le_inp">
+                    <input type="text" name="key_word" size="30" id="search" placeholder="输入商品名称" value="{:I('key_word')}"/>
+                </div>
+                <a href="javascript:;" onclick="ajaxsecrch()" >
+                    <div class="ri_ss"><img src="__STATIC__/images/sea.png"/></div>
+                </a>
+            </form>
+        </div>
+    </div>
+</div>
+<!--排序按钮-s-->
+<nav class="storenav p search_list_dump" id="head_search_box product_sort">
+    <ul>
+        <li class="red"><a><span class="dq" sort="">综合</span></a></li>
+        <li><a><span class="dq" sort="is_new" >新品</span></a></li>
+        <li><a><span class="dq" sort="sales_sum">销量</span></a></li>
+        <li><a><span class="jg" sort="distribut">佣金</span><i  class="pr "></i></a></li>
+        <li>
+            <span class="sx">筛选</span>
+            <i class="fitter"></i>
+        </li>
+    </ul>
+</nav>
+<!--排序按钮-e-->
+
+<!--商品详情s-->
+<form id="add_form" name="formCart" action="{:U('Mobile/Distribut/add_goods')}"  method="post">
+    <div id="goods_list">
+    </div>
+</form>
+<!--商品详情e-->
+<!--加载更多S-->
+<div id="getmore"  style="font-size:.32rem;text-align: center;color:#888;padding:.25rem .24rem .4rem; clear:both;display: none">
+    <a >已显示完所有记录</a>
+</div>
+<!--加载更多E-->
+<!--提交栏-s-->
+<div class="foohi foohiext newcarfoo">
+    <div class="payit ma-to-20 payallb" style="bottom:0px;">
+        <div class="fl alllef">
+            <div class="radio fl">
+                <input class="check-box" name="checkboxes" type="checkbox" style="display: none;">
+                <span class="che checkFull">
+                    <i></i>
+                </span>
+                <span>全选</span>
+                <!--<span class="all">全选</span>-->
+            </div>
+        </div>
+        <div class="fr">
+            <a href="javascript:void(0);" onclick="return confirm_submit()">添加</a>
+        </div>
+    </div>
+</div>
+<!--提交栏-e-->
+<!--筛选-s-->
+<div class="screen_wi">
+    <div class="classreturn loginsignup">
+        <div class="content">
+            <div class="ds-in-bl return seac_retu">
+                <a href="javascript:void(0);" ><img src="__STATIC__/images/return.png" alt="返回"></a>
+            </div>
+            <div class="ds-in-bl search center">
+                <span class="sx_jsxz">筛选</span>
+            </div>
+            <div class="ds-in-bl suce_ok">
+                <!--<a href="javascript:void(0);">确定</a>-->
+            </div>
+        </div>
+    </div>
+    <!--一级筛选条件-s-->
+    <div class="list-se-all ma-to-20 one-related" >
+        <!--全部分类-s-->
+        <div class="myorder p" onclick="cateArr()">
+            <div class="content30">
+                <a href="javascript:void(0);">
+                    <div class="order">
+                        <div class="fl">
+                            <span>全部分类</span>
+                        </div>
+                        <div class="fr">
+                            <i class="Mright"></i>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <!--全部分类-e-->
+
+        <!--品牌-s-->
+        <div class="myorder p " onclick="filtercriteria('brand')" >
+            <div class="content30" >
+                <a href="javascript:void(0)">
+                    <div class="order" >
+                        <div class="fl">
+                            <span>全部品牌</span>
+                        </div>
+                        <div class="fr">
+                            <i class="Mright"></i>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <!--品牌-e-->
+    </div>
+    <!--一级筛选条件-e-->
+
+    <!--二级刷选条件-->
+    <div class="list-se-all ma-to-20 two-related">
+        <!--分类筛选-s-->
+        <foreach name="categoryList" item="cate" key="catek">
+            <div class="myorder p catearr" id="cate" data-cat_id={$cate.id}>
+                <div class="content30">
+                    <a>
+                        <div class="order">
+                            <div class="fl">
+                                <span>{$cate.name}</span>
+                            </div>
+                            <div class="fr">
+                                <i class=""></i>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </foreach>
+        <!--分类筛选-e-->
+
+        <!--所有品牌筛选-s-->
+        <foreach name="brandList" item="v">
+            <div class="myorder p brand" data-id="{$v[id]}"  data-brand_id="{$v.id}">
+                <div class="content30" >
+                    <a>
+                        <div class="order">
+                            <div class="fl">
+                                <span>{$v[name]}</span>
+                            </div>
+                            <div class="fr">
+                                <i class=""><input type="checkbox" style="display: none;"  value="{$v[name]}"/></i>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </foreach>
+        <!--所有品牌筛选-e-->
+    </div>
+    <!--二级刷选条件-e-->
+
+</div>
+<!--筛选-e-->
+
+<div class="mask-filter-div" style="display: none;"></div>
+<script type="text/javascript" src="__STATIC__/js/sourch_submit.js"></script>
+<script type="text/javascript">
+    //初始化列表
+    function initializeList(){
+        $('#p').val('0')
+        $("#goods_list").html('');
+        ajax_return_status = 1;
+    }
+    /**搜索*/
+    function ajaxsecrch(){
+        if($.trim($('#search').val()) != ''){
+            initializeList()
+            ajax_sourch_submit()
+        }else{
+            layer.open({content:'请输入搜索关键字',time:2});
+        }
+    }
+
+    //筛选弹窗的全部分类筛选
+    function cateArr(){
+        $('.catearr').show();
+        $('.brand').hide();
+    }
+    //显示筛选弹窗的品牌筛选
+    function filtercriteria(){
+        $('.brand').show();
+        $('.catearr').hide();
+    }
+
+    //返回按钮
+    $('.seac_retu').click(function(){
+        //判断当前二级筛选状态
+        if($('.suce_ok').is('.two')){
+            $(".filter").each(function(i,o){
+                //去掉全部选择
+                $(o).find('.fr input').attr('checked',false);
+            });
+            $('#key').removeAttr('class');
+            //显示一级筛选
+            $('.screen_wi,.popcover,.one-related').show();
+            $('.two-related').hide();
+            $('.sx_jsxz').html('筛选');
+            $('.suce_ok').removeClass('two');
+        }else{
+            $('.screen_wi').animate({width: '0', opacity: 'hide'}, 'normal',function(){
+                undercover();
+                $('.screen_wi').hide();
+            });
+        }
+    })
+    //排序
+    var lb = $('.search_list_dump .lb')
+    var cs = $('.classreturn,.search_list_dump');
+    var son = $('.search_list_dump .jg').siblings();
+    $('.storenav ul li a span').click(function(){
+        initializeList()
+        $(this).parents('li').addClass('red').siblings('li').removeClass('red')
+        var sort = $(this).attr('sort');
+        $('#sort').val(sort);
+        if($(this).hasClass('jg')){
+            var sort_asc = $('#sort_asc').val();
+            if (sort_asc == 'asc'){
+                $('#sort_asc').val('desc');
+                son.removeClass('bpr1');
+                son.addClass('bpr2');
+                console.log($('#sort_asc').val())
+            }else{
+                $('#sort_asc').val('asc');
+                son.addClass('bpr1');
+                son.removeClass('bpr2');
+                console.log($('#sort_asc').val())
+            }
+            ajax_sourch_submit()
+
+        }
+        if($(this).hasClass('dq')){
+            $('#sort_asc').val('');
+            son.removeClass('bpr2');
+            son.removeClass('bpr1');
+            ajax_sourch_submit()
+        }
+
+    });
+
+    //筛选弹窗
+    $(function(){
+        lb.html($('.on').html());
+
+        $('.search_list_dump .sx').click(function(){
+            $('body').css('position','relative');
+            $('.screen_wi').animate({width: '14.4rem', opacity: 'show'}, 'normal',function(){
+                $('.screen_wi').show();
+                cover();
+            });
+        })
+
+        //  顶部筛选 筛选1-popcover
+        $('.popcover ul li span').click(function(){
+            //给span添加样式，并给其子代input添加class
+            $(this).addClass('ch_dg').find('input').addClass('sel');
+            $(this).parent('li').siblings('li').find('span').removeClass('ch_dg')
+                    .find('input').removeClass('sel');
+        })
+
+        // 一级筛选条件筛选2-one-related
+        $('.one-related .myorder .order').click(function(){
+            $('.two-related').show();
+            $('.suce_ok').addClass('two');
+            $('.tow-price,.one-related,.popcover').hide();
+            $('.sx_jsxz').html($(this).find('.fl span').text());
+        })
+
+        //筛选3-two-related
+        $('.two-related .myorder').click(function(){
+            initializeList()
+            $('#sort').val('');
+            var mright = $(this).find('.fr i');
+            mright.toggleClass('Mright');
+            $(this).siblings().find('.fr i').removeClass('Mright')
+            if($(this).hasClass('brand')){
+                var brand_id = $(this).data('brand_id');
+                mright.hasClass('Mright') ? $('#brand_id').val(brand_id):$('#brand_id').val('');
+            }else{
+                var cat_id = $(this).data('cat_id');
+                mright.hasClass('Mright') ? $('#cat_id').val(cat_id) : $('#cat_id').val('');
+            }
+            ajax_sourch_submit()
+            undercover();
+            $('.screen_wi').hide();
+        })
+    })
+
+    //选择商品
+    $(function(){
+        ajax_sourch_submit()
+        $(document).on("click", '.che', function (e) {
+            checkBox($(this));
+        });
+    })
+    //模拟checkbox，选中时背景变色
+    function checkBox(obj){
+        if(!obj.hasClass('check_t')){
+            obj.addClass('check_t');
+            obj.parent().find('.check-box').attr('checked', 'checked');
+        }else{
+            obj.removeClass('check_t');
+            $('.checkFull').removeClass('check_t');
+            obj.parent().find('.check-box').removeAttr('checked');
+        }
+        //选中全选多选框
+        if(obj.hasClass('checkFull')){
+            if(!obj.hasClass('check_t')){
+                $(".che").each(function(i,o){
+                    $(this).addClass('check_t');
+                    $(this).parent().find('.check-box').attr('checked', 'checked');
+                })
+            }else{
+                $(".che").each(function(i,o){
+                    $(this).removeClass('check_t');
+                    $(this).parent().find('.check-box').removeAttr('checked');
+                })
+            }
+        }
+    }
+
+    /**
+     * ajax加载商品
+     */
+    var ajax_return_status = 1; // 标识ajax 请求是否已经回来 可以进行下一次请求
+    function ajax_sourch_submit()
+    {
+       
+        if (ajax_return_status == 0)
+            return false;
+        ajax_return_status = 0;
+        var page =  parseInt($('#p').val());
+        $('#p').val(page+1);
+        $.ajax({
+            type : "POST",
+            url:"{:U('Mobile/Distribut/ajax_goods_list')}",
+            data:$('#sourch_form').serialize(),
+            success: function(data)
+            {
+                if($.trim(data) == ''){
+                    $('#getmore').show();
+                    return false;
+                }else{
+                    $("#goods_list").append(data);
+                    ajax_return_status = 1;
+                }
+            }
+        });
+    }
+
+    //提交添加商品
+    function confirm_submit()
+    {
+        //获取选中的商品个数
+        var j=0;
+        $("input[type='checkbox']:checked").each(function(){
+            j++;
+        });
+        //选择数大于0
+        if (j-1>0){
+            $("#add_form").submit()
+        }else {
+            layer.open({content:'请选择要添加的商品！',time:2});
+            return false;
+        }
+    }
+</script>
+</body>
+</html>

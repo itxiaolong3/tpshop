@@ -1,0 +1,43 @@
+<foreach name="goodsList" item="vo" key="k">
+    <div class="orderlistshpop p" id="list{$vo.goods_id}" >
+        <div class="maleri30">
+            <!--商品列表-s-->
+            <div class="sc_list">
+                <div class="radio fl">
+                    <input type="checkbox" hidden class="check-box"  autocomplete="off" name="goods_ids[{$vo.goods_id}]"  value="{$vo.goods_id}" >
+                    <span class="che checkItem">
+                    <i></i>
+                </span>
+                </div>
+                <div class="shopimg fl">
+                    <a href="{:U('Mobile/Goods/goodsInfo',array('id'=>$vo[goods_id]))}">
+                        <!--商品图片-->
+                        <img src="{$vo[goods_id]|goods_thum_images=200,200}">
+                    </a>
+                </div>
+                <div class="deleshow fr">
+                    <div class="deletes">
+                        <!--商品名-->
+                                    <span class="similar-product-text fl">
+                                        <a href="{:U('Mobile/Goods/goodsInfo',array('id'=>$vo[goods_id]))}">{$vo[goods_name]|getSubstr=0,20}</a>
+                                    </span>
+                        <a href="javascript:void(0);" onclick="confirm_submit({$vo.goods_id})" class="delescj" title="添加到分销商品">
+                            <!--<img src="__STATIC__/distribut/images/add.jpg"/>-->
+                        </a>
+                    </div>
+                    <!--商品属性，规格-->
+                    <p class="weight">分成金额:<if condition="$vo[commission] neq ''"> {$vo[commission]} <else/> {$vo[distribut]} </if></p>
+                    <div class="prices">
+                        <p class="sc_pri fl">
+                            <!--商品单价-->
+                            <span>￥</span><span>{$vo[shop_price]}</span>
+                        </p>
+                        <div class="plus fr get_mp">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--商品列表-e-->
+        </div>
+    </div>
+</foreach>

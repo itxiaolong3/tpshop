@@ -1,0 +1,80 @@
+<include file="public/layout" />
+<body style="background-color: #FFF; overflow: auto;">
+<div id="toolTipLayer" style="position: absolute; z-index: 9999; display: none; visibility: visible; left: 95px; top: 573px;"></div>
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <!--<a class="back" href="javascript:history.back();" title="返回列表"><i class="fa fa-arrow-circle-o-left"></i></a>-->
+            <div class="subject">
+                <h3>会员管理 - 团长佣金</h3>
+                <h5>网站系统拼团团长佣金管理</h5>
+            </div>
+        </div>
+    </div>
+    <form class="form-horizontal" id="delivery-form" method="post">
+        <input type="hidden" name="found_id" value="{$teamFound.found_id}" >
+        <if condition="$teamFound[bonus_status] eq 0">
+            <div class="ncap-form-default">
+                <dl class="row">
+                    <dt class="tit">金额</dt>
+                    <dd class="opt">
+                        <label>增加</label>
+                        <input id="user_money" readonly value="{$teamFound[team_activity][bonus]}" class="input-txt" type="text">
+                        <p class="notic">单位:元</p>
+                    </dd>
+                </dl>
+                <dl class="row">
+                    <dt class="tit">
+                        操作备注
+                    </dt>
+                    <dd class="opt">
+                        <textarea name="desc" class="tarea" rows="6"></textarea>
+                        <span class="err"></span>
+                        <p class="notic">请输入操作备注</p>
+                    </dd>
+                </dl>
+                <div class="bot"><a href="JavaScript:void(0);" onclick="accountForm()" class="ncap-btn-big ncap-btn-green" id="submitBtn">确认提交</a></div>
+            </div>
+        <else/>
+            <div class="ncap-form-default">
+                <dl class="row">
+                    <dt class="tit">金额</dt>
+                    <dd class="opt">
+                        <label>已领取</label>
+                        <input readonly value="{$teamFound[team_activity][bonus]}" class="input-txt" type="text">
+                        <p class="notic">单位:元</p>
+                    </dd>
+                </dl>
+            </div>
+        </if>
+    </form>
+</div>
+<script type="text/javascript">
+    function clearInput(id){
+        $('#'+id).val(0);
+    }
+    function accountForm(){
+        $.ajax({
+            type:'post',
+            data:$('#delivery-form').serialize(),
+            url: "{:U('Admin/Team/doBonus')}",
+            dataType:'JSON',
+            success: function(data) {
+                if(data.status == 1){
+                    layer.msg(data.msg,{icon:1},function(){
+                        window.location.reload();
+                    });
+                }else{
+                    layer.msg(data.msg,{icon:2});
+                }
+            },
+            error:function(){
+                alert('网络连接失败，请稍后再试！');
+            }
+        });
+    }
+</script>
+</body>
+</html>

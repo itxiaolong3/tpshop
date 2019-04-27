@@ -1,0 +1,119 @@
+<include file="public/layout" />
+<body style="background-color: #FFF; overflow: auto;">
+<div id="toolTipLayer" style="position: absolute; z-index: 9999; display: none; visibility: visible; left: 95px; top: 573px;"></div>
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title"><a class="back" href="javascript:history.back();" title="返回列表"><i class="fa fa-arrow-circle-o-left"></i></a>
+            <div class="subject">
+                <h3>会员星级管理 - 编辑会员星级</h3>
+                <h5>网站系统会员星级管理</h5>
+            </div>
+        </div>
+    </div>
+    <form class="form-horizontal" id="handleposition" method="post">
+        <input type="hidden" name="act" value="{$act}">
+        <input type="hidden" name="star_id" value="{$info.id}">
+        <div class="ncap-form-default">
+            <dl class="row">
+                <dt class="tit">
+                    <label for="star_level"><em>*</em>星级</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" name="star_level" value="{$info.star_level}" id="star_level" class="input-txt" onkeyup="this.value=/^\d+\.?\d{0,2}$/.test(this.value) ? this.value : ''">
+                    <span class="err" id="err_star_level"></span>
+                    <p class="notic">会员星级</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label for="team_total"><em>*</em>团队总人数</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" name="team_total" value="{$info.team_total}" id="team_total" class="input-txt" onkeyup="this.value=/^\d+\.?\d{0,2}$/.test(this.value) ? this.value : ''">
+                    <span class="err" id="err_team_total"></span>
+                    <p class="notic">团队达到人数才可以升星级</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label for="first_lower_level"><em>*</em>直推人数</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" name="first_lower_level" value="{$info.first_lower_level}" id="first_lower_level" class="input-txt" onkeyup="this.value=/^\d+\.?\d{0,2}$/.test(this.value) ? this.value : ''">
+                    <span class="err" id="err_first_lower_level"></span>
+                    <p class="notic">直推人数</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label for="second_achievement"><em>*</em>第二区业绩</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" name="second_achievement" value="{$info.second_achievement}" id="second_achievement" class="input-txt" >
+                    <span class="err" id="err_second_achievement"></span>
+                    <p class="notic">团队内直线，第二大总业绩：万元</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label for="weighting">加权(总业绩)</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" name="weighting" value="{$info.weighting}" id="weighting" class="input-txt" >
+                    <span class="err" id="err_weighting"></span>
+                    <p class="notic">总业绩提成比重</p>
+                </dd>
+            </dl>
+            <!--<dl class="row">-->
+                <!--<dt class="tit">-->
+                    <!--<label for="amount">保证金</label>-->
+                <!--</dt>-->
+                <!--<dd class="opt">-->
+                    <!--<input type="text" name="deposit" value="{$info.deposit}" id="deposit" class="input-txt" onkeyup="this.value=/^\d+\.?\d{0,2}$/.test(this.value) ? this.value : ''">-->
+                    <!--<span class="err" id="err_deposit"></span>-->
+                    <!--<p class="notic">达到该等级，经销商以上升级所需缴纳保证金,单位：元</p>-->
+                <!--</dd>-->
+            <!--</dl>-->
+            <!--<dl class="row">-->
+                <!--<dt class="tit">-->
+                    <!--<label for="discount"><em>*</em>折扣率</label>-->
+                <!--</dt>-->
+                <!--<dd class="opt">-->
+                    <!--<input type="text" name="discount" value="{$info.discount}" id="discount" class="input-txt" onkeyup="this.value=this.value.replace(/[^\d]/g,'')">-->
+                    <!--<span class="err" id="err_discount"></span>-->
+                    <!--<p class="notic">折扣率单位为百分比，如输入90，表示该会员等级的用户可以以商品原价的90%购买</p>-->
+                <!--</dd>-->
+            <!--</dl>-->
+            <div class="bot"><a href="JavaScript:void(0);" onclick="verifyForm()" class="ncap-btn-big ncap-btn-green" id="submitBtn">确认提交</a></div>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+    function verifyForm(){
+        $('span.err').show();
+        $.ajax({
+            type: "POST",
+            url: "{:U('Admin/User/starHandle')}",
+            data: $('#handleposition').serialize(),
+            dataType: "json",
+            error: function () {
+                layer.alert("服务器繁忙, 请联系管理员!");
+            },
+            success: function (data) {
+                if (data.status == 1) {
+                    layer.msg(data.msg, {icon: 1});
+                    location.href = "{:U('Admin/User/memberstar')}";
+                } else {
+                    layer.msg(data.msg, {icon: 2});
+                    $.each(data.result, function (index, item) {
+                        $('#err_' + index).text(item).show();
+                    });
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>

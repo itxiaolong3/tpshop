@@ -1,0 +1,61 @@
+<include file="public/header" title="消息中心" body=""/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/css/reset.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/css/mesg_center.css"/>
+
+<div class="header">
+	<a href="javascript:history.back(-1);"><img src="__STATIC__/images/return.png"></a>
+    <span>消息中心</span>
+</div>
+<div class="mesg_center">
+	<div class="mesg_caten1">
+    	<div class="mesg_items" data-url="{:U('User/message_notice_detail', array('type'=>2,'title'=>'物流消息'))}" >
+        	<span class="mesg_img"><img src="__STATIC__/images/mesg-logistics.png"><notempty name="no_read['message_logistics_no_read']"><i>{$no_read['message_logistics_no_read']}</i></notempty></span>
+            <span class="mesg_thumb">
+            	<em><b>物流</b><i>{$message_logistics.MessageLogistics.send_time_text}</i></em>
+                <p>{$message_logistics.MessageLogistics.message_title|default="暂无消息"}</p>
+            </span>           
+        </div>
+        <div class="mesg_items" data-url="{:U('User/message_notice_detail', array('type'=>0,'title'=>'通知消息'))}" >
+        	<span class="mesg_img"><img src="__STATIC__/images/mesg-notes.png"><notempty name="no_read['message_notice_no_read']"><i>{$no_read['message_notice_no_read']}</i></notempty></span>
+            <span class="mesg_thumb">
+            	<em><b>通知</b><i>{$message_notice.MessageNotice.send_time_text}</i></em>
+                <p>{$message_notice.MessageNotice.message_title|default="暂无消息"}</p>
+            </span>
+        </div>
+        <div class="mesg_items" data-url="{:U('User/message_notice_detail', array('type'=>1,'title'=>'活动消息'))}" >
+        	<span class="mesg_img"><img src="__STATIC__/images/mesg-activi.png"><notempty name="no_read['message_activity_no_read']"><i>{$no_read['message_activity_no_read']}</i></notempty></span>
+            <span class="mesg_thumb">
+            	<em><b>活动</b><i>{$message_activity.MessageActivity.send_time_text}</i></em>
+                <p>{$message_activity.MessageActivity.message_title|default="暂无消息"}</p>
+            </span>
+        </div>
+    </div>
+    <hr class="bot_line">
+    <div class="mesg_caten2">
+        <if condition="(!empty($tpshop_config['basic_im_choose'])) && ($tpshop_config['basic_im_choose'] eq 1)">
+    	<div class="mesg_items"  data-url="{:U('Supplier/index')}" txt="IM客服">
+        	<span class="mesg_img"><img src="/template/pc/rainbow/static/images/meal-kefu2.png"></span>
+            <span class="mesg_thumb">
+                <p>联系客服</p>
+            </span>
+        </div>
+        </if>
+        <!-- <div class="mesg_items">
+        	<span class="mesg_img"><img src="__STATIC__/images/mesg-logo.png"></span>
+            <span class="mesg_thumb">
+            	<em><b>店铺名称</b><i>2018-06-04</i></em>
+                <p>此处显示最近一句聊天信息</p>
+            </span>
+        </div>-->
+    </div>
+</div>
+<script type="text/javascript">
+
+$(function(){
+    $(".mesg_items").click(function(){
+        location.href = $(this).attr('data-url')
+    })
+})
+</script>
+</body>
+</html>

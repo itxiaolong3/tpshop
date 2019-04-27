@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="__STATIC__/css/withdraw-style.css"/>
+		<link rel="stylesheet" type="text/css" href="__STATIC__/css/withdraw-cash.css"/>
+		<script src="__STATIC__/js/jquery-3.1.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="__STATIC__/js/style.js" type="text/javascript" charset="utf-8"></script>
+		<script src="__STATIC__/js/mobile-util.js" type="text/javascript" charset="utf-8"></script>
+	    <script src="__STATIC__/js/layer.js"  type="text/javascript" ></script><!-- 弹窗js 参考文档 http://layer.layui.com/-->
+	    <script src="__PUBLIC__/js/global.js"></script>
+	    <script src="__STATIC__/js/swipeSlide.min.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body>
+		<div id="withdraw-cash-view">
+			<form method="post" id="returnform">
+			<div class="withdraw-header-wrap withdraw-bg-color">
+				<div class="withdraw-heade">
+					<div class="withdraw-heade-cont">
+			 			<a class="withdraw-left-icon" href="javascript:history.back(-1)">
+			 			</a>
+			 			<h5>提现</h5>	
+					</div>
+		 		</div>
+				<div class="withdraw-heade-money">
+					 <div class="heade-money p">
+					 	<span class="fl heade-money-span">￥</span>
+					 	<p class="fl heade-money-name">可提现总金额</p>
+					 	<div class="fr heade-money-num" <if condition="$cash_config['cash_open'] neq '1'">style="display: none;"</if>> 当日额度：{$cash_config.count_cash}</div>
+					 </div>
+					 <div class="heade-money2 p">
+					 	<span class="fl heade-money2-span">￥</span>
+					 	<p class="fl heade-money2-name">{$user_money}</p>
+					 </div>
+				</div>				
+			</div>
+		 		<div class="withdraw-select withdraw-select-tx">
+		 			<p class="withdraw-select-p">选择提现方式</p>
+		 			<dl class="withdraw-select-dl p">
+		 				<dd class="fl">
+		 					<label class="withdraw-select-labels">
+		 					</label>
+		 					<b class="withdrawimg1"><img src="__STATIC__/images/withdraw-zhifubao.png" /></b>
+		 					<span>支付宝</span>
+		 				</dd>
+		 				<dd class="fl">
+		 					<label for="female3">
+		 					</label>
+		 					<b class="withdrawimg1"><img src="__STATIC__/images/withdraw-weix.png" /></b>
+		 					<span>微信</span>
+		 				</dd>
+		 				<!--dd class="fl">
+		 					<label for="female3">
+		 					</label>
+		 					<b class="withdrawimg3"><img src="__STATIC__/images/withdraw-pay.png" /></b>
+		 					<span>银行卡</span>
+		 				</dd-->		 				
+		 			</dl>
+		 			<ul class="withdraw-cont-ul">
+					<li class="p" style="border: 0px;">
+						<span class="withdraw-cont-ul-name2 fl">
+							<img id="pay_img" src="__STATIC__/images/withdraw-zhifubao.png" />
+						</span>
+
+						<div class="withdraw-conts fl">
+							<p id="pay_name">{$user_extend.realname}</p>
+							<i id="pay_num">
+							<if condition="$user_extend['cash_alipay']">
+							{$user_extend.cash_alipay}
+							<else />
+							请先绑定一个支付宝账号
+							</if>
+							</i>
+						</div>
+
+						<div class="withdraw-cheng">
+							<i class="icon-rigths" id="add_ion"><img src="__STATIC__/images/withdraw-right.png" /> </i>
+						</div>
+					</li>
+					</ul>
+					<input type="hidden" name="bank_name" id="bank_name" value="支付宝">
+					<input type="hidden" name="bank_card" id="bank_card" value="{$user_extend.cash_alipay}">	
+					<input type="hidden" name="realname"  id="realname"  value="{$user_extend.realname}">
+		 	</div>
+
+			<div class="withdraw-cont-wrap withdraw-border16">
+				<p class="withdraw-cont-p1">提现金额&nbsp;&nbsp;<span <if condition="$cash_config['cash_open'] neq '1'">style="display: none;"</if>>(单次可提最大金额:{$cash_config.max_cash})</span></p>
+				<div class="withdraw-moneys-one p">
+					<span class="withdraw-moneys-icons fl">￥</span>
+					<div class="withdraw-moneys-cont fl">
+						<input type="text" name="money" id="money" value="" onKeyUp="this.value=this.value.replace(/[^\d.]/g,'')" onblur="get_service();" /> 
+						<input type="hidden" name="taxfee" value="" id="taxfee">
+						<input type="hidden" name="user_money" value="{$user_money}" id="user_money">
+					</div>
+				</div>
+				<div class="withdraw-moneys-two p">
+					<div class="withdraw-moneys-cont fl" <if condition="$cash_config['cash_open'] neq '1'">style="display: none;"</if>>
+						<span>手续费:<i id="sxf"></i></span>
+					</div>
+					<div class="withdraw-moneys-btn fr">
+						<input id="all_cash" type="button" value="全部提现" />
+					</div>
+				</div>
+			</div>
+			<div class="withdraw-cont-wrap withdraw-border16">
+				<ul class="withdraw-cont-ul">
+					<li class="p">
+						<span class="withdraw-cont-ul-name fl">支付密码：</span>
+						<div class="withdraw-cont-input fl">
+							<input name="paypwd" id="paypwd" type="password" placeholder="请填写支付密码"/>
+							<label></label>
+						</div>
+					</li>
+					<div class="withdraw-cont-pwd p">
+						<div class="fr withdraw-pwd-btn"><a href="{:U('User/paypwd')}"><input type="button" value="前往设置或修改交易密码" /></a></div>
+						<span class="withdraw-pwd-span fr"></span> 
+					</div>
+					<div class="withdraw-cont-btn cont-btn-two" style="margin-bottom: 0;">
+						<input type="button" onclick="checkSubmit()" value="提交申请" />
+						<label></label>
+					</div>
+				</ul>
+			</div>
+			<div class="withdraw-foot-wrap">
+				<div <if condition="$cash_config['cash_open'] neq '1'">style="display: none;"</if>>
+				<p class="withdraw-foot-p">温馨提示：</p>
+				<dl class="withdraw-foot-dl">
+					<dd>1.提现金额须大于 {$cash_config.min_cash} 元，小于 {$cash_config.max_cash} 元</dd>
+					<if condition="$cash_config['max_service_money'] eq '0'">
+	 				<dd>2.提现收取{$cash_config.service_ratio}%的手续费</dd>
+	 					<else/>
+	 				<dd>2.提现收取{$cash_config.service_ratio}%的手续费，每笔最低{$cash_config.min_service_money}元手续费</dd>
+	 				</if>
+
+					<dd>3.手续费在到账金额中扣除；</dd>
+					<dd>4.提现审核一般3 - 5个工作日到账。</dd>
+				</dl>
+				</div>
+			</div>
+		 	</form>
+		</div>
+		<div class="withdraw-bg-opacity" style="display: none;"></div>
+		<div class="withdraw-pop p " style="display: none;">
+			<div class="withdraw-pop-cheng">
+				<i class="withdraw-pop-icon"></i>
+			</div>
+			<p class="withdraw-pop-p">提现申请已提交</p>
+			<span class="withdraw-pop-span">
+				提现审核一般3 - 5个工作日到账，提现进度可在提现记录中查看（双休日及法定节假日顺延）
+			</span>
+			<div class="withdraw-pop-btn" >
+				<a class="withdraw-pop-a">
+					我知道了
+				</a>
+			</div>
+		</div>
+
+		<!-- 添加支付宝账号弹窗  s-->
+		<div class="withdraw-addpay-pop withdraw-cash-view" >
+			<div class="withdraw-header-wrap AddAccount-head-wrap" style="height: 1.9rem;">
+				<div class="withdraw-heade">
+					<div class="withdraw-heade-cont">
+			 			<a class="withdraw-left-icon">
+			 			</a>
+			 			<h5 id="add_style">支付宝提现</h5>	
+					</div>
+		 		</div>
+
+			</div>
+			<div class="withdraw-cont-wrap AddAccount-cont-wrap">
+				<ul class="withdraw-cont-ul">
+					<li class="p">
+						<span class="withdraw-cont-ul-name fl" id="card_title">支付宝账号:</span>
+						<div class="withdraw-cont-input fl">
+							<input type="text" id="pop_card" value="{$user_extend.cash_alipay}" placeholder="请填写支付宝账号"/>
+							<label></label>
+						</div>
+					</li>
+					<li class="p">
+						<span class="withdraw-cont-ul-name fl">真实姓名:</span>
+						<div class="withdraw-cont-input fl">
+							<input type="text" id="pop_name" value="{$user_extend.realname}" placeholder="请填写真实姓名"/>
+							<label></label>
+						</div>
+					</li>
+					<div class="withdraw-cont-btn">
+						<input type="submit" id="add_card" value="确定" />
+						<label></label>
+					</div>
+				</ul>
+			</div>
+		</div>
+		<script type="text/javascript">
+		  $(".withdraw-cheng").click(function(){
+		  	if(cash_type==0){
+		  		$(".withdraw-addpay-pop").show();
+		  	}else{
+				var str = $("#bank_card").val();
+				if(str.indexOf('openid')==-1){
+					layer.open({content:'可登录电脑端扫码绑定',icon:2,time:1000});
+					return;
+				}
+		  	}
+		  	if(cash_type==0){
+		  		$('#add_style').html('支付宝提现');
+		  		$('#card_title').html('支付宝账号:');
+		  	}
+		  	if(cash_type==1){
+		  		$('#add_style').html('微信提现');
+		  		$('#card_title').html('微信账号:')
+		  	}
+		  	if(cash_type==2){
+		  		$('#add_style').html('银行卡提现');
+		  		$('#card_title').html('银行卡号:')
+		  	}
+		  })
+		  $(".withdraw-left-icon").click(function(){
+		  		$(".withdraw-addpay-pop").hide();
+		  })
+		</script>
+		<!-- 添加支付宝账号弹窗  d-->
+		 	</form>
+		</div>
+	</body>
+
+ <script type="text/javascript">
+ 	var cash_type=0;//选择的体现方式,默认为支付宝
+ 	var realname='{$user_extend.realname}';
+ 	var cash_alipay='{$user_extend.cash_alipay}';
+ 	//var openid='{$openid}';
+ 	var service_ratio='{$cash_config.service_ratio}';
+ 	var min_cash='{$cash_config.min_cash}';
+ 	var max_cash='{$cash_config.max_cash}';
+ 	var min_service_money='{$cash_config.min_service_money}';
+ 	var max_service_money='{$cash_config.max_service_money}';
+ 	var cash_open='{$cash_config.cash_open}';
+
+ 	//选择支付方式
+ 	$(".withdraw-select-dl dd").eq(0).addClass("withdraw-select-dl-color");
+	$(".withdraw-select-dl dd label").click(function  () {
+		var j=$(this).parent('dd').index();
+		$(".withdraw-select-dl dd").removeClass("withdraw-select-dl-color");
+		$(".withdraw-select-dl dd label").removeClass("withdraw-select-labels");
+		$(this).addClass("withdraw-select-labels").parent("dd").addClass("withdraw-select-dl-color");
+
+		if(j==0){
+			$('#pay_img').attr('src','__STATIC__/images/withdraw-zhifubao.png');
+			$('#bank_name').val('支付宝');
+			if(cash_alipay){
+				$('#pay_num').html(cash_alipay);
+				$('#bank_card').val(cash_alipay);
+				$('#pop_card').val(cash_alipay);
+			}else{
+				$('#pay_num').html('请先绑定一个支付宝账号');
+				$('#bank_card').val('');
+			}
+		}
+		if(j==1){
+			$('#pay_img').attr('src','__STATIC__/images/withdraw-weix.png');
+			$('#bank_name').val('微信');
+			$('#pay_num').html('正在获取绑定的微信。。。');
+			//ajax请求一下用户是否绑定了微信
+			$.post('{:U("Mobile/User/get_openid")}','',function(res){
+				//console.log(res['status']);
+				if(res['status']==1){
+					$('#pay_num').html('微信账号已绑定');
+					$('#bank_card').val('openid:'+res['result']);
+					$('#pop_card').val('openid:'+res['result']);
+				}else{
+					$('#pay_num').html('请打开电脑端扫码绑定提现微信');
+					$('#bank_card').val('');
+					$('#pop_card').val('');
+				}
+			},'JSON');
+		}
+		cash_type=j;
+	})
+	function isPone(str) {  
+          var myreg=/^[1][3,4,5,6,7,8,9][0-9]{9}$/;  
+          if (!myreg.test(str)) {  
+              return false;  
+          } else {  
+              return true;  
+          }  
+    }  
+	function isMail(str) {  
+        var myreg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
+		if(!myreg.test(str))
+		{
+		  return false;
+		}
+		return true;  
+    }  
+
+	//添加或修改提现账号
+	$('#add_card').click(function(){
+		var card=$('#pop_card').val();
+		var cash_name=$('#pop_name').val();
+		if(!card){
+			layer.open({content:'账号不能为空',icon:2,time:1000});
+			return false;
+		}
+		if (isPone(card) || isMail(card)) {
+
+		}else{
+			layer.open({content:'账号必须是手机号或邮箱',icon:2,time:1000});
+			return false;
+		}
+		// 
+		$.post('{:U("Mobile/User/add_card")}',{'type':cash_type,'card':card,'cash_name':cash_name},function(res){
+			if(res.status==1){
+				$('#pay_num').html(card);
+				$('#pay_name').html(cash_name);
+				$('#realname').val(cash_name);
+				if(cash_type==0){
+					cash_alipay=card;
+				}
+				if(cash_type==1){
+					cash_weixinpay=card;
+				}
+				$('#bank_card').val(card);
+				$(".withdraw-addpay-pop").hide();
+			}
+		},'JSON')
+	})
+
+	//全部提现时验证金额
+	$('#all_cash').click(function(){
+		$('#money').val('{$user_money}');
+		if (cash_open == 1) {
+			var m=$('#money').val();
+			if(parseFloat(m)>parseFloat(max_cash)){
+				layer.open({content:'单次提现额不得大于'+max_cash,icon:2,time:1000});
+				$('#money').val('');
+				return false;
+			}
+			var r = get_taxfee(m);	
+			$('#sxf').html(r);
+			$("#taxfee").val(r);
+		} else {
+			$('#sxf').html(0);
+			$("#taxfee").val(0);
+		}
+	})
+
+	//手续费计算及显示
+	function get_service(){
+		if (cash_open == 1) {
+			var m=$('#money').val();
+			if(parseFloat(m)>parseFloat(max_cash)){
+				layer.open({content:'单次提现额不得大于'+max_cash,icon:2,time:1000});
+				$('#money').val('');
+				return false;
+			}
+			var r = get_taxfee(m);	
+			$('#sxf').html(r);
+			$("#taxfee").val(r);
+		} else {
+			$('#sxf').html(0);
+			$("#taxfee").val(0);
+		}
+	}
+
+	// 获取手续费
+	function get_taxfee(m) {
+		var r=(m*service_ratio)/100;
+		r=parseFloat(r.toFixed(2));
+		if (max_service_money == 0) {
+			return r;
+		}
+		if(r<parseFloat(min_service_money)){
+			r=min_service_money;
+		}
+		if(r>parseFloat(max_service_money)){
+			r=max_service_money;
+		}
+		return r;
+	}
+	function checkSubmit(){
+        //var bank_name = $.trim($('#bank_name').val());
+        var bank_card = $.trim($('#bank_card').val());
+        //var realname = $.trim($('#realname').val());
+        var money = parseFloat($.trim($('#money').val()));
+        var usermoney = parseFloat('{$user_money}');  //用户余额
+        var paypwd= $.trim($('#paypwd').val());
+
+        if(bank_card == '' || money === ''){
+            layer.open({content:'请填写完整提现信息',time:2});
+            return false;
+        }
+        if(money > usermoney){
+            layer.open({content:'提现金额大于您的账户余额',time:2});
+            return false;
+        }
+        if(paypwd == ''){
+            layer.open({content:'请输入支付密码',time:2});
+            return false;
+        }
+        $.ajax({
+            type: "post",
+            url :"{:U('Mobile/User/withdrawals')}",
+            dataType:'json',
+            data:$('#returnform').serialize(),
+            success: function(data)
+            {
+                if(data.status == 1){
+                    layer.open({content: data.msg,time:2,end:function () {
+                        window.location.href=data.url;
+                    }});
+                }else{
+                	layer.open({content:data.msg,time:2});
+                }
+            }
+        });
+    }
+
+	
+	//提现成功弹窗
+	$("#save_data").click(function  () {
+		//$(".withdraw-bg-opacity, .withdraw-pop").css("display","block");
+	})
+	$(".withdraw-pop-btn .withdraw-pop-a").click(function  () {
+		$(".withdraw-bg-opacity, .withdraw-pop").css("display","none")
+	})
+
+
+
+ </script>
+</html>

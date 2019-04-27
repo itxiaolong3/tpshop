@@ -1,0 +1,59 @@
+<volist name="lists" id="v">
+    <if condition="($Think.get.type == 0)"/>
+    <div class="logistics_items" txt="通知">
+        <h4>{$v.send_time_text}</h4>
+        <div class="mesg_cont mesgcont_spec">
+            <p>{$v.message_notice.message_title}<empty name="v.is_see"><i></i></empty></p>
+            <span>
+                <em><b>{$v.message_notice.message_content}</b></em>
+            </span>
+
+            <if condition="$v.message_notice.type eq '2'"/>
+            <div class="mesgdeta_thi notice_mesgde_thi"><a href="javascript:messageNoticeInfo2('{:U('Mobile/User/coupon')}',{$v.rec_id});">立即使用</a></div>
+            <elseif condition="($v.message_notice.type eq '3')"/>
+            <div class="mesgdeta_thi notice_mesgde_thi"><a href="javascript:messageNoticeInfo2('{:U('Mobile/User/coupon',['type'=>1])}',{$v.rec_id});">查看详情</a></div>
+            <elseif condition="($v.message_notice.type eq '4')"/>
+            <div class="mesgdeta_thi notice_mesgde_thi"><a href="javascript:messageNoticeInfo2('{:U('Mobile/User/coupon')}',{$v.rec_id});">查看详情</a></div>
+            <elseif condition="($v.message_notice.type eq '6')"/>
+            <div class="mesgdeta_thi notice_mesgde_thi"><a href="javascript:messageNoticeInfo2('{:U('Mobile/User/withdrawals_list')}',{$v.rec_id});">查看详情</a></div>
+            <elseif condition="$v.message_notice.mmt_code eq 'message_notice'"/>
+            <div class="mesgdeta_thi notice_mesgde_thi"><a href="javascript:messageNoticeInfo({$v.rec_id});">查看详情</a></div>
+            <else/>
+            <div class="mesgdeta_thi notice_mesgde_thi"><a href="javascript:messageNoticeInfo({$v.rec_id});">查看详情</a></div>
+            </if>
+
+
+        </div>
+    </div>
+
+    <elseif condition="$Think.get.type == 1"/>
+    <div class="logistics_items" txt="活动">
+        <h4>{$v.send_time_text}</h4>
+        <div class="mesg_cont mesgcont_active">
+            <p>{$v.message_activity.message_title}<empty name="v.is_see"><i></i></empty></p>
+            <span>
+                <em>
+                    <img src="{$v.message_activity.img_uri}">
+                    <if condition="($v.finished)"><i>活动已结束</i></if>
+                </em>
+                <b>{$v.message_activity.message_content|htmlspecialchars_decode}</b>
+            </span>
+            <a href="javascript:messageAcitivityInfo('{$v.mobile_url}',{$v.rec_id},'{$v.message_activity.mmt_code}','{$v.finished}','{$v.start_time}');">查看详情</a>
+        </div>
+    </div>
+
+    <elseif condition="$Think.get.type == 2"/>
+    <div class="logistics_items" txt="物流">
+        <h4>{$v.send_time_text}</h4>
+        <div class="mesg_cont">
+            <p>{$v.message_logistics.message_title}<empty name="v.is_see"><i></i></empty></p>
+            <span>
+                <em><b>{$v.message_logistics.message_content}</b><i>{$v.order_text}</i></em>
+                <img src="{$v.message_logistics.img_uri}">
+            </span>
+            <a href="javascript:messageLogisticsInfo('{$v.mobile_url}','{$v.message_logistics.order_id}','{$v.message_logistics.order_sn}',{$v.rec_id});;">查看详情</a>
+        </div>
+    </div>
+
+    </if>
+</volist>

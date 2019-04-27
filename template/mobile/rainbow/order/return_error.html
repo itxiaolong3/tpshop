@@ -1,0 +1,38 @@
+<include file="public/header" title="温馨提示"/>
+<include file="public/header_nav" title="温馨提示" href="javascript:history.back(-1)"/>
+<style>
+    body,ul,ol,li,p,h1,h2,h3,h4,h5,h6,form,fieldset,table,td,img,div,dl,dt,dd,input{ margin:0; padding:0;}
+    input,select,textarea{ outline:none;}
+    textarea{ resize:none;}
+    a{ text-decoration:none;}
+    .fl{ float:left;}
+    .fr{ float:right;}
+
+    table{border-collapse:collapse;border-spacing:0;}
+    ol,ul,li,dl{list-style:none;}
+    body{font-family:"Microsoft YaHei",tahoma,verdana,arial,sans-serif;line-height:1; font-size:0.341334rem;}
+    i,a,big,small,b,span,em,strong,font{ display:inline-block;font-style:normal; font-weight:normal;}
+
+    input::-webkit-input-placeholder{color: #999;}
+    input:-moz-placeholder{color:#999;}
+    input::-moz-placeholder{color:#999;}
+    input:-ms-input-placeholder{color:#999;}
+
+    .afsa-header{ width:14.72rem; height:1.92rem; line-height:1.92rem; text-align:center; padding:0 0.64rem; border-bottom:1px solid #dedede;}
+.err-back img{ height:0.896rem; vertical-align:middle;}
+.afsa-header span{ font-size:0.768rem; color:#333;}
+.err-mesg{ position:relative;}
+.err-mesg img{ width:1.28rem; vertical-align:middle;}
+.err-mesg i{ width:0.512rem; height:0.512rem; line-height:0.512rem; font-size:0.384rem; position:absolute; background-color:#ff4139; border-radius:50%; color:#fff; top:0.384rem; right:-0.128rem;}
+.aftersales-overdue{ width:16rem; height:26.538667rem; text-align:center;}
+.aftersales-overdue img{ height:9.6rem; margin-top:3.84rem;}
+.aftersales-overdue span{ font-size:0.426667rem; color:#666; display:block;}
+.aftersales-overdue a{ width:3.2rem; height:1.024rem; border:1px solid #999; line-height:1.024rem; color:#333; font-size:0.512rem; margin-top:1.28rem;}
+</style>
+<div class="aftersales-overdue">
+	<img src="__STATIC__/images/error-img.png">
+    <span>抱歉，您已错过售后申请时效，如果您有相关疑问，可联系在线客服</span>
+    <a href="tel:{$tpshop_config['shop_info_phone']}">联系客服</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,215 @@
+<include file="public/layout"/>
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>提现设置</h3>
+                <h5>网站全局内容基本选项设置</h5>
+            </div>
+            <ul class="tab-base nc-row">
+                <foreach name="group_list" item="v" key="k">
+                    <li><a href="{:U('System/index',['inc_type'=> $k])}" <if condition="$k==$inc_type">class="current"</if>><span>{$v}</span></a></li>
+                </foreach>
+            </ul>
+        </div>
+    </div>
+    <!-- 操作说明 -->
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom"><i class="fa fa-lightbulb-o"></i>
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示"></span></div>
+        <ul>
+            <!--<li>系统平台全局设置,包括基础设置、购物、短信、邮件、水印和分销等相关模块。</li>-->
+        </ul>
+    </div>
+    <form method="post" enctype="multipart/form-data" name="form1" action="{:U('System/handle')}">
+        <input type="hidden" name="inc_type" value="cash">
+        <div class="ncap-form-default">
+            <dl class="row">
+                <dt class="tit">
+                    <label>提现配置</label>
+                </dt>
+                <dd class="opt">
+                    <div class="onoff">
+                        <label for="switch1" class="cb-enable  <if condition="$config['cash_open'] eq 1">selected</if>">开启</label>
+                        <label for="switch0" class="cb-disable <if condition="$config['cash_open'] eq 0">selected</if>">关闭</label>
+                        <input type="radio" onclick="$('#switch_on_off').show();"  id="switch1"  name="cash_open" value="1" <if condition="$config['cash_open'] eq 1">checked="checked"</if>>
+                        <input type="radio" onclick="$('#switch_on_off').hide();" id="switch0" name="cash_open" value="0" <if condition="$config['cash_open'] eq 0">checked="checked"</if> >
+                    </div>
+                    <p class="notic">是否开启提现功能</p>
+                </dd>
+            </dl>
+
+            <dl class="row">
+                <dt class="tit">
+                    <label for="reg_integral">手续费比例</label>
+                </dt>
+                <dd class="opt">
+                    <input onKeyUp="this.value=this.value.replace(/[^\d]/g,'')" onpaste="this.value=this.value.replace(/[^\d]/g,'')" pattern="^\d{1,}$" id="service_ratio" name="service_ratio" value="{$config.service_ratio}" class="input-txt" type="text"> %
+                    <span class="err">只能输入整数</span>
+
+                    <p class="notic">（注：默认是百分比，如填1就是 代表每笔提现，收取提现金额1%的手续费）</p>
+                </dd>
+            </dl>
+
+            <dl class="row">
+                <dt class="tit">
+                    <label for="reg_integral">最低手续费</label>
+                </dt>
+                <dd class="opt">
+                    <input onKeyUp="this.value=this.value.replace(/[^\d]/g,'')" onpaste="this.value=this.value.replace(/[^\d]/g,'')" pattern="^\d{1,}$" id="min_service_money" name="min_service_money" value="{$config.min_service_money}" class="input-txt" type="text">
+                    <span class="err">只能输入整数</span>
+
+                    <p class="notic">（注：单笔手续费计算出来小于该值时，则取该值）</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label for="reg_integral">最高手续费</label>
+                </dt>
+                <dd class="opt">
+                    <input onKeyUp="this.value=this.value.replace(/[^\d]/g,'')" onpaste="this.value=this.value.replace(/[^\d]/g,'')" pattern="^\d{1,}$" id="max_service_money" name="max_service_money" value="{$config.max_service_money}" class="input-txt" type="text">
+                    <span class="err">只能输入整数</span>
+
+                    <p class="notic">（注：单笔手续费计算出来大于该值时，则取该值,为0时则不限）</p>
+                </dd>
+            </dl>
+
+            <dl class="row">
+                <dt class="tit">
+                    <label for="distribut_min">最低提现额</label>
+                </dt>
+                <dd class="opt">
+                    <input onKeyUp="this.value=this.value.replace(/[^\d]/g,'')" onpaste="this.value=this.value.replace(/[^\d]/g,'')" pattern="^\d{1,}$" name="min_cash" id="min_cash" value="{$config.min_cash}" class="input-txt" type="text">
+                    <span class="err">只能输入整数</span>
+
+                    <p class="notic">（注：单笔最低提现额）</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label for="distribut_min">最高提现额</label>
+                </dt>
+                <dd class="opt">
+                    <input onKeyUp="this.value=this.value.replace(/[^\d]/g,'')" onpaste="this.value=this.value.replace(/[^\d]/g,'')" pattern="^\d{1,}$" name="max_cash" id="max_cash" value="{$config.max_cash}" class="input-txt" type="text">
+                    <span class="err">只能输入整数</span>
+
+                    <p class="notic">（注：单笔最高提现额,必须大于0）</p>
+                </dd>
+            </dl>
+
+            <dl class="row">
+                <dt class="tit">
+                    <label for="distribut_min">每日累计提现额</label>
+                </dt>
+                <dd class="opt">
+                    <input onKeyUp="this.value=this.value.replace(/[^\d]/g,'')" onpaste="this.value=this.value.replace(/[^\d]/g,'')" pattern="^\d{1,}$" name="count_cash" id="count_cash" value="{$config.count_cash}" class="input-txt" type="text">
+                    <span class="err">只能输入整数</span>
+
+                    <p class="notic">（注：单人每日累计提现额达到该值时，本日将不支持继续提现,为0时则不限）</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label for="distribut_min">每日累计提现次数</label>
+                </dt>
+                <dd class="opt">
+                    <input onKeyUp="this.value=this.value.replace(/[^\d]/g,'')" onpaste="this.value=this.value.replace(/[^\d]/g,'')" pattern="^\d{1,}$" name="cash_times" id="cash_times" value="{$config.cash_times}" class="input-txt" type="text">
+                    <span class="err">只能输入整数</span>
+
+                    <p class="notic">（注：单人每日累计提现次数达到该值时，本日将不支持继续提现,为0时则不限）</p>
+                </dd>
+            </dl>
+
+
+
+            <div class="bot"><a href="JavaScript:void(0);" class="ncap-btn-big ncap-btn-green" onclick="fromsubmit();">确认提交</a></div>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+
+    function fromsubmit(){
+        var min_cash    =   parseInt($('#min_cash').val());   //每次最低提现额
+        var max_cash    =   parseInt($('#max_cash').val());   //每次最高提现额
+        var cash_times  =   parseInt($('#cash_times').val()); //提现次数
+        var count_cash  =   parseInt($('#count_cash').val()); //每日累计提现额
+        var service_ratio   =   parseInt($('#service_ratio').val());
+        var min_service_money   =   parseInt($('#min_service_money').val());
+        var max_service_money   =   parseInt($('#max_service_money').val());
+
+        var cash_open = $("input[name='cash_open']:checked").val();
+        if (cash_open == 1) {
+            if(isNaN(min_cash) || isNaN(max_cash) || isNaN(cash_times) || isNaN(count_cash) || isNaN(service_ratio) || isNaN(min_service_money) || isNaN(max_service_money)){
+                layer.msg('选项不能为空且必须为数字!', {icon: 2,time: 1000});
+                return false;
+            }
+            if (service_ratio <= 0) {
+                layer.msg('手续费比例必须大于0!', {icon: 2,time: 1000});
+                return false;
+            }
+            if (service_ratio >= 100) {
+                layer.msg('手续费比例必须小于100!', {icon: 2,time: 1000});
+                return false;
+            }
+            if (min_service_money > 0 && min_service_money >= min_cash) {
+
+                layer.msg('最低手续费必须小于最低提现额!', {icon: 2,time: 1000});
+                return false;
+            }
+            if (min_service_money >= max_service_money && min_service_money > 0) {
+                layer.msg('最低手续费不得大于最高手续费!', {icon: 2,time: 1000});
+                return false;
+            } else {
+                if(min_service_money < 0 || max_service_money < 0){
+                    layer.msg('最低或最高手续费不得小于0!', {icon: 2,time: 1000});
+                    return false;
+                }
+            }
+
+            if(min_cash >= max_cash && min_cash > 0){
+                layer.msg('最低提现额必须小于最高提现额!', {icon: 2,time: 1000});
+                return false;
+            } else {
+                if(min_cash < 0 || max_cash < 0){
+                    layer.msg('最低或最高提现额不得小于0!', {icon: 2,time: 1000});
+                    return false;
+                }
+
+            }
+            if (max_cash <= 0) {
+
+                layer.msg('最高提现额必须大于0!', {icon: 2,time: 1000});
+                return false;
+            }
+
+            if (count_cash > 0 && max_cash > 0 && cash_times > 0) {
+                if((max_cash * cash_times) > count_cash){
+                    layer.msg('提现次数及最高提现额运算结果不得大于每日累计提现额度!', {icon: 2,time: 1000});
+                    return false;
+                }
+            }
+
+            if(count_cash < 0){
+                layer.msg('每日累计提现额不能小于0!', {icon: 2,time: 1000});
+                return false;
+            }   
+        }
+     
+        document.form1.submit();
+    }
+
+</script>
+<div id="goTop">
+    <a href="JavaScript:void(0);" id="btntop">
+        <i class="fa fa-angle-up"></i>
+    </a>
+    <a href="JavaScript:void(0);" id="btnbottom">
+        <i class="fa fa-angle-down"></i>
+    </a>
+</div>
+</body>
+</html>

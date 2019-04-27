@@ -1,0 +1,82 @@
+<include file="public/layout" />
+<body style="background-color: #FFF; overflow: auto;">
+<div id="toolTipLayer" style="position: absolute; z-index: 9999; display: none; visibility: visible; left: 95px; top: 573px;"></div>
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <a class="back" href="javascript:history.back();" title="返回"><i class="fa fa-arrow-circle-o-left"></i></a>
+            <div class="subject">
+                <h3>提交审核</h3>
+                <h5>提交审核填写页面</h5>
+            </div>
+        </div>
+    </div>
+    <form method="post" id="audit">
+        <input type="hidden" name="miniapp_id" value="{$Request.param.miniapp_id}"/>
+        <div class="ncap-form-default">
+            <dl class="row">
+                <dt class="tit">
+                    <label>标题</label>
+                </dt>
+                <dd class="opt">
+                    <input name="title" class="input-txt" type="text"/>
+                    <p class="notic">小程序标题长度不大于32</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label>所在服务类目</label>
+                </dt>
+                <dd class="opt">
+                    <select name="categories">
+                        <volist name="categories" id="c">
+                            <option value="{$c.first_id},{$c.second_id},{$c.third_id}">{$c.first_class} {$c.second_class} {$c.third_class}</option>
+                        </volist>
+                    </select>
+                    <p class="notic">功能和服务必须对应，且功能的内容必须符合该类目范围，提高审核通过率</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label>标签</label>
+                </dt>
+                <dd class="opt">
+                    <input name="tag" class="input-txt" type="text"/>
+                    <p class="notic">以空格分隔，最多10个标签，每个标签不超过20字。填写与功能相关的标签，更容易被搜索</p>
+                </dd>
+            </dl>
+            <div class="bot">
+                <a href="JavaScript:void(0);" class="ncap-btn-big ncap-btn-green" onclick="checkForm();">提 交</a>
+            </div>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+    function checkForm() {
+        if ($('input[name=title]').val() === '' || $('input[name=tag]').val() === '' ) {
+            layer.alert('审核信息不能为空', {icon:2});
+        }
+        $.ajax({
+            url: '/admin/miniapp/submit_audit',
+            type: 'POST',
+            data: $('#audit').serialize(),
+            dataType: 'json',
+            success: function (res) {
+                if (res.status === 1) {
+                    return layer.msg(res.msg, {time: 1000, icon: 1}, function () {
+                        window.location.href = "{:U('index', ['tab'=>'release_manage', 'miniapp_id' => $Request.param.miniapp_id])}";
+                    });
+                }
+                var msg = (typeof res.status === 'undefined') ? '数据格式出错' : res.msg;
+                layer.alert(msg, {icon:2});
+            },
+            error: function () {
+                layer.alert('服务器繁忙！', {icon: 2});
+            }
+        });
+    }
+</script>
+</body>
+</html>

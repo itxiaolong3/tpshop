@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>首页-{$tpshop_config['shop_info_store_title']}</title>
+    <link href="__PUBLIC__/static/css/tp-base.css" rel="stylesheet"/>
+    <link href="__PUBLIC__/static/css/tp-m-package.css" rel="stylesheet"/>
+    <script src="__PUBLIC__/static/js/jquery-1.9.1-min.js" type="text/javascript"></script>
+    <script src="__STATIC__/js/mobile-util.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__PUBLIC__/static/js/swipeSlide.min.js" type="text/javascript"></script>
+    <script src="/template/mobile/rainbow/static/js/layer.js" type="text/javascript"></script>
+    <script src="__PUBLIC__/js/global.js"></script>
+    <script src="__PUBLIC__/static/js/tp-drag-join-module.js"></script>
+    <script type="text/javascript"
+            src="http://api.map.baidu.com/api?v=2.0&ak=wDYEcxgRRheZwyC9jpN1Tt7fzr2zjosZ"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/layui/layui.js?v=2.3.0"></script>
+    <script src="__PUBLIC__/static/js/layuifun.js"></script>
+</head>
+<body>
+
+<if condition="$is_index neq 1">
+    <div class="classreturn loginsignup ">
+        <div class="content">
+            <div class="ds-in-bl return">
+                <a id="[back]" href="javascript:history.back(-1)"><img src="__STATIC__/images/return.png" alt="返回"></a>
+            </div>
+            <div class="ds-in-bl search center">
+                <span>{$template_name}</span>
+            </div>
+            <!-- div class="ds-in-bl menu">
+               <a href="javascript:void(0);"><img src="/template/mobile/rainbow/static/images/class1.png" alt="菜单"></a>
+           </div -->
+        </div>
+    </div>
+</if>
+{$html}
+<div style="display:none" id="template_info">{$info}</div>
+</body>
+<script type="text/javascript">
+
+    var end_time = '';
+    $(document).ready(function () {
+        if ($('.hms')) {
+            var url = "{:U('Mobile/Index/get_flash')}";
+            $.post(url, {'num': 3}, function (res) {
+                //$('#flash_list').html(res.html);
+                //$('#flash_time').html(res.start_time + '点专场');
+                $('[data-eidtid="6"]').each(function () {
+                    $(this).find('.tpdm-seckill-list').html(res.html)
+                    $(this).find('.tpdm-seckill-title').find('span').html(res.start_time + '点专场')
+                    if (!res.html) {
+                        $(this).find('.tpdm-seckill-list').hide();
+                    }
+                })
+                end_time = res.end_time;
+                setInterval(GetRTime2, 1000);
+            }, 'json');
+        }
+
+        var user_id = '{$user_id}';
+        if ((parseInt(user_id)) > 0) {
+            $('#login_url').attr('href', '/mobile/user/index');
+            $('#login_ico').html('<img class="after_login" src="__STATIC__/images/my.png">');
+        }
+
+        $('.tpdm-goods-nav').find('li').eq(0).click();
+    });
+
+    var str_json = $('#template_info').text()
+    str_json = str_json.replace(/&amp;/g, '&');
+    var info = JSON.parse(str_json);
+    if (info.is_search == 1) {
+        var logo = '{$wap_logo}';
+        $('.tpd-logo').find('img').attr('src', logo);
+        console.log(info);
+    }
+
+    var abc = $("body").find(".tpd-edits-hidden");
+    for (var i = 0; i < abc.length; i++) {
+        var tmp = $(abc[i]);
+        var type = $(tmp).attr("data-eidtid");
+        var type_timeid = $(tmp).attr("data-timeid");
+        if (parseInt(type) == 13) {
+            var j = i;
+            var d = info[$(tmp).attr("data-timeid")];
+            var sql_where = '';
+            if (typeof (d.sql_where)) {
+                sql_where = d.sql_where
+            }
+            if (parseInt(type_timeid) == parseInt(d.timeid)) {
+                $.post("{:U('Mobile/Index/goods_list_block')}", {
+                    'num': d.num,
+                    'order': d.order,
+                    'goods': d.goods,
+                    'ids': d['ids'],
+                    'sql_where': d.sql_where,
+                    'block_type': d.block_type
+                }, function (res) {
+                    var info_json = JSON.parse(res);
+                    console.log('goods_list_block 13',res)
+                    var tt = $(tmp).find('.containers-slider-cont');
+
+                    $(abc[j]).find('.containers-slider-cont').html(info_json.result);
+
+                    $(".containers-slider-cont").each(function () {
+                        $(this).css("width", $(this).children(".containers-slider-item").length * 5.35 + "rem");
+                    })
+
+                });
+            }
+        }
+    }
+
+    function GetRTime(end_time) {
+        var NowTime = new Date();
+        var t = (end_time * 1000) - NowTime.getTime();
+        var d = Math.floor(t / 1000 / 60 / 60 / 24);
+        var h = Math.floor(t / 1000 / 60 / 60 % 24);
+        var m = Math.floor(t / 1000 / 60 % 60);
+        var s = Math.floor(t / 1000 % 60);
+        if (s >= 0) {
+            var get_time = new Array();
+            var h_fmort = d * 24 + h;
+            get_time[0] = (h_fmort < 10) ? ('0' + h_fmort) : h_fmort;
+            get_time[1] = (m < 10) ? ('0' + m) : m;
+            get_time[2] = (s < 10) ? ('0' + s) : s;
+            return get_time;
+        }else{
+            location.reload();
+        }
+    }
+    function GetRTime2() {
+
+        var get_time = GetRTime(end_time); //console.log(get_time);
+        if (get_time == 0) {
+            $(".hms").text('活动已结束');
+        } else {
+            //$("#time_h").text(get_time[0]);
+            //$("#time_m").text(get_time[1]);
+            //$("#time_s").text(get_time[2]);
+        }
+        $('[data-eidtid="6"]').each(function () {
+            var timeid = $(this).attr('data-timeid'); //info
+            if(info[timeid].activity_type){
+                if (get_time == 0) {
+                    $(".hms").text('活动已结束');
+                } else {
+                    var obj = $(this).find('.tpdm-seckill-time').find('li')
+                    obj.eq(0).text(get_time[0])
+                    obj.eq(1).text(get_time[1])
+                    obj.eq(2).text(get_time[2])
+                }
+            }
+
+        })
+    }
+    function getCoupon(obj) {
+        $.ajax({
+            type: "POST",
+            url: "{:U('Mobile/Activity/getCoupon')}",
+            data: {coupon_id: $(obj).data('coupon-id')},
+            dataType: "json",
+            error: function () {
+                layer.alert("服务器繁忙, 请联系管理员!");
+            },
+            success: function (data) {
+                if (data.status == 1) {
+                    layer.open({content: data.msg, skin: 'msg', time: 2});
+                    //$(obj).parent().parent().parent().remove();
+                } else {
+                    layer.open({content: data.msg, skin: 'msg', time: 2});
+                }
+            }
+        });
+    }
+</script>
+<script>
+    $(".tpdm-goods-nav>li").click(function () {
+        $(this).addClass("goodsnav-ac").siblings().removeClass("goodsnav-ac");
+        var i = $(this).index();
+        var t = $(this).parents('.tpd-edits-hidden').attr('data-timeid');
+
+        var _this = this;
+        if(info[t].block_type == '3'){
+            info[t].nav[i].sql_where.order = info[t].order;
+        }
+        $.post("{:U('Mobile/Index/goods_list_block')}", info[t].nav[i].sql_where, function (res) {
+            console.log('goods_list_block click',res)
+            var info_json = JSON.parse(res);
+            $(_this).parents('.tpdm-gdstyle').find('.tpdm-goods-wrap').html(info_json.result);
+        });
+    })
+    //设置新品上市宽度
+    $(".containers-slider-cont").css("width", $(".containers-slider-cont .containers-slider-item").length * 5.35 + "rem");
+</script>
+<script type="text/javascript">
+    //	商品详情页 滚动到一定位置固定定位
+    $(window).scroll(function () {
+        if ($(window).scrollTop() <= 10) {
+            $(".tpd-search-tm").css({
+                "opacity": "0",
+                "background": "#000"
+            });
+            $(".tpd-search-warp>.tpd-logo").css({
+                "background": "none"
+            })
+            $(".tpd-search-warp").css({
+                "position": "relative"
+            })
+            $(".tpd-personal-warp>span").css({
+                "color": "#666666"
+            })
+        } else {
+            $(".tpd-search-tm").css({
+                "background": "#de181b",
+                "opacity": "0.9"
+            });
+            $(".tpd-search-warp>.tpd-logo").css({
+                "background-color": "#fff"
+            })
+            $(".tpd-search-warp").css({
+                "position": "fixed"
+            })
+            $(".tpd-personal-warp>span").css({
+                "color": "#ffffff"
+            })
+        }
+    });
+</script>
+<script type="text/javascript">
+    //	设置单文本字体大小
+    $(".fontSizes").each(function () {
+        var numSize = $(this).attr("txtnav_fonts");
+        var pointNum = numSize * 2 / 46.875;
+        $(this).css("font-size", pointNum.toFixed(4) + "rem")
+
+    })
+</script>
+
+<script type="text/javascript">
+    // 需要再次请求接口的
+    for (var key in info) {
+        if (typeof (info[key].block_type)) {
+            var block_type = info[key].block_type + '';
+            var view = $('[data-timeid="' + key + '"]');
+            switch (block_type) {
+                case '18':
+                    // 多门店
+                    console.log(info[key].search_radius)
+                    current_location(info[key].search_radius)
+                    $(".tpd-multipleStores-wrap").find('.tpd-multipleStores-li').find('ul').html('')
+                    break;
+                case '13':
+                    // 轮播商品
+                    break;
+                case '12':
+                    // 新闻
+                    show_msg_12(view, info[key]);
+                    break;
+
+                case '6':
+                    // 营销活动
+                    show_msg_6(view, info[key]);
+                    break;
+            }
+        }
+
+    }
+
+    /*
+     百度定位
+     * */
+    var cur_lng = 114.02597366; // 获取当前坐标 lng
+    var cur_lat = 22.54605355; // 获取当前坐标 lat
+    var map = new BMap.Map("BDmap");
+    var shop_data = [];
+    function current_location(search_radius) {
+        var geolocation = new BMap.Geolocation();
+        geolocation.getCurrentPosition(function (r) {
+            if (this.getStatus() == BMAP_STATUS_SUCCESS) {
+                console.log(r.point, r)
+                shop_list(r.point.lng, r.point.lat, search_radius, r.address.province, r.address.city)
+                cur_lng = r.point.lng;
+                cur_lat = r.point.lat;
+                // 当前地址
+                var geoc = new BMap.Geocoder();
+                geoc.getLocation(r.point, function (rs) {
+                    var addComp = rs.addressComponents;
+                    $(".tpd-multipleStores-wrap").find('.tpd-multipleStores-dizi').find('em').html(addComp.street + " " + addComp.streetNumber)
+                });
+            }
+            else {
+                console.log('getCurrentPosition failed:' + this.getStatus());
+            }
+        }, {enableHighAccuracy: true})
+
+    }
+    function shop_list(lng, lat, search_radius, province, city) {
+        $.ajax({
+            type: "POST",
+            url: "{:U('Mobile/Index/shopList')}",
+            data: {
+                "lng": lng,
+                "lat": lat,
+                "province": province,
+                "city": city,
+                "search_radius": search_radius
+            },
+            dataType: "json",
+            success: function (res) {
+                console.log("shop_list", res);
+                if (res.status == 1) {
+                    // 展示
+                    show_msg_18(res.result)
+                    //show_shop_html(res.result)
+                    shop_data = res.$result;
+                } else {
+                    //alert('获取动态失败，请稍等再试!');
+                }
+
+            }
+        });
+    }
+
+    // 多门店
+    function show_msg_18(data) {
+        var to = $(".tpd-multipleStores-wrap").find('.tpd-multipleStores-li');
+        var from = '#tpl_msg_18';
+        html_tpl(from, to, data)
+    }
+    // 新闻
+    function show_msg_12(obj, data) {
+        console.log('show_msg_12', obj, data)
+        var to = $(obj).find('.hottea-list.newlist-item');
+        var from = '#tpl_msg_12';
+        var url = "{:U('Mobile/Index/newsList')}";
+        var where = data;
+        $(obj).find('.hot-titles').find('a').attr('href', "{:U('Mobile/Index/news_list')}");
+        ajax_html_tpl(url, where, from, to);
+    }
+    var team_data = {};
+    // 拼团活动
+    function show_msg_6(obj, data) {
+        //return;
+        /*
+         activity_type=0;       //营销活动类型 0拼团  1秒杀
+         //拼团类型时才有以下3个属性值
+         tab_type=1;            //活动标题是否显示 0不使用  1使用
+         tab_title='';          //活动标题内容
+         show_type=0;           //显示布局  0橱窗式  1列表式
+         */
+        console.log('show_msg_6', obj, data)
+        if (data.activity_type == 0) {
+            $(obj).find('.tpdm-activity-title').html(data.tab_title)
+            var from = '#tpl_msg_6';
+            var to = $(obj).find('ul');
+            get_team_data(from, to, data);
+        }
+
+    }
+    var team_data_flag = false;
+    // 获取拼团数据,只需要请求一次
+    function get_team_data(from, to, data) {
+        $(to).html('')
+        if (team_data_flag) {
+            html_tpl(from, to, team_data);
+            return;
+        }
+        $.ajax({
+            type: "POST",
+            url: "{:U('Mobile/Team/AjaxTeamList')}", //'/index.php/Mobile/Team/AjaxTeamList'
+            data: {"p": 1},
+            dataType: "json",
+            success: function (res) {
+                //console.log('ajax_html_tpl', res)
+                if (res.status == 1) {
+                    data.result = res.result
+                    team_data = data;
+                    team_data_flag = true;
+                    // 展示
+                    html_tpl(from, to, team_data)
+                } else {
+                    console.log('ajax_html_tpl status=0', res)
+                    //alert('获取动态失败，请稍等再试!');
+                }
+
+            }
+        });
+    }
+    function ajax_html_tpl(url, where, from, to) {
+        $(to).html('')
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: where,
+            dataType: "json",
+            success: function (res) {
+                //console.log('ajax_html_tpl', res)
+                if (res.status == 1) {
+                    // 展示
+                    html_tpl(from, to, res)
+                } else {
+                    console.log('ajax_html_tpl status=0', res)
+                    //alert('获取动态失败，请稍等再试!');
+                }
+            }
+        });
+    }
+</script>
+<script type="text/javascript">
+    setInterval(function () {
+        // $('ul :first').css('background', 'red');
+        $('#tpdm-mes-title').children("li").first().clone(true).appendTo('#tpdm-mes-title');
+        $('#tpdm-mes-title>li:first').remove();
+    }, 3000)
+</script>
+<div class="BDmap" style="display: none;width: 10px;height: 10px;"></div>
+
+<script id="tpl_msg_12" type="text/html" desc="新闻">
+    <ul>
+        {{# layui.each(d.result, function(index, item){ }}
+        <li><a href="/api/news/news_detail.html?news_id={{item.article_id}}">
+            <div class="carlist-img fl"><img src="{{item.thumb}}"></div>
+            <div class="carlist-txt fr">
+                <b>{{item.title}}</b>
+                {{item.content}}
+                <span><em>{{item.cat_name}}</em><img src="/public/static/images/icon-fire.png"><i>{{formatDate(item.publish_time)}}</i></span>
+            </div>
+        </a></li>
+        {{# }); }}
+    </ul>
+</script>
+<script id="tpl_msg_18" type="text/html" desc="多门店">
+    <ul>
+        {{# layui.each(d, function(index, item){ }}
+        <li><a>
+            <div class="tpd-multipleStores-list">
+                <div class="tpd-multipleStores-img">
+                    <img src="{{item.shop_img}}">
+                </div>
+                <div class="tpd-multipleStores-cont">
+                    <h3>{{item.shop_name}}</h3>
+
+                    <p>{{item.shop_desc}}</p>
+                </div>
+            </div>
+            <div class="tpd-multipleStores-wzhi">
+                <i class="tpd-multipleStores-icon2"></i>
+
+                <p>{{item.shop_address}}</p><span><em>{{item.distance}}</em>Km</span>
+            </div>
+        </a></li>
+        {{# }); }}
+    </ul>
+</script>
+
+
+<script id="tpl_msg_6" type="text/html" desc="拼团">
+    {{# layui.each(d.result, function(index, item){ }}
+
+    {{#  if(d.show_type == 0){ }}
+    <li><a class="tpdm-goods-pic" href="javascript:;"><img src="{{item.share_img}}" alt=""></a>
+        <a href="javascript:;" class="tpdm-goods-name">{{item.goods_name}}</a>
+
+        <div class="tpdm-goods-des">
+            <div class="tpdm-goods-price">￥{{item.team_price}}</div>
+            <div class="tpdm-sold-num">单买:￥{{item.goods.shop_price}}</div>
+        </div>
+        <div class="tpdm-goods-mes">
+            <a href="/index.php?m=Mobile&c=Team&a=info&team_id={{item.team_id}}&goods_id={{item.goods_id}}">去拼单
+            &gt;</a><span>{{item.needer}}人团</span>
+            <div class="tpdm-acbuyer"></div>
+        </div>
+    </li>
+    {{#  } else if(d.show_type == 1) { }}
+    <li><a class="tpdm-goods-pic" href="javascript:;"><img src="{{item.share_img}}" alt=""></a>
+        <a href="javascript:;" class="tpdm-goods-name">{{item.goods_name}}</a>
+
+        <div class="tpdm-goods-des">
+            <div class="tpdm-goods-price">￥{{item.team_price}}</div>
+            <div class="tpdm-sold-num">单买:￥{{item.goods.shop_price}}</div>
+        </div>
+        <div class="tpdm-goods-mes">
+            <a href="/index.php?m=Mobile&c=Team&a=info&team_id={{item.team_id}}&goods_id={{item.goods_id}}">去拼单
+                &gt;</a><span>{{item.needer}}人团</span>
+            <div class="tpdm-acbuyer"></div>
+        </div>
+    </li>
+    {{#  } else { }}
+    <li><a class="tpdm-goods-pic" href="javascript:;"><img src="{{item.share_img}}" alt=""></a>
+        <a href="javascript:;" class="tpdm-goods-name">{{item.goods_name}}</a>
+        <div class="tpdm-goods-des">
+            <div class="tpdm-goods-price">￥{{item.team_price}}</div>
+            <div class="tpdm-sold-num">已拼1000000</div>
+        </div>
+        <div class="tpdm-goods-mes">
+            <a href="/index.php?m=Mobile&c=Team&a=info&team_id={{item.team_id}}&goods_id={{item.goods_id}}">去拼单 &gt;</a><span>{{item.needer}}团</span>
+            <div class="tpdm-acbuyer"><img src="/public/static/images/pic-wstyle-list1.jpg" alt=""> ...</div>
+        </div>
+    </li>
+    {{#  } }}
+
+    {{# }); }}
+
+    {{#  if(d.result.length == 0){ }}
+    <div class="notmore"  style="font-size:.32rem;text-align: center;color:#888;padding:.25rem .24rem .4rem; clear:both;">
+        <a style="font-size:.50rem;">没有更多喽</a>
+    </div>
+    {{#  } }}
+</script>
+</html>

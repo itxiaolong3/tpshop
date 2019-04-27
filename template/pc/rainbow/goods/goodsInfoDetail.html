@@ -1,0 +1,338 @@
+<div class="deta-ri-ma">
+    <div class="introduceshop">
+        <div id="datail-nav-top" class="datail-nav-top">
+            <ul>
+                <li class="red"><a href="javascript:void(0);">商品介绍</a></li>
+                <li><a href="javascript:void(0);">规格及包装</a></li>
+                <li><a href="javascript:void(0);">评价<em>({$goods['comment_statistics']['total_sum']})</em></a></li>
+                <li><a href="javascript:void(0);" onclick="get_consult(0,1)">售后服务</a></li>
+            </ul>
+        </div>
+        <!--<div class="he-nav"></div>-->
+        <div class="shop-describe shop-con-describe p">
+            <div class="deta-descri">
+                <p class="shopname_de"><span>商品名称：</span><span>{$goods.goods_name}</span></p>
+                <div class="ma-d-uli p">
+                    <ul>
+                        <li><span>货号：</span><span>{$goods.goods_sn}</span></li>
+                        <php>$goods_attr_show_list = $goods->goodsAttr()->where('attr_index',1)->select();</php>
+                        <volist name="goods_attr_show_list" id="goods_attr">
+                            <li><span>{$goods_attr['goods_attribute']['attr_name']}：</span><span>{$goods_attr['attr_value']}</span></li>
+                        </volist>
+                    </ul>
+                </div>
+
+                <div class="moreparameter">
+                    <!--
+                    <a href="">跟多参数<em>>></em></a>
+                    -->
+                </div>
+            </div>
+            <div class="detail-img-b">
+                <if condition="$goods.video">
+                    <video controls="controls" id="detail_video" preload="preload" onended="this.load();">
+                        <source src="{$goods.video}" TYPE="video/mp4"/>
+                    </video>
+                </if>
+                {$goods.goods_content|htmlspecialchars_decode}
+            </div>
+        </div>
+        <div class="shop-describe shop-con-describe p" style="display: none;">
+            <div class="deta-descri">
+                <!--
+                <p class="shopname_de"><span>如果您发现商品信息不准确，<a class="de_cb" href="">欢迎纠错</a></span></p>
+                -->
+                <h2 class="shopname_de">属性</h2>
+                <foreach name="goods_attr_show_list" item="v" key="k">
+                    <div class="twic_a_alon">
+                        <p class="gray_t">{$v['goods_attribute']['attr_name']}</p>
+                        <p>{$v[attr_value]}</p>
+                    </div>
+                </foreach>
+            </div>
+        </div>
+        <div class="shop-con-describe p" style="display: none;">
+            <div class="shop-describe p">
+                <div class="comm_stsh ma-to-20">
+                    <div class="deta-descri">
+                        <h2>商品评价</h2>
+                    </div>
+                </div>
+                <div class="deta-descri p">
+                    <ul class="tebj">
+                        <li class="percen"><span>{$goods['comment_statistics']['high_rate']}%</span></li>
+                        <li class="co-cen">
+                            <div class="comm_gooba">
+                                <div class="gg_c">
+                                    <span class="hps">好评</span>
+                                    <span class="hp">（{$goods['comment_statistics']['high_rate']}%）</span>
+                                            <span class="zz_rg"><i
+                                                    style="width: {$goods['comment_statistics']['high_rate']}%;"></i></span>
+                                </div>
+                                <div class="gg_c">
+                                    <span class="hps">中评</span>
+                                    <span class="hp">（{$goods['comment_statistics']['center_rate']}%）</span>
+                                            <span class="zz_rg"><i
+                                                    style="width: {$goods['comment_statistics']['center_rate']}%;"></i></span>
+                                </div>
+                                <div class="gg_c">
+                                    <span class="hps">差评</span>
+                                    <span class="hp">（{$goods['comment_statistics']['low_rate']}%）</span>
+                                            <span class="zz_rg"><i
+                                                    style="width: {$goods['comment_statistics']['low_rate']}%;"></i></span>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="tjd-sum">
+                            <!--<p class="tjd">推荐点：</p>-->
+                            <div class="tjd-a">
+                                买家评论事项：购买后有什么问题, 满意, 或者不不满, 都可以在这里评论出来, 这里评论全部源于真实的评论.
+                            </div>
+                        </li>
+                        <li class="te-cen">
+                            <div class="nchx_com">
+                                <p>您可以对已购的商品进行评价</p>
+                                <a class="jfnuv" href="{:U('Home/Order/comment')}">发表评论</a>
+                                <!--<p class="xja"><span>详见</span><a class="de_cb" href="">积分规则</a></p>-->
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="deta-descri p">
+                    <div class="cte-deta">
+                        <ul id="fy-comment-list">
+                            <li data-t="1" class="red">
+                                <a href="javascript:void(0);"
+                                   class="selected">全部评论（{$goods['comment_statistics']['total_sum']}）</a>
+                            </li>
+                            <li data-t="2">
+                                <a href="javascript:void(0);">好评（{$goods['comment_statistics']['high_sum']}）</a>
+                            </li>
+                            <li data-t="3">
+                                <a href="javascript:void(0);">中评（{$goods['comment_statistics']['center_sum']}）</a>
+                            </li>
+                            <li data-t="4">
+                                <a href="javascript:void(0);">差评（{$goods['comment_statistics']['low_sum']}）</a>
+                            </li>
+                            <li data-t="5">
+                                <a href="javascript:void(0);">有图（{$goods['comment_statistics']['img_sum']}）</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="line-co-sunall" id="ajax_comment_return">
+                </div>
+            </div>
+        </div>
+        <div class="shop-con-describe p" style="display: none;">
+            <div class="shop-describe p">
+                <div class="comm_stsh ma-to-20">
+                    <div class="deta-descri">
+                        <h2>售后保障</h2>
+                    </div>
+                </div>
+                <div class="deta-descri p">
+                    <div class="securi-afr">
+                        <ul>
+                            <li class="frhe"><i class="detai-ico msz1"></i></li>
+                            <li class="wnuzsuhe">
+                                <h2>卖家服务</h2>
+                                <p>全国联保一年</p>
+                            </li>
+                        </ul>
+                        <ul>
+                            <li class="frhe"><i class="detai-ico msz2"></i></li>
+                            <li class="wnuzsuhe">
+                                <h2>商城承诺</h2>
+                                <p>商城平台卖家销售并发货的商品，由平台卖家提供发票和相应的售后服务。请您放心购买！
+                                    注：因厂家会在没有任何提前通知的情况下更改产品包装、产地或者一些附件，本司不能确保客户收到的货物与商城图片、产地、附件说明完全一致。
+                                    只能确保为原厂正货！并且保证与当时市场上同样主流新品一致。若本商城没有及时更新，请大家谅解！</p>
+                            </li>
+                        </ul>
+                        <ul>
+                            <li class="frhe"><i class="detai-ico msz3"></i></li>
+                            <li class="wnuzsuhe">
+                                <h2>正品行货</h2>
+                                <p>商城向您保证所售商品均为正品行货，商城自营商品开具机打发票或电子发票。</p>
+                            </li>
+                        </ul>
+                        <ul>
+                            <li class="frhe"><i class="detai-ico msz4"></i></li>
+                            <li class="wnuzsuhe">
+                                <h2>全国联保</h2>
+                                <p>凭质保证书及商城发票，可享受全国联保服务（奢侈品、钟表除外；奢侈品、钟表由联系保修，享受法定三包售后服务），与您亲临商场选购的商品享
+                                    受相同的质量保证。商城还为您提供具有竞争力的商品价格和运费政策，请您放心购买！ </p>
+                            </li>
+                        </ul>
+                        <ul>
+                            <li class="frhe"><i class="detai-ico msz5"></i></li>
+                            <li class="wnuzsuhe">
+                                <h2>退货无忧</h2>
+                                <p>客户购买商城自营商品7日内（含7日，自客户收到商品之日起计算），在保证商品完好的前提下，可无理由退货。（部分商品除外，详情请见各商品细则）</p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="comm_stsh ma-to-20">
+                    <div class="deta-descri">
+                        <h2>退款说明</h2>
+                    </div>
+                </div>
+                <div class="deta-descri p">
+                    <div class="fetbajc">
+                        <p>1.若您购买的家电商品已经拆封过，需要退换货，需请联系原厂开具鉴定检测单</p>
+                        <p>2.签收商品隔日起七日内提交退货申请，2-3天快递员与您联系安排取回商品</p>
+                        <p>3.商品退回检验，且必须附上检测单</p>
+                        <p>5.若退回商品有缺件、影响二次销售状况时，退款作业将暂时停止，飞牛网会依商品状况报价，后由客服人员与您联系说明并于订单内扣除费用后退回剩余款项，
+                            或您可以取消退货申请；若符合退货条件者将于商品取回后约1-2个工作日内完成退款</p>
+                        <p>4.通过线上支付的订单办理退货，商品退回检验无误后，商城将提交退款申请, 实际款项会依照各银行作业时间返还至您原支付方式 若您采用货到付款，请于
+                            办理退货时提供退款账户，亦于商品退回检验无误后，将退款汇至您的银行账户中</p>
+                    </div>
+                </div>
+            </div>
+            <!--商品咨询-status-->
+            <div class="consult-h" id="consult-h">
+                <div class="consult-menus">
+                    <a class="consult-ac" href="javascript:;" onclick="get_consult(0,1)">全部咨询</a>
+                    <a href="javascript:;" onclick="get_consult(1,1)">商品咨询</a>
+                    <a href="javascript:;" onclick="get_consult(2,1)">支付</a>
+                    <a href="javascript:;" onclick="get_consult(3,1)">配送</a>
+                    <a href="javascript:;" onclick="get_consult(4,1)">售后</a>
+                    <input type="hidden" name="type" id="type" value="0"/>
+                </div>
+                <div class="consult-cont">
+                    <div class="consult-item">
+                        <div class="consult-tips"><span class="c-orange">温馨提示：</span>
+                            因产线可能更改商品包装、产地、附配件等未及时通知，且每位咨询者购买、提问时间等不同。为此，客服给到的回复仅对提问者3天内有效，其他网友仅供参考！给您带来的不便还请谅解，谢谢！
+                        </div>
+                        <div id="consult_content">
+                        </div>
+                        <div class="publish-title">发表咨询</div>
+                        <form method="post" id="consultForm">
+                            <input type="hidden" name="goods_id" value="{$goods.goods_id}"/>
+                            <div class="publish-cont">
+                                <p class="check-consult-tpye">
+                                    商品咨询：
+                                    <label> <input type="radio" name="consult_type" value="1"
+                                                   checked/>商品咨询</label>
+                                    <label> <input type="radio" name="consult_type" value="2"/>支付</label>
+                                    <label> <input type="radio" name="consult_type" value="3"/>配送</label>
+                                    <label> <input type="radio" name="consult_type" value="4"/>售后</label>
+                                </p>
+                                <div class="nickname">
+                                    昵称:
+                                    <if condition="empty($username)">
+                                        <input type="text" name="username" placeholder="请输入昵称" value=""/>
+                                        <else/>
+                                        {$username}
+                                        <input type="hidden" name="username" value="{$username}" readonly/>
+                                    </if>
+                                </div>
+                                        <textarea class="publish-des" placeholder="请在这里输入你要描述的信息" name="content"
+                                                  id="content"></textarea>
+                                <p class="v-code">
+                                    验证码:
+                                    <input type="text" name="verify_code" maxlength="4"/>
+                                    <img id="verify_code" width="80" height="40" onclick="verify()">
+                                </p>
+                                <input class="publish-btn" id="consult_submit" type="button"
+                                       value="提交"/>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!--商品咨询-end-->
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        verify();
+        ajaxComment(1, 1);
+    });
+    // 普通 图形验证码
+    function verify() {
+        $('#verify_code').attr('src', '/index.php?m=Home&c=User&a=verify&type=consult&r=' + Math.random());
+    }
+    //商品评价
+    function ajaxComment(commentType, page) {
+        $.ajax({
+            type: "GET",
+            url: "/index.php?m=Home&c=goods&a=ajaxComment&goods_id={$goods['goods_id']}&commentType=" + commentType + "&p=" + page,//+tab,
+            success: function (data) {
+                $("#ajax_comment_return").html('').append(data);
+            }
+        });
+    }
+    var consult = $('#consult-h');
+    consult.find('.consult-item').eq(0).addClass('consult-ac');
+    consult.find('.consult-menus>a').click(function () {
+        $(this).addClass('consult-ac').siblings().removeClass('consult-ac');
+        consult.find('.consult-item').eq($(this).index()).addClass('consult-ac').siblings().removeClass('consult-ac');
+        $('.check-consult-tpye').find('a').eq($(this).index())
+    });
+    //商品咨询分页
+    $(document).on('click', '.pagination  a', function () {
+        var page = $(this).data('p');
+        var type = $('#type').val();
+        get_consult(type, page)
+    });
+
+    /**
+     * 获取商品咨询
+     * @param type  //咨询类型
+     * @param page  //分页
+     */
+    function get_consult(type, page) {
+        var goods_id = $("input[name='goods_id']").val();
+        var url = "/index.php?m=Home&c=Goods&a=ajax_consult";
+        $.ajax({
+            type: "get",
+            url: url,
+            data: {goods_id: goods_id, consult_type: type, p: page},
+            dataType: "html",
+            success: function (data) {
+                $('#consult_content').empty().append(data);
+            }
+        });
+    }
+
+    //商品咨询提交
+    $(document).on('click', '#consult_submit', function () {
+        var content = $.trim($('#content').val());
+        if (content.length > 500) {
+            layer.msg('咨询内容不得超过500字符！！', {icon: 3});
+            return false;
+        }
+        $.ajax({
+            type: "POST",
+            url: "{:U('Goods/consult')}",
+            data: $('#consultForm').serialize(),
+            dataType: "json",
+            success: function (data) {
+                if (data.status == 1) {
+                    layer.msg(data.msg, {icon: 1});
+                } else {
+                    layer.msg(data.msg, {icon: 2});
+                }
+            }
+        });
+    });
+
+    //商品介绍、规格及包装选项卡切换
+    $("#datail-nav-top ul li").click(function () {
+        $("#datail-nav-top").css("position", "static");
+        $("html,body").animate({scrollTop:$("#datail-nav-top").offset().top}, 300);
+        $(this).addClass('red').siblings().removeClass('red');
+        var er = $('.datail-nav-top ul li').index(this);
+        $('.shop-con-describe').eq(er).show().siblings('.shop-con-describe').hide();
+    })
+
+    // 好评差评 切换
+    $('.cte-deta ul li').click(function () {
+        $(this).addClass('red').siblings().removeClass('red');
+        commentType = $(this).data('t');// 评价类型   好评 中评  差评
+        ajaxComment(commentType, 1);
+    })
+</script>

@@ -1,0 +1,87 @@
+<div class="tpd-diy-js tpd-multipleStores"  data-eidtid="18">
+    <div class="tpd-diy-title">多门店店铺</div>
+    <div class="tpd-txtnav-set" style="float: none;padding-left: 0;">
+        <div class="tpd-title-z">组件数据 </div>
+        <!--<div class="tpd-txtnav-addlink tpd-cdiy-font28">
+            <label>链接设置 : </label>
+            <div class="tpd-addlink-target" id="txt_url"><i></i>添加链接目标</div>
+        </div>
+        <div class="tpd-txtnav-addlink tpd-cdiy-font28" >
+            <label>门店展示 : </label>
+            <input type="checkbox"style="vertical-align: middle; cursor: pointer;" id="distance_sort" name="distance_sort"/>
+            <span class="tpd-cdiy-mendian">距离排序</span>
+        </div>-->
+        <div class="tpd-txtnav-name tpd-cdiy-font28" style="margin: 20px 0; ">
+            搜索半径 : <input onblur="search_radius_blur(this);" name="search_radius" id="search_radius" class="maxword-input-js"  type="text" value="20" /><span>Km以内</span>
+        </div>
+        <div class="tpd-txtnav-name tpd-cdiy-font28">
+            顶部文字 : <input onblur="top_title_blur(this);" name="top_title" id="top_title" class="maxword-input-js" data-maxlength="10" type="text" value="附近商家" /><span><i class="now-words">4</i>/10</span>
+        </div>
+    </div>
+</div>
+<script>
+    $(function(){
+        $("#distance_sort").click(function(){
+            if(this.checked==true){
+                console.log('distance_sort',true)
+                block[divid].distance_sort = 1;
+            }else{
+                console.log('distance_sort',0)
+                block[divid].distance_sort = 0;
+            }
+        })
+    })
+    function search_radius_blur(obj){
+        block[divid].search_radius = $(obj).val();
+    }
+    function top_title_blur(obj){
+        block[divid].top_title = $(obj).val();
+        $('.tpd-editing .tpd-multipleStores-wrap').find('.tpd-multipleStores-head').find('span').html($(obj).val())
+    }
+    function show_multipleStores(){
+        console.log('show_msg',block[divid])
+        html_tpl('#show_html_multipleStores','.tpd-editing .tpd-multipleStores-wrap',block[divid]);
+
+        $("#search_radius").val(block[divid].search_radius)
+        $("#top_title").val(block[divid].top_title)
+        $("#top_title").siblings('span').find('i').html(block[divid].top_title.length)
+        if(block[divid].distance_sort == 1){
+            $("#distance_sort").prop('checked',true)
+        }else{
+            $("#distance_sort").prop('checked',false)
+        }
+        if(block[divid].url){
+            $('.tpd-multipleStores').find('.tpd-addlink-target').html(block[divid].url)
+        }
+        //拖拽时就按默认条件读取门店
+        $.post("/index.php/Admin/Block/shopList",{'search_radius':block[divid].search_radius,'distance_sort':block[divid].distance_sort},function(res){
+            //$('.tpd-edits-hidden.tpd-editing').find('.tpdm-goods-list ul').html(res.result);
+            block[divid].data = res.result;
+            block[divid].cur_title = ''; // 当前地址
+            html_tpl('#show_html_multipleStores','.tpd-editing .tpd-multipleStores-wrap',block[divid]);
+        },'JSON');
+    }
+</script>
+<script id="show_html_multipleStores" type="text/html">
+    <div class="tpd-multipleStores-head">——<span>{{set_val(d.top_title, '附近商家')}}</span>——</div>
+    <div class="tpd-multipleStores-dizi"><i class="tpd-multipleStores-icon1"><img
+            src="/public/static/images/z-dingw1.png"/></i><span>当前：</span><em>{{set_val(d.cur_title,'高新6路')}}</em></div>
+    <div class="tpd-multipleStores-li">
+        <ul>
+            {{#  layui.each(d.data, function(index, item){ }}
+            <li><a>
+                <div class="tpd-multipleStores-list">
+                    <div class="tpd-multipleStores-img"><img src="{{item.shop_img ? item.shop_img:'/public/static/images/haidilao.jpg'}}"/></div>
+                    <div class="tpd-multipleStores-cont">
+                        <h3>{{item.shop_name ? item.shop_name:'中餐厅'}}</h3>
+                        <p>{{item.shop_desc ? item.shop_desc:'中餐厅.现炒料理 汇聚各地名菜口味 所以食材都以新鲜材料来烹饪，口感极佳'}}</p>
+                    </div>
+                </div>
+                <div class="tpd-multipleStores-wzhi"><i class="tpd-multipleStores-icon2"></i>
+                    <p>{{item.shop_address ? item.shop_address:'广东省深圳市龙岗区城市山海中心A座'}}</p><span><em>{{item.shop_distance ? item.shop_distance:'1'}}</em>Km</span>
+                </div>
+            </a></li>
+            {{#  }); }}
+        </ul>
+    </div>
+</script>

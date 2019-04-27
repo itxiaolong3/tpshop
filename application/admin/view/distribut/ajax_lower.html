@@ -1,0 +1,17 @@
+<ul>
+<foreach name="list" item="v" key="k" >    
+        <li>
+            <span class="tree_span" data-id="{$v[user_id]}">
+                 <i class="icon-folder-open"></i>
+                 {$v['user_id']}:
+                 <if condition="$v['nickname'] neq null">
+                         {$v['nickname']}
+                 <elseif condition="$v['mobile'] neq null" />
+                     {$v['mobile']}   
+                 <elseif condition="$v['email'] neq null" />
+                     {$v['email']}                                                          
+                 </if>
+             </span>                                                
+        </li>
+</foreach>
+</ul>

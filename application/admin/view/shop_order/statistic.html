@@ -1,0 +1,240 @@
+<include file="public/layout" />
+<script src="__ROOT__/public/static/js/layer/laydate/laydate.js"></script>
+<style>
+	.dyrDiv2{
+		display: inline-block;vertical-align: middle;
+	}
+</style>
+<body style="background-color: rgb(255, 255, 255); overflow: auto; cursor: default; -moz-user-select: inherit;">
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+	<div class="fixed-bar">
+		<div class="item-title">
+			<div class="subject">
+				<h3>自提订单</h3>
+				<h5>商城实物商品自提订单查询及管理</h5>
+			</div>
+			<ul class="tab-base nc-row">
+				<li><a href="{:U('ShopOrder/off')}"><span>核销提货码</span></a></li>
+				<li><a href="{:U('ShopOrder/index')}"><span>全部自提订单</span></a></li>
+				<li><a href="{:U('ShopOrder/index',['is_write_off'=>0])}"><span>待自提订单</span></a></li>
+				<li><a href="{:U('ShopOrder/statistic')}" class="current"><span>数据统计</span></a></li>
+			</ul>
+		</div>
+	</div>
+	<!-- 操作说明 -->
+	<div class="explanation">
+		<div id="checkZoom" class="title"><i class="fa fa-lightbulb-o"></i>
+			<h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+			<span title="收起提示" id="explanationZoom" style="display: block;"></span>
+		</div>
+		<ul>
+			<li>可根据时间查询某个时间段的销售统计.</li>
+		</ul>
+	</div>
+	<div class="flexigrid">
+		<div class="mDiv">
+			<div class="ftitle">
+				<h3>销售概况</h3>
+				<h5>今日自提订单总数：{$shop_order_today_count}</h5>
+			</div>
+			<div title="刷新数据" class="pReload"><i class="fa fa-refresh"></i></div>
+			<form class="navbar-form form-inline" method="get" action="{:U('ShopOrder/statistic')}" >
+				<div class="sDiv">
+					<div class="dyrDiv2">
+						<span style="width: 30px;font-size: 12px;margin-right: 10px;">自提时间</span>
+					</div>
+					<div class="sDiv2" style="margin-right: 10px;">
+						<input type="text" size="30" id="take_time_start" value="{$take_time_start|date='Y-m-d',###}" placeholder="起始时间" class="qsbox">
+						<input type="hidden" name="take_time_start" value="{$take_time_start}">
+					</div>
+					<div class="dyrDiv2">
+						<span style="width: 30px;font-size: 12px;">至</span>
+					</div>
+					<div class="sDiv2" style="margin: 0px 10px;">
+						<input type="text" size="30" id="take_time_end" value="{$take_time_end|date='Y-m-d',###}" placeholder="截止时间" class="qsbox">
+						<input type="hidden" name="take_time_end" value="{$take_time_end}">
+					</div>
+					<div class="dyrDiv2">
+						<span style="width: 30px;font-size: 12px;margin-right: 10px;">自提点</span>
+					</div>
+					<div class="sDiv2">
+						<select name="shop_id" class="select sDiv3">
+							<option value="">全部</option>
+							<volist name="shop_list" id="shop">
+								<option value="{$shop.shop_id}" <if condition="$Request.param.shop_id eq $shop['shop_id']">selected="selected"</if>>{$shop.shop_name}</option>
+							</volist>
+						</select>
+					</div>
+					<div class="sDiv2">
+						<input class="btn" value="搜索" type="submit">
+					</div>
+				</div>
+			</form>
+		</div>
+		<notempty name="shop_order_sum_list">
+			<div id="statistics" style="height: 400px;"></div>
+		</notempty>
+		<div class="hDiv">
+			<div class="hDivBox">
+				<table cellspacing="0" cellpadding="0">
+					<thead>
+					<tr>
+						<th class="sign" axis="col0">
+							<div style="width: 24px;"><i class="ico-check"></i></div>
+						</th>
+						<th align="center" abbr="article_title" axis="col3" class="">
+							<div style="text-align: center; width: 120px;" class="">时间</div>
+						</th>
+						<th align="center" abbr="ac_id" axis="col4" class="">
+							<div style="text-align: center; width: 100px;" class="">订单数</div>
+						</th>
+						<th align="center" axis="col1" class="handle">
+							<div style="text-align: center; width: 150px;">操作</div>
+						</th>
+						<th style="width:100%" axis="col7">
+							<div></div>
+						</th>
+					</tr>
+					</thead>
+				</table>
+			</div>
+		</div>
+		<div class="bDiv" style="height: auto;">
+			<div id="flexigrid" cellpadding="0" cellspacing="0" border="0">
+				<table>
+					<tbody>
+					<empty name="shop_order_sum_list">
+						<tr data-id="0">
+							<td class="no-data" align="center" axis="col0" colspan="50">
+								<i class="fa fa-exclamation-circle"></i>没有订单记录
+							</td>
+						</tr>
+					</empty>
+					<volist name="shop_order_sum_list" id="order">
+						<tr>
+							<td class="sign">
+								<div style="width: 24px;"><i class="ico-check"></i></div>
+							</td>
+							<td align="center" class="">
+								<div style="text-align: center; width: 120px;">{$order.date}</div>
+							</td>
+							<td align="center" class="">
+								<div style="text-align: center; width: 100px;">{$order.order_count}</div>
+							</td>
+							<td align="center" class="handle">
+								<div style="text-align: center; width: 170px; max-width:170px;">
+									<a href="{:U('ShopOrder/index',array('shop_id'=>$Request.param.shop_id, 'take_time_start'=>$order['date'].' 00:00:00','take_time_end'=>$order['date'].' 23:59:59','statistic'=>1))}" class="btn blue"><i class="fa fa-search"></i>查看订单列表</a>
+								</div>
+							</td>
+							<td align="" class="" style="width: 100%;">
+								<div>&nbsp;</div>
+							</td>
+						</tr>
+					</volist>
+					</tbody>
+				</table>
+			</div>
+			<div class="iDiv" style="display: none;"></div>
+		</div>
+	</div>
+</div>
+<script src="__PUBLIC__/js/echart/echarts.min.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/echart/macarons.js"></script>
+<script src="__PUBLIC__/js/echart/china.js"></script>
+<script src="__PUBLIC__/dist/js/app.js" type="text/javascript"></script>
+<script type="text/javascript">
+	var input_take_time_start = $("input[name='take_time_start']");
+	var input_take_time_end = $("input[name='take_time_end']");
+
+	laydate.render({
+		elem: '#take_time_start',//绑定元素
+		theme: 'molv', //主题
+		type:'datetime', //控件选择类型
+		format: 'yyyy-MM-dd HH:mm:ss', //自定义格式
+		calendar: true, //显示公历节日
+		min: '1970-01-01 00:00:00', //最小日期
+		max: '2099-12-31 23:59:59', //最大日期
+		value: new Date(parseInt(input_take_time_start.val() + '000')),//默认当前时间
+		position : 'fixed', //定位方式
+		zIndex: 99999999, //css z-index
+		done: function (value, date, endDate) {
+			var d = new Date(value);
+			var timestamp = d.getTime().toString().substring(0, 10);
+			$("input[name='take_time_start']").val(timestamp);
+		}
+	});
+
+	laydate.render({
+		elem: '#take_time_end',//绑定元素
+		theme: 'molv', //主题
+		type:'datetime', //控件选择类型
+		format: 'yyyy-MM-dd', //自定义格式
+		calendar: true, //显示公历节日
+		min: '1970-01-01 00:00:00', //最小日期
+		max: '2099-12-31 23:59:59', //最大日期
+		value: new Date(parseInt(input_take_time_end.val() + '000')),//默认当前时间
+		position : 'fixed', //定位方式
+		zIndex: 99999999, //css z-index
+		done: function (value, date, endDate) {
+			var d = new Date(value);
+			var timestamp = d.getTime().toString().substring(0, 10);
+			$("input[name='take_time_end']").val(timestamp);
+		}
+	});
+
+	var table = {$table};
+	var myChart = echarts.init(document.getElementById('statistics'),'macarons');
+	option = {
+		tooltip : {
+			trigger: 'axis'
+		},
+		toolbox: {
+			show : true,
+			feature : {
+				mark : {show: true},
+				dataView : {show: true, readOnly: false},
+				magicType: {show: true, type: ['line', 'bar']},
+				restore : {show: true},
+				saveAsImage : {show: true}
+			}
+		},
+		calculable : true,
+		legend: {
+			data:['订单数']
+		},
+		xAxis : [
+			{
+				type : 'category',
+				data : table.date_list
+			}
+		],
+		yAxis : [
+			{
+				type : 'value',
+				name : '订单数',
+				axisLabel : {
+					formatter: '{value} 笔'
+				}
+			}
+		],
+		series : [
+			{
+				name:'订单数',
+				type:'bar',
+				data:table.order_count_list
+			}
+		]
+	};
+	myChart.setOption(option);
+	$(document).ready(function(){
+		// 点击刷新数据
+		$('.fa-refresh').click(function(){
+			location.href = location.href;
+		});
+	});
+
+</script>
+</body>
+</html>

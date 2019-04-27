@@ -1,0 +1,119 @@
+<include file="public/layout" />
+<link href="__PUBLIC__/static/css/weixin-mp.css" rel="stylesheet"/>
+<body style="background-color: rgb(255, 255, 255); overflow: auto; cursor: default; -moz-user-select: inherit;">
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>图文素材管理</h3>
+                <h5>微信素材显示与管理</h5>
+            </div>
+            <ul class="tab-base nc-row">
+                <foreach name="tabs" item="v" key="k">
+                    <li><a href="{:U('materials',['tab'=> $k])}" <if condition="$k==$tab">class="current"</if>>
+                        <span>{$v}</span></a>
+                    </li>
+                </foreach>
+            </ul>
+        </div>
+    </div>
+    <!-- 操作说明 -->
+    <div id="explanation" class="explanation" style="color: rgb(44, 188, 163); background-color: rgb(237, 251, 248); width: 99%; height: 100%;">
+        <div id="checkZoom" class="title"><i class="fa fa-lightbulb-o"></i>
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span title="收起提示" id="explanationZoom" style="display: block;"></span>
+        </div>
+        <ul>
+            <li>发送图文消息请移步粉丝列表</li>
+            <li>每个图文素材最多包含8篇文章！</li>
+        </ul>
+    </div>
+    <div class="ma-page">
+        <div class="ma-top">
+            <a href="{:url('news_edit')}" class="ma-btn"><span class="fa fa-plus"></span> 新增图文</a>
+            <div> ( 共 {$page->totalRows} 条记录 )</div>
+        </div>
+
+        <div class="ma-list">
+            <empty name="list">
+                <div class="no-data">
+                    <i class="fa fa-exclamation-circle"></i>还没有相关素材~
+                </div>
+            </empty>
+            <volist name="list" id="item">
+                <div class="ma-card">
+                    <if condition="count($item.wx_news) === 1">
+                        <!--单图文-->
+                        <div class="title ellipsis-1">{$item.wx_news.0.title}</div>
+                        <div class="time">{$item.update_time}</div>
+                        <div class="card-item no-line">
+                            <a href="{:url('news_edit', ['material_id' => $item.id, 'news_id' => $item.wx_news.0.id])}">
+                            <div class="cover">
+                                <img src="{$item.wx_news.0.thumb_url}"/>
+                            </div>
+                            </a>
+                        </div>
+                        <div class="desc ellipsis-2">{$item.wx_news.0.digest?:$item.wx_news.0.content_digest}</div>
+                    <else/>
+                        <!--多图文-->
+                        <div class="time">{$item.update_time}</div>
+                        <volist name="item.wx_news" id="news" key="i">
+                            <div class="card-item">
+                            <a href="{:url('news_edit', ['material_id' => $item.id, 'news_id' => $news.id])}">
+                            <if condition="$i==1">
+                                <div class="cover cover-sm">
+                                    <img src="{$news.thumb_url}"/>
+                                    <div class="title-in ellipsis-1">{$news.title}</div>
+                                </div>
+                            <else/>
+                                <div class="post">
+                                    <div class="post-title ellipsis-2">{$news.title}</div>
+                                    <div class="post-cover">
+                                        <img src="{$news.thumb_url}"/>
+                                    </div>
+                                </div>
+                            </if>
+                            </a>
+                            </div>
+                        </volist>
+                    </if>
+                    <div class="btns">
+                        <a class="btn left" title="在素材上添加文章" href="{:url('news_edit', ['material_id' => $item.id])}">
+                            <span class="fa fa-plus"></span>
+                        </a>
+                        <div class="btn" title="删除图文素材" onclick="deleteMaterial('{$item.id}')"><span class="fa fa-trash"></span></div>
+                    </div>
+                </div>
+            </volist>
+        </div>
+
+        <div class="page p">{$page->show()}</div>
+    </div>
+</div>
+<script>
+    function deleteMaterial(id) {
+        layer.confirm("素材相关文章将一并删除，确定删除吗？", function(){
+            $.ajax({
+                url: "{:url('delete_news')}?material_id=" + id,
+                type: 'POST',
+                dataType: 'json',
+                success: function (res) {
+                    if (res.status === 1) {
+                        return layer.msg(res.msg, {time: 500, icon: 1}, function () {
+                            window.location.reload();
+                        });
+                    }
+                    var msg = (typeof res.status === 'undefined') ? '数据格式出错' : res.msg;
+                    layer.alert(msg, {icon:2});
+                },
+                error: function () {
+                    layer.alert('服务器繁忙！', {icon: 2});
+                }
+            });
+        });
+    }
+</script>
+</body>
+</html>

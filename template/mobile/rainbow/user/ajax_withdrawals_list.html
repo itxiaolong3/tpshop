@@ -1,0 +1,16 @@
+<foreach name="list" item="v">
+    <ul>
+        <!-- <li class="li1"><span>{$v[id]}</span></li> -->
+        <li class="li2"><span>{:date('Y-m-d', $v[create_time])}</span></li>
+        <li class="li3"><span>{$v[money]}</span></li>
+        <li class="li1"><span>{$v[taxfee]}</span></li>
+        <li class="li4"><span class="red">
+            <if condition="$v[status] eq -2">无效作废</if>
+            <if condition="$v[status] eq -1">审核失败</if>
+            <if condition="$v[status] eq 0">申请中</if>
+            <if condition="$v[status] eq 1">审核通过</if>
+            <if condition="$v[status] eq 2">提现完成</if>
+            <if condition="$v[status] eq 3">转款失败</if>
+        </span></li>
+    </ul>
+</foreach>

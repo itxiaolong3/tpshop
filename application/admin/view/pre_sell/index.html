@@ -1,0 +1,330 @@
+<include file="public/layout" />
+<script src="__ROOT__/public/static/js/layer/laydate/laydate.js"></script>
+<body style="background-color: rgb(255, 255, 255); overflow: auto; cursor: default; -moz-user-select: inherit;">
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+	<div class="fixed-bar">
+		<div class="item-title">
+			<div class="subject">
+				<h3>预售管理</h3>
+				<h5>网站系统预售审核与管理</h5>
+			</div>
+		</div>
+	</div>
+	<!-- 操作说明 -->
+	<div id="explanation" class="explanation" style="color: rgb(44, 188, 163); background-color: rgb(237, 251, 248); width: 99%; height: 100%;">
+		<div id="checkZoom" class="title"><i class="fa fa-lightbulb-o"></i>
+			<h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+			<span title="收起提示" id="explanationZoom" style="display: block;"></span>
+		</div>
+		<ul>
+			<li>预售管理, 由平台设置管理.</li>
+		</ul>
+	</div>
+	<div class="flexigrid">
+		<div class="mDiv">
+			<div class="ftitle">
+				<h3>预售列表</h3>
+				<h5>(共{$page->totalRows}条记录)</h5>
+                <!--<div class="fbutton" style="margin-left: 30px;">-->
+                    <!--<a href="http://help.tp-shop.cn/Index/Help/info/cat_id/5/id/53.html" target="_blank">-->
+                        <!--<div class="" title="帮助">-->
+                            <!--<span>帮助</span>-->
+                        <!--</div>-->
+                    <!--</a>-->
+                <!--</div>-->
+			</div>
+			<a href=""><div title="刷新数据" class="pReload"><i class="fa fa-refresh"></i></div></a>
+			<form action="{:U('PreSell/index')}" id="search-form2" class="navbar-form form-inline" method="get">
+				<div class="sDiv">
+					<div class="sDiv2">
+						<input size="30" name="keywords" class="qsbox" placeholder="商品名称" type="text">
+						<input class="btn" value="搜索" type="submit">
+					</div>
+				</div>
+			</form>
+		</div>
+		<div class="hDiv">
+			<div class="hDivBox">
+				<table cellspacing="0" cellpadding="0">
+					<thead>
+					<tr>
+						<th align="left">
+							<div style="text-align: center; width: 50px;" class="">编号</div>
+						</th>
+						<th align="left">
+							<div style="text-align: left; width: 180px;" class="">预售商品</div>
+						</th>
+						<th align="left">
+							<div style="text-align: left; width: 180px;" class="">预售标题</div>
+						</th>
+						<th align="center">
+							<div style="text-align: center; width: 250px;" class="">活动时间</div>
+						</th>
+						<th align="center">
+							<div style="text-align: center; width: 250px;" class="">尾款支付时间</div>
+						</th>
+						<th align="center">
+							<div style="text-align: center; width: 50px;" class="">订金</div>
+						</th>
+						<th align="center">
+							<div style="text-align: center; width: 50px;" class="">预售库存</div>
+						</th>
+						<th align="center">
+							<div style="text-align: center; width: 50px;" class="">当前价格</div>
+						</th>
+						<th align="center">
+							<div style="text-align: center; width: 60px;" class="">订购商品数</div>
+						</th>
+						<th align="center">
+							<div style="text-align: center; width: 50px;" class="">订单数</div>
+						</th>
+						<th align="center">
+							<div style="text-align: center; width: 80px;" class="">状态</div>
+						</th>
+						<th align="left" axis="col1" class="handle">
+							<div style="text-align: center; width: 150px;">操作</div>
+						</th>
+						<th style="width:100%" axis="col7">
+							<div></div>
+						</th>
+					</tr>
+					</thead>
+				</table>
+			</div>
+		</div>
+		<div class="tDiv">
+			<div class="tDiv2">
+				<a href="{:U('PreSell/info')}">
+					<div class="fbutton">
+						<div title="添加活动" class="add">
+							<span><i class="fa fa-plus"></i>添加预售</span>
+						</div>
+					</div>
+				</a>
+			</div>
+			<div style="clear:both"></div>
+		</div>
+		<div class="bDiv" style="height: auto;">
+			<div id="flexigrid" cellpadding="0" cellspacing="0" border="0">
+				<table>
+					<tbody>
+					<volist name="list" id="sell">
+						<tr>
+							<td align="left" class="">
+								<div style="text-align: center; width: 50px;">{$sell.pre_sell_id}</div>
+							</td>
+							<td align="left" class="">
+								<div style="text-align: left; width: 180px;">
+									<a href="{:U('Home/Goods/goodsInfo',['id'=>$sell['goods_id'],'item_id'=>$sell.item_id])}">{$sell.goods_name} {$sell.item_name|getSubstr=0,20}</a>
+								</div>
+							</td>
+							<td align="left" class="">
+								<div style="text-align: left; width: 180px;">
+									<a href="{:U('Home/Goods/goodsInfo',['id'=>$sell['goods_id'],'item_id'=>$sell.item_id])}">{$sell.title|getSubstr=0,20}</a>
+								</div>
+							</td>
+							<td align="left" class="">
+								<div style="text-align: center; width: 250px;">{$sell.sell_start_time|date='Y-m-d H:i:s',###}至{$sell.sell_end_time|date='Y-m-d H:i:s',###}</div>
+							</td>
+							<td align="left" class="">
+								<div style="text-align: center; width: 250px;">
+									<if condition="$sell['deposit_price'] gt 0">
+										{$sell.pay_start_time|date='Y-m-d H:i:s',###}至{$sell.pay_end_time|date='Y-m-d H:i:s',###}
+										<else/>
+										无
+									</if>
+								</div>
+							</td>
+							<td align="left" class="">
+								<div style="text-align: center; width: 50px;">{$sell.deposit_price}</div>
+							</td>
+							<td align="left" class="">
+								<div style="text-align: center; width: 50px;">{$sell.stock_num}</div>
+							</td>
+							<td align="left" class="">
+								<div style="text-align: center; width: 50px;">{$sell.ing_price}</div>
+							</td>
+							<td align="left" class="">
+								<div style="text-align: center; width: 60px;">{$sell.deposit_goods_num}</div>
+							</td>
+							<td align="left" class="">
+								<div style="text-align: center; width: 50px;">{$sell.deposit_order_num}</div>
+							</td>
+							<td align="left" class="">
+								<div style="text-align: center; width: 80px;">{$sell.finish_desc}</div>
+							</td>
+							<td align="left" class="handle">
+								<div style="text-align: left; width: 170px; max-width:170px;">
+									<if condition="$sell['finish_button']">
+										<a class="btn orange finish_button" href="javascript:void(0)" data-pre-sell-id="{$sell.pre_sell_id}" ><i class="fa fa-pencil-square-o"></i>结束活动</a>
+									</if>
+									<if condition="$sell['success_or_fail_button']">
+										<a class="btn orange success_button" href="javascript:void(0)" data-pre-sell-id="{$sell.pre_sell_id}" ><i class="fa fa-pencil-square-o"></i>活动成功</a>
+										<a class="btn orange fail_button" href="javascript:void(0)" data-pre-sell-id="{$sell.pre_sell_id}" ><i class="fa fa-pencil-square-o"></i>活动失败</a>
+									</if>
+									<a class="btn blue" href="{:U('pre_sell/info',array('id'=>$sell.pre_sell_id))}"><i class="fa fa-pencil-square-o"></i>编辑</a>
+									<a class="btn red" href="javascript:void(0)" data-url="{:U('pre_sell/delete')}" data-id="{$sell.pre_sell_id}" onclick="delfun(this)"><i class="fa fa-trash-o"></i>删除</a>
+								</div>
+							</td>
+							<td align="" class="" style="width: 100%;">
+								<div>&nbsp;</div>
+							</td>
+						</tr>
+					</volist>
+					</tbody>
+				</table>
+			</div>
+			<div class="iDiv" style="display: none;"></div>
+		</div>
+		<!--分页位置-->
+		{$page->show()} </div>
+</div>
+<script>
+	$(document).ready(function(){
+		// 表格行点击选中切换
+		$('#flexigrid > table>tbody >tr').click(function(){
+			$(this).toggleClass('trSelected');
+		});
+
+		// 点击刷新数据
+		$('.fa-refresh').click(function(){
+			location.href = location.href;
+		});
+	});
+	function delfun(obj) {
+		layer.confirm('确认删除？', {
+					btn: ['确定', '取消'] //按钮
+				}, function () {
+					$.ajax({
+						type: 'post',
+						url: $(obj).attr('data-url'),
+						data: {pre_sell_id: $(obj).attr('data-id')},
+						dataType: 'json',
+						success: function (data) {
+							layer.closeAll();
+							if (data.status == 1) {
+								layer.msg(data.msg, {icon: 1});
+								$(obj).parent().parent().parent().remove();
+							} else {
+								layer.msg(data.msg, {icon: 2, time: 2000});
+							}
+						}
+					})
+				}, function (index) {
+					layer.close(index);
+				}
+		);
+	}
+
+	//结束活动
+	$(function () {
+		$(document).on("click", '.finish_button', function (e) {
+			var pre_sell_id = $(this).data('pre-sell-id');
+			layer.open({
+				content: '结束活动将（修改活动结束时间为当前时间）。该操作不可逆，确定要执行吗？'
+				,btn: ['确定', '取消']
+				,yes: function(index, layero){
+					layer.close(index);
+					$.ajax({
+						type: "POST",
+						url: "{:U('Admin/PreSell/finish')}",//+tab,
+						data: {pre_sell_id: pre_sell_id},
+						dataType: 'json',
+						success: function (data) {
+							if (data.status == 1) {
+								layer.msg(data.msg, {icon: 1, time: 2000}, function(){
+									window.location.reload();
+								});
+							} else {
+								layer.msg(data.msg, {icon: 2, time: 2000});
+							}
+						}
+					});
+				}
+				,btn2: function(index, layero){
+					layer.close(index);
+				}
+				,cancel: function(){
+					//右上角关闭回调
+					layer.close();
+				}
+			});
+		})
+	})
+
+	//活动成功
+	$(function () {
+		$(document).on("click", '.success_button', function (e) {
+			var pre_sell_id = $(this).data('pre-sell-id');
+			layer.open({
+				content: '此操作不可逆，您确定要设置该预售活动成功吗？'
+				,btn: ['确定', '取消']
+				,yes: function(index, layero){
+					layer.close(index);
+					$.ajax({
+						type: "POST",
+						url: "{:U('Admin/PreSell/succeed')}",//+tab,
+						data: {pre_sell_id: pre_sell_id},
+						dataType: 'json',
+						success: function (data) {
+							if (data.status == 1) {
+								layer.msg(data.msg, {icon: 1, time: 2000}, function(){
+									window.location.reload();
+								});
+							} else {
+								layer.msg(data.msg, {icon: 2, time: 2000});
+							}
+						}
+					});
+				}
+				,btn2: function(index, layero){
+					layer.close(index);
+				}
+				,cancel: function(){
+					//右上角关闭回调
+					layer.close();
+				}
+			});
+		})
+	})
+
+	//活动成功
+	$(function () {
+		$(document).on("click", '.fail_button', function (e) {
+			var pre_sell_id = $(this).data('pre-sell-id');
+			layer.open({
+				content: '此操作不可逆，您确定要设置该预售活动失败吗？'
+				,btn: ['确定', '取消']
+				,yes: function(index, layero){
+					layer.close(index);
+					$.ajax({
+						type: "POST",
+						url: "{:U('Admin/PreSell/fail')}",//+tab,
+						data: {pre_sell_id: pre_sell_id},
+						dataType: 'json',
+						success: function (data) {
+							if (data.status == 1) {
+								layer.msg(data.msg, {icon: 1, time: 2000}, function(){
+									window.location.reload();
+								});
+							} else {
+								layer.msg(data.msg, {icon: 2, time: 2000});
+							}
+						}
+					});
+				}
+				,btn2: function(index, layero){
+					layer.close(index);
+				}
+				,cancel: function(){
+					//右上角关闭回调
+					layer.close();
+				}
+			});
+		})
+	})
+</script>
+</body>
+</html>

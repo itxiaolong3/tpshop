@@ -1,0 +1,71 @@
+<foreach name="list" item="v">
+    <div class="main_order_list ma-to-8 p">
+        <div class="w670">
+            <div class="tit_produce bo-bo-f5">
+                <span class="tit_fon">买家：{$v.nickname}</span>
+                <div class="not_complate">{$v.order_status_desc}</div>
+            </div>
+            <div class="order_alone_cont">
+                <div class="order_number">
+                    <p class="on">订单号：<em>{$v.order_sn}</em></p>
+                    <p class="time">{:date('Y-m-d H:i', $v.confirm_time)}</p>
+                </div>
+                <div class="order_shop_list">
+
+                    <if condition="count($v['goods_list']) gt 1">
+                        <!--商品种类大于2只显示图片-s-->
+                        <ul class="shop_num">
+                            <foreach name="$v['goods_list']" item="good" key="k">
+                                <if condition="$k lt 2">
+                                    <li>
+                                        <a href="">
+                                            <img src="{$good.goods_id|goods_thum_images=200,200}"/>
+                                        </a>
+                                    </li>
+                                </if>
+                            </foreach>
+                            <li class="ellipsis" id="ellipsis" style="display: none">
+                                <span>...</span>
+                            </li>
+                        </ul>
+                        <div class="sum_number_arrow">
+                            <a href="">
+                                <span>共<em class="jnum">{:count($v['goods_list'])}</em>种商品</span>
+                                <i class="icon-arrow_r"></i>
+                            </a>
+                        </div>
+                        <!--商品种类大于2只显示图片-e-->
+                        <else/>
+                        <foreach name="$v['goods_list']" item="good">
+                            <ul class="shop_num">
+                                <li>
+                                    <a href="">
+                                        <img src="{$good.goods_id|goods_thum_images=200,200}"/>
+                                    </a>
+                                </li>
+                            </ul>
+                            <div class="detail_somestandard">
+                                <div class="goods_name">
+                                    <a href="">
+                                        <span>{$good.goods_name}</span>
+                                        <i class="icon-arrow_r"></i>
+                                    </a>
+                                </div>
+                                <div class="ret_price">
+                                    ￥{$good.member_goods_price}
+                                </div>
+                                <div class="stardard">
+                                    <p>{$good.spec_key_name}</p>
+                                </div>
+                            </div>
+                        </foreach>
+                    </if>
+
+                </div>
+                <div class="tit_produce bo-to-f5">
+                    <div class="get_commission">获得佣金：<em>￥180.12</em></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</foreach>

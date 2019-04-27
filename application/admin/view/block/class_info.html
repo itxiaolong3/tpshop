@@ -1,0 +1,114 @@
+<include file="public/layout" />
+<body style="background-color: #FFF; overflow: auto;"> 
+<div class="page">
+  <div class="fixed-bar">
+    <div class="item-title"><a class="back" href="javascript:history.back();" title="返回列表"><i class="fa fa-arrow-circle-o-left"></i></a>
+      <div class="subject">
+        <h3>行业分类</h3>
+        <h5>行业分类及模板风格添加管理</h5>
+      </div>
+    </div>
+  </div>
+	<form method="post" class="form-horizontal" id="category_form">
+    <div class="ncap-form-default">
+
+      <dl class="row">
+        <dt class="tit">
+          <label><em>*</em>添加类型{$act}</label>
+        </dt>
+        <dd class="opt">
+          <label>行业</label>
+          <input id="type1" <if condition="$info['parent_id'] eq '0'">checked</if> type="radio" name="type" value="1" />
+          &nbsp;&nbsp;
+          <label>风格</label>
+          <input id="type2" <if condition="$info['parent_id'] neq '0'">checked</if>  type="radio" name="type" value="2" />
+          <span class="err" id="err_cat_name"></span>
+          <p class="notic"></p>
+        </dd>
+      </dl>
+
+      <dl class="row">
+        <dt class="tit">
+          <label><em>*</em>名称</label>
+        </dt>
+        <dd class="opt">
+          <input type="text" class="input-txt" name="name" value="{$info.name}">
+          <span class="err" id="err_cat_name"></span>
+          <p class="notic"></p>
+        </dd>
+      </dl>
+
+      <if condition="$info['parent_id'] neq '0'">
+      <dl class="row" id="class_type1">
+        <dt class="tit">
+          <label for="parent_id">所属行业</label>
+        </dt>
+        <dd class="opt">
+            <select class="small form-control" style="width:200px"  tabindex="1" name="parent_id" id="parent_id">
+                <volist name="list" id="vo">
+                <option <if condition="$info['parent_id'] eq $vo['id']">selected="selected"</if> value="{$vo.id}">{$vo.name}</option>
+                </volist>
+                <empty name="cat_info[cat_type]">
+      
+                </empty>                                 
+            </select>        
+          <span class="err"></span>
+          <p class="notic">风格属于行业的子分类</p>
+        </dd>
+      </dl>  
+      </if>    
+       
+      <dl class="row">
+        <dt class="tit">
+          <label for="ac_sort">排序</label>
+        </dt>
+        <dd class="opt">
+          <input type="text" placeholder="排序" name="sort_order" value="{$info.sort_order}" class="input-txt" onKeyUp="this.value=this.value.replace(/[^\d]/g,'')">
+          <span class="err"></span>
+          <p class="notic"></p>
+        </dd>
+      </dl>
+           
+      <div class="bot"><a href="JavaScript:void(0);" onClick="submitForm()" class="ncap-btn-big ncap-btn-green" id="submitBtn">确认提交</a></div>
+    </div>
+            <input type="hidden" name="act" value="{$act}"> 
+            <input type="hidden" name="id" value="{$info.id}">
+  </form>
+</div>
+<script>
+    function submitForm() {
+        $('span.err').hide();
+        $.ajax({
+            type: "POST",
+            url: "{:U('block/class_handle')}",
+            data: $('#category_form').serialize(),
+            dataType: "json",
+            error: function () {
+                layer.alert("服务器繁忙, 请联系管理员!");
+            },
+            success: function (data) {
+                if (data.status === 1) {
+                    layer.msg(data.msg, {icon: 1,time: 1000}, function() {
+                        location.href = "{:U('block/template_class')}";
+                    });
+                } else if(data.status === 0) {
+                    layer.msg(data.msg, {icon: 2,time: 1000});
+                    $.each(data.result, function(index, item) {
+                        $('#err_' + index).text(item).show();
+                    });
+                } else {
+                    layer.msg(data.msg, {icon: 2,time: 1000});
+                }
+            }
+        });
+    }
+
+    $('#type1').click(function(){
+      $('#class_type1').hide();
+    })
+    $('#type2').click(function(){
+      $('#class_type1').show();
+    })
+</script>
+</body>
+</html>

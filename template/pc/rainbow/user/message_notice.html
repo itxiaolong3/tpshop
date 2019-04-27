@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>我的消息 </title>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/css/tpshop.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/css/myaccount.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/css/message_notice.css"/>
+    <script src="__STATIC__/js/jquery-1.11.3.min.js" type="text/javascript" charset="utf-8"></script>   
+<body class="bg-f5">
+<include file="user/header"/>
+<div class="home-index-middle">
+    <div class="w1224">
+        <div class="g-crumbs"><a href="">我的商城</a><i class="litt-xyb"></i><span>我的消息</span></div>
+        <div class="home-main">
+            <include file="user/menu"/>
+
+            <!--消息中心优化后-->
+            <div class="ri-menu fr">
+                <div class="mesg_container">
+                    <div class="mesg_tab">
+                        <ul id="mesg_tab">
+                            <li <if condition="((null == $Think.get.type) OR ($Think.get.type == 2))">class="mesgtab_cur"
+                            </if>><a href="{:U('Home/User/message_notice',array('type'=>2))}">物流<notempty name="no_read['message_logistics_no_read']">（{$no_read['message_logistics_no_read']}）</notempty></a></li>
+                            <li <if condition="((null != $Think.get.type) and ($Think.get.type == 0))">class="mesgtab_cur"
+                            </if>><a href="{:U('Home/User/message_notice',array('type'=>0))}">通知<notempty name="no_read['message_notice_no_read']">（{$no_read['message_notice_no_read']}）</notempty></a></li>
+                            <li <if condition="($Think.get.type == 1)">class="mesgtab_cur"
+                            </if>><a href="{:U('Home/User/message_notice',array('type'=>1))}">活动<notempty name="no_read['message_activity_no_read']">（{$no_read['message_activity_no_read']}）</notempty></a></li>
+                            <li <if condition="($Think.get.type == 3)">class="mesgtab_cur"
+                            </if>><a href="{:U('Home/User/message_notice',array('type'=>3))}">私信<notempty name="no_read['message_private_no_read']">（{$no_read['message_private_no_read']}）</notempty></a></li>
+                        </ul>
+                    </div>
+                    <!--消息内容-->
+                    <div class="mesg_infoma" id="mesg_infoma">
+                        <div class="mesg_infoitems" style="display:block;">
+                            <if condition="count($list) gt 0"/>
+                            <div class="mesg_tit">
+                                <span><input type="checkbox" onclick="checkedAll(this)" id="checkAll">全选</span>
+                                <a href="javascript:deletedAllMsg();"><img src="__STATIC__/images/delet.png">删除</a>
+                            </div>
+                            </if>
+                            <div class="mesg_con">
+                                <ul class="logist_lists">
+                                    <volist name="list" id="v">
+                                    <if condition="(null != $Think.get.type) and ($Think.get.type == 0)"/>
+
+                                        <li txt="通知 0">
+                                            <div class="mesgdeta_check"><input type="checkbox" name="msg_id" value="{$v.rec_id}"></div>
+                                            <div class="mesgdeta_ri">
+                                                <div class="mesgdeta_fir see{$v.rec_id}">
+                                                    <span>{$v.message_notice.message_title}</span><empty name="v.is_see"><i></i></empty>
+                                                    <a href="javascript:deletedMessage({$v.rec_id});"><img src="__STATIC__/images/delet.png"></a><em>{$v.send_time_text}</em></div>
+                                                <div class="mesgdeta_sec"><p>{$v.message_notice.message_content}</p></div>
+                                              
+
+                                                <if condition="$v.message_notice.type eq '2'"/>
+                                                    <div class="mesgdeta_thi notice_mesgde_thi"><a href="javascript:message_noticeInfo2('{:U('Home/User/coupon')}', {$v.rec_id});">立即使用</a></div>
+                                                <elseif condition="($v.message_notice.type eq '3') "/>
+                                                    <div class="mesgdeta_thi notice_mesgde_thi"><a href="javascript:message_noticeInfo2('{:U('Home/User/coupon',['type'=>1])}', {$v.rec_id});">查看详情</a></div>
+                                                <elseif condition="($v.message_notice.type eq '4')"/>
+                                                    <div class="mesgdeta_thi notice_mesgde_thi"><a href="javascript:message_noticeInfo2('{:U('Home/User/coupon')}', {$v.rec_id});">查看详情</a></div>
+                                                <elseif condition="($v.message_notice.type eq '6')"/>
+                                                    <div class="mesgdeta_thi notice_mesgde_thi"><a href="javascript:message_noticeInfo2('{:U('Home/User/recharge',['type'=>2])}', {$v.rec_id});">查看详情</a></div>                                                    
+                                                <elseif condition="$v.message_notice.mmt_code eq 'message_notice'"/>
+                                                    <div class="mesgdeta_thi notice_mesgde_thi"><a href="javascript:message_noticeInfo({$v.rec_id});">查看详情</a></div>
+                                                <else/>
+                                                    <div class="mesgdeta_thi notice_mesgde_thi"><a href="javascript:message_noticeInfo({$v.rec_id});">查看详情</a></div>
+                                                </if>
+                                            </div>
+                                        </li>    
+              
+
+                                        <elseif condition="$Think.get.type == 1"/>
+
+                               
+                                        <li txt="活动 1">
+                                            <div class="mesgdeta_check"><input type="checkbox" name="msg_id" value="{$v.rec_id}"></div>
+                                            <div class="mesgdeta_ri">
+                                                <div class="mesgdeta_fir see{$v.rec_id}"><span>{$v.message_activity.message_title}</span><empty name="v.is_see"><i></i></empty><a href="javascript:deletedMessage({$v.rec_id});"><img src="__STATIC__/images/delet.png"></a><em>{$v.send_time_text}</em></div>
+                                                <div class="act_mesgde_sec"><a href="javascript:void(0);" class="act_img"><img src="{$v.message_activity.img_uri}"><if condition="($v.finished)"><span>活动已结束</span></if>  </a></div>
+                                                <div class="mesgdeta_thi"><a href="javascript:messageAcitivityInfo('{$v.home_url}',{$v.rec_id},'{$v.message_activity.mmt_code}','{$v.finished}','{$v.start_time}');">查看详情</a></div>
+                                            </div>
+                                  
+                                        </li>    
+                                    
+                                        <elseif condition="$Think.get.type == 3"/>
+                                    <li txt="私信 MessagePrivate 暂时空着">
+                                        <div class="mesgdeta_check direct_mesg_check"><input type="checkbox" name="msg_id" value="{$v.rec_id}"></div>
+                                        <div class="directmesg_ri">
+                                            <div class="directmesg_img see{$v.rec_id}"><img src="__STATIC__/images/perslogo.png"><i>3</i></div>
+                                            <div class="directmesg_con">
+                                                <div class="mesgdeta_fir"><span>xx旗舰店客服A</span><a href="javascript:deletedMessage({$v.rec_id});"><img src="__STATIC__/images/delet.png"></a><em>{$v.send_time_text}</em></div>
+                                                <p>您好，请问需要什么服务呢？</p>
+                                            </div>
+                                        </div>
+                                    </li>
+                                        <else />
+
+                                   
+                                    <li txt="物流 2">
+                                        <div class="mesgdeta_check"><input type="checkbox" name="msg_id" value="{$v.rec_id}"></div>
+                                        <div class="mesgdeta_ri">
+                                            <div class="mesgdeta_fir see{$v.rec_id}">
+                                                <span>{$v.message_logistics.message_title}</span>
+                                                
+                                                <empty name="v.is_see"><i></i></empty>
+                                                <a href="javascript:deletedMessage({$v.rec_id});"><img src="__STATIC__/images/delet.png"></a><em>{$v.send_time_text}</em>
+                                            </div>
+                                            <div class="mesgdeta_sec"><span><img src="{$v.message_logistics.img_uri}"></span><em>
+                                                <p>{$v.message_logistics.message_content}</p>
+
+                                                <!-- <i>订单编号：{$v.message_logistics.order_sn}</i> -->
+                                                <i>{$v.order_text}</i>
+                                            </em></div>
+                                            <div class="mesgdeta_thi"><a href="javascript:message_logisticsInfo('{$v.home_url}',{$v.rec_id});">查看详情</a></div>
+                                        </div>
+                                    </li>    
+
+                                    </if>
+                                    
+                                    </volist>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <!--消息详情-->
+                    <div class="mesg_infoma" style="display:none;">
+                        <div class="mesg_deta_con">
+                            <div class="mesgdeta_tit">
+                                <h3>此处为该消息/活动标题</h3>
+                                <p><i>时间：2018-05-02   16 : 36</i><em>来自：xx旗舰店</em></p>
+                            </div>
+                            <div class="mesgdeta_mid"></div>
+                            <div class="mesgdeta_bot">
+                                <span class="prev-_article"><em>上一篇：</em><a href="">京东7Fresh生鲜超市第二家在哪？怎么样？</a></span>
+                                <span class="next_mesg"><em>下一篇：</em><a href="">知识付费是焦虑的“止痛药”还是“良方”？这个功能定生死！</a></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mesg_infoma" style="display:none;" id="message_notice">
+                        <div class="mesg_deta_con">
+                            <div class="mesgdeta_tit">
+                                <h3>活动标题</h3>
+                                <p><i>时间</i><em>来自</em></p>
+                            </div>
+                            <div class="mesgdeta_mid">内容</div>
+                        </div>
+                    </div>                    
+                    <!--消息为空-->
+                    <if condition="count($list) == 0"/>
+                    <div class="mesg_infoma" >
+                        <div class="mesg_none">
+                            <img src="__STATIC__/images/mesgnone.png">
+                            <span>暂无消息记录哦~</span>
+                        </div>
+                    </div>
+                    </if>
+                    <!--删除消息弹窗-->
+                    <div class="mesg_infoma" style="background-color:rgba(0,0,0,0.5);display:none;" id="delmsg">
+                        <div class="delmesg_confir">
+                            <div class="delmesg_up"><b>删除消息</b><a href="javascript:void(0);" class="tp_cancel"><img src="__STATIC__/images/del_btn.png"></a></div>
+                            <div class="delmesg_down">
+                                <p>确定删除该消息吗？</p>
+                                <span>
+                                    <a href="javascript:void(0);" class="mesgdel_canc tp_cancel">取消</a>
+                                    <a href="javascript:void(0);" class="mesgdel_confir tp_confirm">确定</a>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="paging-pages">
+                    {$page}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" name="count" id="count" value="{$list|count}">
+<!--footer-s-->
+<div class="footer p">
+    <include file="public/footer" />
+</div>
+<!--footer-e-->
+<!--TAB切换-->
+<script>
+
+$(function() {
+    // 全选或不全选
+    $('input[name=msg_id]').change(function(){
+        var flage = false;
+        if ($(this).is(":checked")) {
+            flage = true;
+            $("input[name=msg_id]").each(function(){
+                if (!$(this).is(":checked")) 
+                    flage = false;
+            });
+        }
+        $("#checkAll").prop('checked', flage)
+    })
+    // 当前页面没有内容，但是上一页有数据，点第一个按扭
+    if ($('#count').val() == 0){
+        console.log(0)
+        $('.paging-pages ul li a').each(function(){
+            if ($(this).hasClass('num')) {
+                var href = $(this).attr('href')
+                if (href) {
+                    console.log(href)
+                    location.href = href;
+                    return;
+                }
+            }
+        })
+    }
+
+})
+// 设置全选
+function checkedAll(obj) {
+    var flage = $(obj).is(":checked"); //全选选中为true，否则为false
+    $("input[name=msg_id]").each(function(){
+        $(this).prop('checked', flage);
+    });
+}
+// 删除
+function deletedAllMsg() {
+    var arr = new Array();
+    $("input[name=msg_id]").each(function(){
+        if ($(this).is(":checked")) 
+            arr.push($(this).val()) 
+    });
+    if (arr.length > 0) {
+        deletedMessageall(arr.join(','))
+    } else {
+        layer.alert("至少选一项", {icon: 2, time: 2000})
+    }
+}
+// 删除全部消息
+function deletedMessageall(msg_id) {
+    layer.confirm('所选消息删除后将无法找回！', {
+        btn: ['是','否']
+    }, function() {
+        $.ajax({
+            type: "POST",
+            url: "{:U('Home/User/deletedMessage')}",
+            data: {msg_id: msg_id},
+            dataType: 'json',
+            success: function (data) {
+                if (data.status == 1) {
+                    layer.msg(data.msg);
+                    
+                    // $('#message_' + msg_id).remove()
+                    setTimeout(function() {location.reload();}, 2000);
+                } else {
+                    layer.alert(data.msg, {icon: 2, time: 2000});
+                }
+            },
+            error: function () {
+                layer.alert('网络错误，请稍后再试', {icon: 2, time: 2000});
+            }
+        });
+    }, function(tmp){
+        layer.close(tmp);
+    })   
+}
+// 删除消息
+function deletedMessage(msg_id) {
+    layer.confirm('该条消息删除后将无法找回！', {
+        btn: ['是','否']
+    }, function() {
+        $.ajax({
+            type: "POST",
+            url: "{:U('Home/User/deletedMessage')}",
+            data: {msg_id: msg_id},
+            dataType: 'json',
+            success: function (data) {
+                if (data.status == 1) {
+                    layer.msg(data.msg);
+                    setTimeout(function() {location.reload();}, 2000);
+                    // $('#message_' + msg_id).remove()
+                } else {
+                    layer.alert(data.msg, {icon: 2, time: 2000});
+                }
+            },
+            error: function () {
+                layer.alert('网络错误，请稍后再试', {icon: 2, time: 2000});
+            }
+        });
+    }, function(tmp){
+        layer.close(tmp);
+    })   
+}
+// 查看通知消息详情
+function message_noticeInfo(msg_id, is_see) {
+    location.href = "{:U('Home/User/message_details')}" + "?msg_id=" + msg_id + "&type=0"
+}
+function message_noticeInfo2(url, rec_id) {
+
+    setMessageForRead(rec_id); 
+    location.href = url
+}
+// 查看活动消息详情
+function messageAcitivityInfo(url, msg_id, mmt_code, is_finished, start_time) {
+    setMessageForRead(msg_id);
+    if (is_finished) {
+        $('.see'+msg_id).find('i').remove()
+        layer.msg('活动已结束')
+        return;
+    }
+    if (start_time){
+        $('.see'+msg_id).find('i').remove()
+        layer.msg('活动开始时间：' + start_time)
+        return;
+    }
+    if (mmt_code == 'team_activity') {
+        $('.see'+msg_id).find('i').remove()
+        // 拼团手机有
+        layer.alert('请在手机上查看', {icon: 2, time: 2000});
+        return;
+    }
+
+    if (mmt_code == 'prom_order_activity') {
+        location.href = "{:U('Home/User/message_details')}" + "?msg_id=" + msg_id + "&type=1"
+        //layer.alert('订单促销需要您下单', {icon: 2, time: 2000});
+        return;
+    }     
+    location.href = url;
+}
+
+function message_logisticsInfo(url, msg_id){
+    setMessageForRead(msg_id);
+    if (url == ''){
+        $('.see'+msg_id).find('i').remove()
+        layer.alert('请在手机上查看', {icon: 2, time: 2000});
+        return;
+    }
+    location.href = url;
+    
+}
+function setMessageForRead(msg_id) {
+    $.ajax({
+        type: "POST",
+        url: "{:U('Home/User/setMessageForRead')}",
+        data: {msg_id: msg_id},
+        dataType: 'json',
+        success: function (data) {
+        },
+        error: function () {
+        }
+    });
+}
+</script>
+
+
+
+</body>
+</html>

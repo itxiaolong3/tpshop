@@ -1,0 +1,113 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>发票信息</title>
+    <link type="text/css" rel="stylesheet" href="__PUBLIC__/css/reset.css">
+    <link type="text/css" rel="stylesheet" href="__PUBLIC__/css/mesg_center.css">
+    <script type="text/javascript" src="__PUBLIC__/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/js/mobile-util.js"></script>
+</head>
+
+<style>
+    .invoice_con{ width:100%;}
+    .invoice_tit,.invoice_deta{ width:92%; padding:0.64rem 3%;}
+    .invoice_tit h3,.invoice_deta h3{ font-weight:normal; font-size:0.768rem; padding-bottom:0.64rem; border-bottom:1px solid #ededed;}
+    .invoice_type{ overflow:hidden; margin-top:0.512rem;}
+    .invoice_type .intype_item{ float:left; font-size:0.64rem; margin-right:0.64rem;}
+    .invoice_type .intype_item label{ width:0.853334rem; height:0.853334rem; display:inline-block; border-radius:50%; border:2px solid #ccc;}
+    .invoice_type .intype_item input[type=radio]{ visibility:hidden;}
+    .invoice_type .intype_item input[type=radio]:checked + label{background:#FF403C url(__PUBLIC__/images/z-chengs.png) no-repeat 0.128rem 0.1706rem; background-size: 70% 60%; border: 2px solid #FF403C;}
+    .invoice_type .intype_item span{ vertical-align:top; margin-top:0.128rem; margin-left:0.32rem;}
+    .invoice_line{ width:100%; height:0.32rem; background-color:#f2f2f2; border:none; margin:0;}
+    .invoice_comdel{ width:98%; padding:0.64rem 0 0 2%;}
+    .invoice_comdel input{ width:8.96rem; border:1px solid #999; height:1.024rem; line-height:1.024rem; border-radius:6px; padding-left:0.2134rem; font-size:0.512rem; margin-bottom:0.426667rem; background-color:#f2f2f2;}
+    .invoice_comdel p{ color:#ff0000; font-size:0.469334rem; line-height:0.64rem;}
+    .invoice_confir{ width:92%; padding:0 4%; margin-top:0.64rem;}
+    .invoice_confir input{ width:100%; height:1.792rem; line-height:1.792rem; background-color:#f23030; color:#fff; border:none; font-size:0.768rem; letter-spacing:0.128rem;}
+</style>
+<body>
+<div class="header mesg_tit">
+    <a href="javascript:history.go(-1);"><img src="__PUBLIC__/images/return.png"></a>
+    <span>发票信息</span>
+</div>
+<div class="invoice_con">
+    <div class="invoice_tit">
+        <h3>发票抬头</h3>
+        <div class="invoice_type">
+            <div class="intype_item"><input type="radio" name="radio_title" <if condition="($invoiceInfo.radio_title eq 'geren') or ($invoiceInfo.radio_title eq '')"> checked </if> id="intype1" value="geren"><label for="intype1"></label><span>个人</span></div>
+            <div class="intype_item"><input type="radio" name="radio_title" <if condition="$invoiceInfo.radio_title eq 'danwei'"> checked </if> id="intype2" value="danwei"><label for="intype2"></label><span>单位</span></div>
+        </div>
+    </div>
+    <hr class="invoice_line">
+    <div class="invoice_deta">
+        <h3>发票内容</h3>
+        <div class="invoice_comdel" <if condition="($invoiceInfo.radio_cont neq 'detail') or ($invoiceInfo.radio_title neq 'danwei')">style="display: none;" </if> >
+            <input type="text" id="invoice_title" placeholder="请填写单位名称" value="{$invoiceInfo.invoice_title}">
+            <input type="text" id="taxpayer" placeholder="请在此填写纳税人识别号"  value="{$invoiceInfo.taxpayer}">
+            <p>开企业抬头发票，请准确填写对应的“纳税人识别号”，以免影响您的发票报销.</p>
+        </div>
+        <div class="invoice_type">
+            <div class="intype_item"><input type="radio" name="radio_cont" <if condition="($invoiceInfo.radio_cont eq 'noincorise') or ($invoiceInfo.radio_cont eq '')"> checked </if> id="intype3" value="noincorise"><label for="intype3"></label><span>不开发票</span></div>
+            <div class="intype_item"><input type="radio" name="radio_cont" <if condition="$invoiceInfo.radio_cont eq 'detail'"> checked </if> id="intype4" value="detail"><label for="intype4"></label><span>明细</span></div>
+        </div>
+    </div>
+    <div class="invoice_confir"><input type="button" id="submit_invoice" value="确认"></div>
+</div>
+<script src="__PUBLIC__/js/layer/layer.js"></script>
+<script type="text/javascript">
+    $("#intype1").click(function(){
+        $(".invoice_comdel").css("display","none");
+    });
+    $("#intype2").click(function(){
+        var radioCont = $('input[name="radio_cont"]:checked').val();
+        if(radioCont == 'detail'){
+            $(".invoice_comdel").css("display","block");
+        }else{
+            $(".invoice_comdel").css("display","none");
+        }
+    });
+    $("#intype4").click(function(){
+        var radioTitle = $('input[name="radio_title"]:checked').val();
+        if(radioTitle == "geren"){
+            $(".invoice_comdel").css("display","none");
+        }else{
+            $(".invoice_comdel").css("display","block");
+        }
+    });
+    $("#intype3").click(function(){
+        $(".invoice_comdel").css("display","none");
+    });
+    $("#submit_invoice").click(function() {
+        var radioTitle = $('input[name="radio_title"]:checked').val();
+        var invoice_title = $("#invoice_title").val();
+        var taxpayer = $("#taxpayer").val();
+        var radioCont = $('input[name="radio_cont"]:checked').val();
+        if (radioTitle=="danwei" && radioCont=="detail"){
+            if (invoice_title.length == 0) {
+                layer.msg("发票抬头不能为空", {icon: 2});
+                return false;
+            }
+            if ((taxpayer.length == 15) || (taxpayer.length == 18) || (taxpayer.length == 20)) {
+            } else {
+                layer.msg("请输入正确的纳税人识别号！", {icon: 2});
+                return;
+            }
+        }
+        $.ajax({
+            type: "POST",
+            url: '/index.php?m=Mobile&c=Cart&a=invoice_info',
+            data: {radio_title:radioTitle,invoice_title:invoice_title,taxpayer:taxpayer,radio_cont:radioCont},
+            dataType: "json",
+            success: function (data) {
+                if (data.status == 1) {
+                    window.history.go(-1);
+                } else {
+                    layer.msg(data.msg, {icon: 2});
+                }
+            }
+        });
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,160 @@
+.ma-page{
+    position: relative;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+.ma-top{
+    line-height: 30px;
+}
+.ma-btn{
+    padding: 6px;
+    font-size: 13px;
+    color: #0ba4da;
+    border: 1px #0ba4da solid;
+    border-radius: 4px;
+}
+.ellipsis-1{
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.ellipsis-2{
+    overflow:hidden;
+    text-overflow:ellipsis;
+    display:-webkit-box;
+    -webkit-box-orient:vertical;
+    -webkit-line-clamp:2;
+}
+.ma-list{
+    margin-top: 10px;
+    color:black;
+    font-size: 12px;
+}
+.ma-card{
+    color: #555;
+    font-size: 11px;
+    border: 1px solid #e7e7eb;
+    width: 220px;
+    box-sizing: border-box;
+    border-radius: 2px;
+    box-shadow: 0 1px 10px #ccc;
+    margin: 10px;
+    display: inline-block;
+    position: relative;
+}
+.ma-card a{
+    color: #555;
+}
+.ma-card .card-item{
+    padding: 4px;
+    border-bottom: 1px solid #eeeeee;
+}
+.ma-card .no-line{
+    border: 0;
+}
+.ma-card .title{
+    font-size: 13px;
+    margin: 8px 5px;
+    color: #555;
+    border: 0;
+    padding: 0;
+}
+.ma-card .time{
+    margin: 8px 6px 4px;
+}
+.card-item .cover{
+    width: 100%;
+    height: 150px;
+    box-sizing: border-box;
+    overflow: hidden;
+    position: relative;
+    border: 0;
+}
+.card-item .cover img{
+    width: 100%;
+}
+.ma-card .desc {
+    margin: 5px;
+    line-height: 20px;
+    height: 40px;
+}
+.ma-card .btns{
+    background-color: #f4f4f4;
+    width: 100%;
+    border-top: 1px solid #e7e7eb;
+}
+.ma-card .btns .btn{
+    box-sizing: border-box;
+    width: 50%;
+    display: inline-block;
+    color: #aaa;
+    font-size: 18px;
+    text-align: center;
+    line-height: 34px;
+}
+.ma-card .btns .left{
+    border-right: 1px solid #e7e7eb;
+}
+.ma-card .btns .btn:hover{
+    color: #0ba4da;
+    background-color: rgba(79, 192, 232, 0.11);
+    cursor: pointer;
+}
+/*多图文*/
+.card-item .cover-sm{
+    height: 100px;
+}
+.card-item .cover .title-in{
+    z-index: 2;
+    position: absolute;
+    bottom: 0;
+    font-size: 13px;
+    line-height: 16px;
+    padding: 5px;
+    width: 100%;
+    color: white;
+    background-color: rgba(0,0,0,0.6);
+}
+.card-item .post{
+    width: 100%;
+    position: relative;
+    height: 40px;
+}
+.card-item .post .post-title{
+    padding-left:  4px;
+    width: 160px;
+    height: 40px;
+    line-height: 18px;
+}
+.card-item .post .post-cover{
+    position: absolute;
+    right: 0;
+    top:0;
+}
+.card-item .post .post-cover img{
+    width: 40px;
+    height: 40px;
+}
+
+/*遮层*/
+.ma-card-mask{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+}
+.ma-card-check{
+    font-size: 50px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-left: -25px;
+    margin-top: -25px;
+}
+.hidden{
+    display: none;
+}

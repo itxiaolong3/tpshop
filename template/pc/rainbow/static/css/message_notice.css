@@ -1,0 +1,93 @@
+
+/*消息中心优化*/
+.mesg_container{ width:100%;background-color: #fff; min-height:800px; padding-bottom:50px;word-break:break-all;word-wrap:break-word;}
+.mesg_tab{ width:98%; padding-left:2%;}
+.mesg_tab ul{ overflow:hidden;}
+.mesg_tab ul li{ width:120px; height:60px; float:left; line-height:60px;}
+.mesg_tab ul li a{ padding-bottom:8px;}
+.mesgtab_cur a{ color:red; font-weight:bold; border-bottom:3px solid red;}
+.mesg_infoma{ width:98%; padding-left:2%;}
+.mesg_infoma .mesg_infoitems{ display:none; font-size:14px; margin-top:16px;}
+/*物流消息*/
+.mesg_infoma .mesg_infoitems input[type=checkbox]{ width:16px; height:16px;}
+.mesg_tit{ width:100%;}
+.mesg_tit span,.mesg_tit a{ display:inline-block; height:30px; line-height:30px;}
+.mesg_tit span input[type=checkbox]{ border:1px solid #aeaeae; vertical-align:middle; margin-right:10px;}
+.mesg_tit a{ margin-left:40px;}
+.mesg_tit a img{ vertical-align:middle; margin-top:-3px; margin-right:10px;}
+.mesg_con{ width:100%; margin-top:14px;}
+.logist_lists{ width:100%; padding:0;}
+.logist_lists li{ width:100%; margin-bottom:32px; overflow:hidden;}
+.mesgdeta_check{ padding:0 20px; float:left;}
+.mesgdeta_check input[type=checkbox]{ border:1px solid #ff0000;}
+.mesgdeta_ri{ width:66%; float:left; border:1px solid #d9d9d9;}
+.mesgdeta_fir{ height:40px; line-height:40px; padding:0 20px; border-bottom:1px solid #e6e6e6;overflow: hidden;}
+.mesgdeta_fir span{ float:left;max-width: 70%;}
+.mesgdeta_fir i{ width:8px; height:8px; float:left; margin-left:10px; border-radius:50%; background-color:#ff3c3d; margin-top:16px;}
+.mesgdeta_fir a{ float:right; height:100%; margin-left:16px;}
+.mesgdeta_fir a img{ vertical-align:middle; margin-top:-3px;}
+.mesgdeta_fir em{ float:right; display:inline-block; height:18px; margin-top:11px; line-height:18px; padding-right:16px; border-right:1px solid #d9d9d9; color:#999;}
+.mesgdeta_sec{ padding:15px 20px; overflow:hidden;}
+.mesgdeta_sec span{ display:block; float:left; width:64px; height:64px;}
+.mesgdeta_sec span img{ width:100%;}
+.mesgdeta_sec em{ display:block; height:64px; float:right; width:86%;}
+.mesgdeta_sec em p{ height:40px; line-height:20px;display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; overflow:hidden;}
+.mesgdeta_sec em i{ display:inline-block; line-height:14px; margin-top:8px; color:#999;}
+.mesgdeta_thi{ padding:0 20px; border-top:1px solid #e6e6e6;}
+.mesgdeta_thi a{ display:block; line-height:36px; background:url(images/arrow_two.png) center right no-repeat;}
+/*通知消息*/
+.notice_mesgdeta_sec{ padding:20px;}
+.notice_mesgde_thi{ width:100%; padding:0; background-color:#ffefe3;}
+.notice_mesgde_thi a{ margin:0 20px;}
+/*活动消息*/
+.act_mesgde_sec{ padding:15.5px;}
+.act_img{ display:block; width:100%; height:280px; position:relative;text-align: center;}
+.act_img img{ vertical-align:top;height: 100%;}
+.act_img span{ width:100%; height:100%; position:absolute; left:0; top:0; background-color:rgba(0,0,0,0.5); font-size:30px; color:#fff; text-align:center; line-height:280px; font-weight:bold;}
+.active_finish{ color:#999;}
+/*私信*/
+.direct_mesg_check input[type=checkbox]{ margin-top:40px;}
+.directmesg_ri{ width:66%; float:left; border-bottom:1px solid #d9d9d9; border-top:1px solid #d9d9d9; padding:15px 20px; overflow:hidden;}
+.directmesg_img{ width:64px; height:64px; float:left; position:relative;}
+.directmesg_img img{ width:100%;}
+.directmesg_img i{ width:16px; height:16px; border-radius:50%; background-color:#ff4848; color:#fff; font-size:12px; line-height:16px; text-align:center; position:absolute; top:-6px; right:-6px;}
+.directmesg_con{ width:87%; float:right; cursor:pointer;}
+.directmesg_con .mesgdeta_fir{ border:none; padding:0; height:26px; line-height:26px;}
+.directmesg_con .mesgdeta_fir em{ margin-top:4px;}
+.directmesg_con p{ color:#999; margin-top:16px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+/*页码
+.paging-pages{ width:100%; text-align:right; margin-top:20px;font-size:14px;margin-bottom:60px;}
+.paging-pages a{ display:inline-block; text-align:center; width:48px; height:36px; line-height:36px; color:#666; border:1px solid #E6E6E6; margin-left:6px;}
+.page-index,.prev-page,.next-page,.last-page{ width:70px!important;}
+.paging-pages span{ display:inline-block; width:80px; height:36px; line-height:36px; color:#999; text-align:center;}
+.paging-pages a:hover{ background-color:#ff4848; color:#fff;}
+.page_cur{background-color:#ff4848;color:#fff!important;}*/
+
+
+/*消息详情*/
+.mesg_deta_con{ width:72%; padding:0 60px; border:1px solid #e6e6e6; margin-top:16px;}
+.mesgdeta_tit{ padding:60px 0 30px; border-bottom:1px dashed #e1e1e1;}
+.mesgdeta_tit h3{ font-size:18px; text-align:center;}
+.mesgdeta_tit p{ color:#999; text-align:center; margin-top:20px;}
+.mesgdeta_tit p i{ margin-right:50px;}
+.mesgdeta_mid{ min-height:464px;}
+.mesgdeta_bot{ padding:25px 0; color:#999; border-top:1px dashed #e1e1e1;}
+.mesgdeta_bot span{ width:100%; height:18px; display:block; line-height:18px;}
+.mesgdeta_bot span em{ float:left;}
+.mesgdeta_bot span a{ width:90%; float:left; color:#333;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;}
+.next_mesg{ margin-top:12px;}
+/*暂无消息*/
+.mesg_none{ margin-top:16px; text-align:center;}
+.mesg_none img{ margin-top:100px;}
+.mesg_none span{ display:block; color:#999; font-size:16px;}
+/*删除消息弹窗*/
+.delmesg_confir{ width:500px; font-size:16px; color:#333;}
+.delmesg_up{ width:90%; height:48px; padding:0 5%; line-height:48px; background-color:#ededed;}
+.delmesg_up b{ float:left;}
+.delmesg_up a{ float:right;}
+.delmesg_down{ width:100%; height:auto; text-align:center; background-color:#fff;}
+.delmesg_down p{ height:130px; line-height:130px;}
+.delmesg_down span{ display:block; width:100%; font-size:14px; border-top:1px solid #e1e1e1; padding:20px 0;}
+.delmesg_down span a{ display:inline-block; width:80px; height:36px; line-height:36px; border-radius:5px;}
+.mesgdel_canc{ border:1px solid #cecece; margin-right:20px;}
+.mesgdel_confir{ background-color:#ff3333; color:#fff;}

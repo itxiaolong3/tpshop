@@ -1,0 +1,298 @@
+<include file="public/layout"/>
+<script type="text/javascript" src="__ROOT__/public/static/js/layer/laydate/laydate.js"></script>
+
+<body style="background-color: rgb(255, 255, 255); overflow: auto; cursor: default; -moz-user-select: inherit;">
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>拼团订单</h3>
+                <h5>商城拼团列表查询及管理</h5>
+            </div>
+        </div>
+    </div>
+    <!-- 操作说明 -->
+    <div id="explanation" class="explanation" style="color: rgb(44, 188, 163); background-color: rgb(237, 251, 248); width: 99%; height: 100%;">
+        <div id="checkZoom" class="title"><i class="fa fa-lightbulb-o"></i>
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span title="收起提示" id="explanationZoom" style="display: block;"></span>
+        </div>
+        <ul>
+            <li>点击查看操作将显示订单（包括订单物品）的详细信息</li>
+            <li>点击取消操作可以取消订单（在线支付但未付款的订单和货到付款但未发货的订单）</li>
+            <li>如果平台已确认收到买家的付款，但系统支付状态并未变更，可以点击收到货款操作(仅限于下单后7日内可更改收款状态)，并填写相关信息后更改订单支付状态</li>
+        </ul>
+    </div>
+    <div class="flexigrid">
+        <div class="mDiv">
+            <div class="ftitle">
+                <h3>拼团订单</h3>
+                <h5>(共{$page->totalRows}条记录)</h5>
+            </div>
+            <div title="刷新数据" class="pReload"><i class="fa fa-refresh"></i></div>
+            <form class="navbar-form form-inline" method="post" action="{:U('Team/order_list')}" name="search-form2" id="search-form2">
+                <input type="hidden" name="order_by" value="order_id">
+                <input type="hidden" name="sort" value="desc">
+                <input type="hidden" name="user_id" value="{$Request.param.user_id}">
+                <!--用于查看拼单 包含了哪些订单-->
+                <input type="hidden" value="{$Request.param.found_id}" name="found_id"/>
+                <input type="hidden" name="prom_type" value="6">
+                <input type="hidden" name="order_ids" value="">
+                <div class="sDiv">
+                    <div class="sDiv2">
+                        <input type="text" size="30" id="start_time" name="start_time" value="{$start_time}" class="qsbox" placeholder="下单开始时间">
+                    </div>
+                    <div class="sDiv2">
+                        <input type="text" size="30" id="end_time" name="end_time" value="{$end_time}" class="qsbox" placeholder="下单结束时间">
+                    </div>
+                    <div class="sDiv2">
+                        <select name="pay_status" class="select sDiv3" style="margin-right:5px;margin-left:5px">
+                            <option value="">支付状态</option>
+                            <option value="0" <if condition="$pay_status heq '0'">selected</if>>未支付</option>
+                            <option value="1"<if condition="$pay_status eq 1">selected</if>>已支付</option>
+                        </select>
+                    </div>
+                    <div class="sDiv2">
+                        <select name="pay_code" class="select sDiv3" style="margin-right:5px;margin-left:5px">
+                            <option value="">支付方式</option>
+                            <option value="余额支付" <if condition="'余额支付' eq $pay_name">selected</if>>余额支付</option>
+                            <option value="其他方式" <if condition="'' eq $pay_name && '' eq $pay_code ">selected</if>>其他方式</option>
+                            <option value="积分兑换" <if condition="'积分兑换' eq $pay_name">selected</if>>积分兑换</option>
+                            <option value="alipay" <if condition="'alipay' eq $pay_code">selected</if>>支付宝支付</option>
+                            <option value="weixin" <if condition="'weixin' eq $pay_code">selected</if>>微信支付</option>
+                            <option value="miniAppPay" <if condition="'miniAppPay' eq $pay_code">selected</if>>微信小程序支付</option>
+                            <option value="unionpay" <if condition="'unionpay' eq $pay_code">selected</if>>银联在线支付</option>
+                            <option value="tenpay" <if condition="'tenpay' eq $pay_code">selected</if>>PC端财付通</option>
+                        </select>
+                    </div>
+                    <div class="sDiv2">
+                        <select name="shipping_status" class="select  sDiv3">
+                            <option value="-1" <if condition="$shipping_status eq -1">selected</if>>发货状态</option>
+                            <foreach name="$Think.config.SHIPPING_STATUS" key="sk" item="svo">
+                                <option value="{$sk}" <if condition="$shipping_status eq $sk">selected</if>>{$svo}</option>
+                            </foreach>
+                        </select>
+                    </div>
+                    <div class="sDiv2">
+                        <select name="order_status" class="select sDiv3">
+                            <option value="-1" <if condition="$order_status eq -1">selected</if>>订单状态</option>
+                            <volist name="$Think.config.ORDER_STATUS" id="v" key="k">
+                                <option value="{$k-1}" <if condition="$order_status eq $k-1">selected</if>>{$v}</option>
+                            </volist>
+                        </select>
+                    </div>
+                    <div class="sDiv2">
+                        <select name="key_type" class="select">
+                            <option value="consignee">收货人</option>
+                            <option value="order_sn">订单编号</option>
+                        </select>
+                    </div>
+                    <div class="sDiv2">
+                        <input type="text" size="30" name="keywords" class="qsbox" placeholder="搜索相关数据...">
+                    </div>
+                    <div class="sDiv2">
+                         <input type="button" onclick="$('#search-form2').attr('action', '{:U('Team/order_list')}');$('#search-form2').submit();" class="btn" value="搜索">
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="hDiv">
+            <div class="hDivBox" id="ajax_return">
+                <table cellspacing="0" cellpadding="0">
+                    <thead>
+                    <tr>
+                        <th class="sign" axis="col0">
+                            <div style="width: 24px;"><i class="ico-check"></i></div>
+                        </th>
+                        <th align="left" axis="col3" class="">
+                            <div style="text-align: left; width: 130px;" class="">订单编号</div>
+                        </th>
+                        <th align="left" axis="col4" class="">
+                            <div style="text-align: left; width: 120px;" class="">收货人(名字:电话)</div>
+                        </th>
+                        <th align="center" axis="col5" class="">
+                            <div style="text-align: center; width: 60px;" class="">总金额</div>
+                        </th>
+                        <th align="center" axis="col6" class="">
+                            <div style="text-align: center; width: 60px;" class="">应付金额</div>
+                        </th>
+                        <th align="left" axis="col3" class="">
+                            <div style="text-align: center; width: 50px;" class="">团员</div>
+                        </th>
+                        <th align="center" axis="col6" class="">
+                            <div style="text-align: center; width: 60px;" class="">拼团状态</div>
+                        </th>
+                        <th align="center" axis="col6" class="">
+                            <div style="text-align: center; width: 60px;" class="">订单状态</div>
+                        </th>
+                        <th align="center" axis="col6" class="">
+                            <div style="text-align: center; width: 60px;" class="">支付状态</div>
+                        </th>
+                        <th align="center" axis="col6" class="">
+                            <div style="text-align: center; width: 60px;" class="">发货状态</div>
+                        </th>
+                        <th align="center" axis="col6" class="">
+                            <div style="text-align: center; width: 60px;" class="">支付方式</div>
+                        </th>
+                        <th align="center" axis="col6" class="">
+                            <div style="text-align: center; width: 60px;" class="">配送方式</div>
+                        </th>
+                        <th align="center" axis="col6" class="">
+                            <div style="text-align: center; width: 120px;" class="">下单时间</div>
+                        </th>
+                        <th align="center" axis="col1" class="handle">
+                            <div style="text-align: center; width: 100px;">操作</div>
+                        </th>
+                        <th style="width:100%" axis="col7">
+                            <div></div>
+                        </th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        <div class="tDiv">
+	      <div class="tDiv2">
+	        <div class="fbutton"> <a href="javascript:exportReport()">
+	          <div class="add" title="选定行数据导出excel文件,如果不选中行，将导出列表所有数据">
+	            <span><i class="fa fa-plus"></i>导出数据</span>
+	          </div>
+	          </a> 
+	          </div>
+	      </div>
+	      <div style="clear:both"></div>
+	    </div>
+        <div class="bDiv" style="height: auto;">
+            <div id="flexigrid">
+                <table>
+                    <tbody>
+                    <empty name="orderList">
+                        <tr data-id="0">
+                            <td class="no-data" align="center" axis="col0" colspan="50">
+                                <i class="fa fa-exclamation-circle"></i>没有符合条件的记录
+                            </td>
+                        </tr>
+                    <else/>
+                        <volist name="orderList" id="order">
+                            <tr data-order-id="{$order.order_id}">
+                                <td class="sign" axis="col0">
+                                    <div style="width: 24px;"><i class="ico-check"></i></div>
+                                </td>
+                                <td align="left"  axis="col3" class="">
+                                    <div style="text-align: left; width: 130px;" class="">{$order.order_sn}</div>
+                                </td>
+                                <td align="left" axis="col4" class="">
+                                    <div style="text-align: left; width: 120px;" class="">{$order.consignee}:{$order.mobile}</div>
+                                </td>
+                                <td align="center" axis="col5" class="">
+                                    <div style="text-align: center; width: 60px;" class="">{$order.goods_price}</div>
+                                </td>
+                                <td align="center" axis="col6" class="">
+                                    <div style="text-align: center; width: 60px;" class="">{$order.order_amount}</div>
+                                </td>
+                                <td align="left" axis="col3" class="">
+                                    <div style="text-align: center; width: 50px;" class="">
+                                        <empty name="order[team_found]">
+                                            团员
+                                            <else/>
+                                            拼主
+                                        </empty>
+                                    </div>
+                                </td>
+                                <td align="center" axis="col6" class="">
+                                    <div style="text-align: center; width: 60px;" class="">
+                                        <empty name="order[team_found]">
+                                            {$order[team_follow][status_desc]}
+                                            <else/>
+                                            {$order[team_found][status_desc]}
+                                        </empty>
+                                    </div>
+                                </td>
+                                <td align="center" axis="col6" class="">
+                                    <div style="text-align: center; width: 60px;" class="">{$order.order_status_detail}</div>
+                                </td>
+                                <td align="center" axis="col6" class="">
+                                    <div style="text-align: center; width: 60px;" class="">{$order.pay_status_detail}</div>
+                                </td>
+                                <td align="center" axis="col6" class="">
+                                    <div style="text-align: center; width: 60px;" class="">{$order.shipping_status_detail}</div>
+                                </td>
+                                <td align="center" axis="col6" class="">
+                                    <div style="text-align: center; width: 60px;" class="">{$order.pay_name|default='其他方式'}</div>
+                                </td>
+                                <td align="center" axis="col6" class="">
+                                    <div style="text-align: center; width: 60px;" class="">{$order.shipping_name}</div>
+                                </td>
+                                <td align="center" axis="col6" class="">
+                                    <div style="text-align: center; width: 120px;" class="">{:date('Y-m-d H:i:s',$order.add_time)}</div>
+                                </td>
+                                <td align="center" axis="col1" class="handle">
+                                    <div style="text-align: center; ">
+                                        <a class="btn green" href="{:U('Admin/order/detail',array('order_id'=>$order['order_id']))}"><i class="fa fa-list-alt"></i>查看订单</a>
+                                        <a class="btn green"  href="{:U('Admin/Team/info',array('team_id'=>$order[teamActivity][team_id]))}"><i class="fa fa-search"></i>拼团活动</a>
+                                        <if condition="$order['team_found']['found_id'] gt 0">
+                                            <a class="btn green"  href="{:U('Admin/Team/order_list',array('found_id'=>$order['team_found']['found_id']))}"><i class="fa fa-list-alt"></i>拼团成员</a>
+                                            <else/>
+                                            <a class="btn green"  href="{:U('Admin/Team/order_list',array('found_id'=>$order['team_follow']['found_id']))}"><i class="fa fa-list-alt"></i>拼团成员</a>
+                                        </if>
+                                    </div>
+                                </td>
+                                <td align="" class="" style="width: 100%;">
+                                    <div>&nbsp;</div>
+                                </td>
+                            </tr>
+                        </volist>
+                    </empty>
+                    </tbody>
+                </table>
+                <div class="row">
+                    <div class="col-sm-6 text-left"></div>
+                    <div class="col-sm-6 text-right">{$page->show()}</div>
+                </div>
+            </div>
+            <div class="iDiv" style="display: none;"></div>
+        </div>
+        <!--分页位置-->
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('#start_time').layDate();
+        $('#end_time').layDate();
+        
+		$('.ico-check ' , '.hDivBox').click(function(){
+			$('tr' ,'.hDivBox').toggleClass('trSelected' , function(index,currentclass){
+	    		var hasClass = $(this).hasClass('trSelected');
+	    		$('tr' , '#flexigrid').each(function(){
+	    			if(hasClass){
+	    				$(this).addClass('trSelected');
+	    			}else{
+	    				$(this).removeClass('trSelected');
+	    			}
+	    		});  
+	    	});
+		});
+    });
+    // 点击刷新数据
+    $('.fa-refresh').click(function () {
+        location.href = location.href;
+    });
+	$('#flexigrid > table>tbody >tr').click(function(){
+		$(this).toggleClass('trSelected');
+	});
+	function exportReport(){
+        var selected_ids = '';
+        $('.trSelected' , '#flexigrid').each(function(i){
+            selected_ids += $(this).data('order-id')+',';
+        });
+        if(selected_ids != ''){
+            $('input[name="order_ids"]').val(selected_ids.substring(0,selected_ids.length-1));
+        }
+        $('#search-form2').attr('action', '{:U('Order/export_order')}');
+		$('#search-form2').submit();
+	}
+</script>
+</body>
+</html>

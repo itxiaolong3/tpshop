@@ -1,0 +1,64 @@
+<include file="public/header" title="中奖名单" body="g7"/>
+<link rel="stylesheet" type="text/css" href="__STATIC__/css/action.css"/>
+		<div class="classreturn loginsignup">
+			<div class="content">
+				<div class="ds-in-bl return">
+					<a href="javascript:history.back(-1)"><img src="__STATIC__/images/return.png" alt="返回"></a>
+				</div>
+				<div class="ds-in-bl search center">
+					<span>中奖名单</span>
+				</div>
+				<!--<div class="ds-in-bl menu">
+					<a href="javascript:void(0);"><img class="shareimg" src="../images/share.png" alt="分享"></a>
+				</div>-->
+			</div>
+		</div>
+		<div class="stakwind p">
+			<div class="maleri30">
+				<div class="fl kaj-i">
+					<a href="{:U('Mobile/Team/info',['team_id'=>$team[team_id],'goods_id'=>$team[goods_id]])}"><img src="{$team.goods_id|goods_thum_images=400,400}"/></a>
+				</div>
+				<div class="fr kaj-n">
+					<p class="similar-product-text"><a href="{:U('Mobile/Team/info',['team_id'=>$team[team_id],'goods_id'=>$team[goods_id]])}">{$team.goods_name}</a></p>
+					<!--<div class="kaj-pri">-->
+						<!--<p class="new"><span>￥</span><span>{$team[goods][shop_price]}</span></p>-->
+						<!--<p class="old"><span>￥</span><span>{$team[goods][shop_price]}</span></p>-->
+					<!--</div>-->
+					<div class="kaj-kj">
+						<if condition="$team[is_lottery] eq 1">
+							<a href="javascript:void (0)">已开奖</a>
+							<else/>
+							<a href="{:U('Mobile/Team/info',['team_id'=>$team[team_id],'goods_id'=>$team[goods_id]])}">未开奖</a>
+						</if>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="wincup p ma-to-20">
+			<!--
+			<div class="w_t">
+				<img src="../images/wcup.png"/>
+				<span>一等奖名单</span>
+				<a href="">点击查看代金券</a>
+			</div>
+			-->
+			<div class="w_b">
+				<ul>
+					<li><span>幸运儿</span></li>
+					<li><span>订单编号</span></li>
+					<li><span>电话</span></li>
+				</ul>
+			</div>
+		</div>
+		<volist name="team_lottery" id="lottery">
+			<div class="w_b wb-list">
+				<ul>
+					<li><span>{$lottery.nickname}</span></li>
+					<li><span>{$lottery.order_sn}</span></li>
+					<li><span>{$lottery.mobile|mobile_hide}</span></li>
+				</ul>
+				<img class="rhew" src="{$lottery.head_pic}"/>
+			</div>
+		</volist>
+	</body>
+</html>

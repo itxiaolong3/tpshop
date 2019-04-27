@@ -1,0 +1,1001 @@
+<include file="public/header" title="支付,提交订单" body=""/>
+<include file="public/header_nav" title="支付,提交订单" href="javascript:history.back(-1)"/>
+<script src="__PUBLIC__/js/md5.min.js"></script>
+<style>
+    div.cuptyp{
+        box-sizing: content-box;
+        border: 2px solid transparent;
+    }
+    div.checked {
+        border: 2px solid #e23435;
+    }
+    .phoneclck{
+        /*部分手机不能点击问题*/
+        cursor: pointer
+    }
+    .plus span.disable{
+        cursor: default;
+        color: #e9e9e9;
+    }
+</style>
+<div id="wrapBody">
+    <div id="pagePay">
+        <form method="post" action="{:U('Mobile/Payment/getCode')}" name="form" id="form">
+            <input type="hidden" name="order_id" value="{$order.order_id}"/>
+            <input type="hidden" name="coupon_id" autocomplete="off" value="">
+            <input type="hidden" name="address_id" autocomplete="off" value="{$address.address_id}"/>
+            <input type="hidden" name="pay_points" value="" autocomplete="off">
+            <input type="hidden" name="user_money" value="" autocomplete="off">
+            <input type="hidden" name="auth_code" value="{$Think.config.AUTH_CODE}"/>
+            <input type="hidden" disabled="disabled" name="total_amount" value="{$order.total_amount}"/>
+            <input type="hidden" disabled="disabled" name="order_amount" value="{$order.order_amount}"/>
+            <input type="hidden" disabled="disabled" name="goods_id" value="{$order_goods.goods_id}"/>
+            <input type="hidden" disabled="disabled" name="team_id" value="{$order.prom_id}"/>
+            <input type="hidden" disabled="disabled" name="province" autocomplete="off" value="{$order.province}"/>
+                <empty name="order['province']">
+                    <div class="edit_gtfix" id="addressDefault">
+                        <div class="namephone fl">
+                            <div class="top">
+                                <div class="le fl" id="default_address_consignee"></div>
+                                <div class="lr fl" id="default_address_mobile"></div>
+                            </div>
+                            <div class="bot">
+                                <i class="dwgp"></i>
+                                <span id="default_address_text"></span>
+                            </div>
+                        </div>
+                        <div class="fr youjter">
+                            <i class="Mright"></i>
+                        </div>
+                        <div class="ttrebu">
+                            <img src="__STATIC__/images/tt.png"/>
+                        </div>
+                    </div>
+                <else/>
+                    <div class="edit_gtfix" style="background-color: #f2f0f0">
+                        <div class="namephone fl">
+                            <div class="top">
+                                <div class="le fl">{$order.consignee}</div>
+                                <div class="lr fl">{$order.mobile}</div>
+                            </div>
+                            <div class="bot">
+                                <i class="dwgp"></i>
+                                <span>{$order.address}</span>
+                            </div>
+                        </div>
+                        <div class="ttrebu">
+                            <img src="__STATIC__/images/tt.png"/>
+                        </div>
+                    </div>
+                </empty>
+            <!--商品信息-s-->
+            <div class="orders-list">
+                <!--遍历店铺-->
+                    <div class="orders-item">
+                        <!--遍历商品-->
+                        <div class="goods-list">
+                                <div class="goods-item p">
+                                    <div class="goods-pic"><img src="{$order_goods[goods_id]|goods_thum_images=100,100}" /></div>
+                                    <div class="goods-cont">
+                                        <h3 class="goods-title">{$order_goods[goods_name]}</h3>
+                                        <div class="prices">
+                                            <p class="sc_pri fl goods-price"><span class="m">￥</span><span>{$order_goods[member_goods_price]}</span></p>
+                                            <div class="plus fr get_mp">
+                                                <if condition="$order[total_amount] eq $order[order_amount]">
+                                                    <span class="mp_minous">-</span>
+                                                    <span class="mp_mp"><input name="goods_num" type="text" autocomplete="off" value="{$order_goods[goods_num]}" onkeyup="this.value=this.value.replace(/[^\d]/g,'')"></span>
+                                                    <span class="mp_plus">+</span>
+                                                <else/>
+                                                    <span class="mp_minous disable">-</span>
+                                                    <span class="mp_mp"><input name="goods_num" type="text" value="{$order_goods[goods_num]}" readonly></span>
+                                                    <span class="mp_plus disable">+</span>
+                                                </if>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
+                        <!--遍历商品-->
+                    </div>
+            </div>
+            <!--商品信息-e-->
+            <!--使用余额，积分-s-->
+            <div class="information_dr">
+                <div class="maleri30">
+                    <!--使用余额-s-->
+                    <div class="invoice list7">
+                        <div class="myorder p">
+                            <div class="content30">
+                                <a class="remain" href="javascript:void(0);">
+                                    <div class="order">
+                                        <div class="fl">
+                                            <span>使用余额</span>
+
+                                            <p>余额：￥{$user['user_money']}</p>
+                                        </div>
+                                        <div class="fr z-toggle-btn">
+                                            <label class="z-toggle z-toggle-royal">
+                                                <input type="checkbox" id="user_money" value="{$user['user_money']}"/>
+
+                                                <div class="z-tarck">
+                                                    <div class="z-handle">
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <!--使用余额-e-->
+                    <if condition="$order.integral_money eq 0">
+                    <div class="invoice list7">
+                        <div class="myorder p">
+                            <div class="content30">
+                                <a class="remain" href="javascript:void(0);">
+                                    <div class="order">
+                                        <div class="fl">
+                                            <span>使用积分</span>
+
+                                            <p>积分：{$user['pay_points']}<i>可抵扣:{$user['pay_points']|pay_point_money|round=2}元</i></p>
+                                        </div>
+                                        <div class="fr z-toggle-btn">
+                                            <label class="z-toggle z-toggle-royal">
+                                                <input type="checkbox" id="pay_points" value="{$user['pay_points']}"/>
+
+                                                <div class="z-tarck">
+                                                    <div class="z-handle">
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    </if>
+                    <div id="balance-li" class="invoice list7">
+                        <div class="myorder p" id="paypwd_view" style="display: none">
+                            <div class="content30">
+                                <label>
+                                    <div class="incorise">
+                                        <span>支付密码：</span>
+                                        <input type="hidden" name="pay_pwd"/>
+                                        <!--解决google浏览器识别text+password,自动填充已保存的账户密码-->
+                                        <input type="password" id="pay_pwd" placeholder="请输入支付密码"/>
+                                        <if condition="empty($user['paypwd'])">
+                                            <a class="go-set-password" href="{:U('Mobile/User/paypwd')}">去设置支付密码?</a>
+                                        </if>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--使用余额，积分-e-->
+            <!--优惠券-s-->
+            <if condition="$order[coupon_price] elt 0">
+                <div class="information_dr ma-to-20" id="coupon_div">
+                    <div class="maleri30">
+                        <div class="invoice list7">
+                            <div class="myorder p">
+                                <div class="content30 coupon_click" style="cursor:pointer">
+                                    <div class="order">
+                                        <div class="fl">
+                                            <span>优惠券</span>
+                                            <span class="couponssl"><em id="coupon_count">{$order_can_use_coupon_num}</em>张可用</span>
+                                        </div>
+                                        <div class="fr">
+                                            <span class="setalit counpn_name" id="coupon_span">未使用</span>
+                                            <i class="Mright"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </if>
+            <!--优惠券-e-->
+            <!--卖家留言-s-->
+            <div class="customer-messa">
+                <div class="maleri30">
+                    <p>用户备注（50字）</p>
+                    <textarea class="tapassa" name="user_note" id="user_note" maxlength="50" placeholder="选填">{$order['user_note']}</textarea>
+                    <span class="xianzd"><em id="zero">50</em>/50</span>
+                </div>
+            </div>
+            <!--卖家留言-e-->
+            <div class="ddmoney">
+                <div class="maleri30">
+                    <span class="fl">订单号</span>
+                    <span class="fr">
+                        {$order['order_sn']}
+                    </span>
+                </div>
+            </div>
+            <div class="ddmoney">
+                <div class="maleri30">
+                    <span class="fl">商品总价</span>
+                    <span class="fr" id="goods_price_txt">￥{$order['goods_price']}元</span>
+                </div>
+            </div>
+            <div class="ddmoney">
+                <div class="maleri30">
+                    <span class="fl">运费</span>
+                    <span class="fr" id="shipping_price_txt">￥{$order['shipping_price']}元</span>
+                </div>
+            </div>
+            <div class="ddmoney">
+                <div class="maleri30">
+                    <span class="fl">订单总价</span>
+                    <span class="fr" id="total_amount_txt">￥{$order['total_amount']}元</span>
+                </div>
+            </div>
+            <div class="ddmoney">
+                <div class="maleri30">
+                    <span class="fl">优惠券</span>
+                    <span class="fr" id="coupon_price_txt">-￥{$order['coupon_price']}元</span>
+                </div>
+            </div>
+            <div class="ddmoney">
+                <div class="maleri30">
+                    <span class="fl">余额</span>
+                    <span class="fr" id="user_money_txt">-￥{$order['user_money']}元</span>
+                </div>
+            </div>
+            <div class="ddmoney">
+                <div class="maleri30">
+                    <span class="fl">积分</span>
+                    <span class="fr" id="integral_money_txt">-￥{$order['integral_money']}元</span>
+                </div>
+            </div>
+            <div class="ddmoney">
+                <div class="maleri30">
+                    <span class="fl">应付金额</span>
+                    <span class="fr" id="order_amount_txt">￥{$order['order_amount']}元</span>
+                </div>
+            </div>
+            <!--其他支付方式-s-->
+            <div class="paylist">
+                <div class="myorder debit otherpay p">
+                    <div class="content30">
+                        <a href="javascript:void(0);">
+                            <div class="order">
+                                <div class="fl">
+                                    <span>支付方式</span>
+                                </div>
+                                <div class="fr">
+                                    <!--<i class="Mright xjt"></i>-->
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="pay-list-4 p">
+                <div class="maleri30">
+                    <ul>
+                        <foreach name="paymentList" key="k" item="v">
+                            <li onClick="changepay(this);">
+                                <lable>
+                                    <div class="radio fl">
+                                    <span class="che {$k}">
+                                        <i>
+                                            <input type="radio" value="pay_code={$v['code']}" class="c_checkbox_t" name="pay_radio" style="display:none;"/>
+                                        </i>
+                                    </span>
+                                    </div>
+                                    <div class="pay-list-img fl">
+                                        <img src="/plugins/{$v['type']}/{$v['code']}/{$v['icon']}"/>
+                                    </div>
+                                    <div class="pay-list-font fl">
+                                        {$v[name]}
+                                    </div>
+                                </lable>
+                            </li>
+                        </foreach>
+                    </ul>
+                </div>
+            </div>
+            <!--其他支付方式-s-->
+
+            <div class="paiton">
+                <div class="maleri30">
+                    <a class="soon" href="javascript:void(0);" onClick="pay()"><span>立即支付</span></a>
+                    <!--<p class="fr"><a href="javascript:void(0);" class="lossbq">支付失败？</a></p>-->
+                </div>
+            </div>
+            <div class="mask-filter-div" style="display: none;"></div>
+        </form>
+    </div>
+    <!--优惠券弹窗-s-->
+    <div id="couponList" style="display: none">
+        <div class="chooseebitcard newchoosecar coupongg" >
+            <div class="choose-titr">
+                <span>优惠券<em id="cl"></em></span>
+                <i class="closer" onclick="closer()"></i>
+            </div>
+            <div class="soldout_cp p" id="emptyCoupon" style="display: none">
+                <img class="nmy" src="__STATIC__/images/nmy.png" alt="" />
+                <p class="nzw">当前暂无可使用的优惠券</p>
+            </div>
+            <div class="c_uscoupon">
+                <div class="maleri30">
+                    <div class="no_get_coupon">
+                        <p class="canus">可用优惠劵<span>（以下是当前店铺可使用的优惠劵）</span></p>
+                        <div id="coupon_list_html" style="margin-top: 17px;">
+                            <volist name="userCartCouponList" id="userCoupon">
+                                <if condition="$userCoupon[coupon][able] eq 1">
+                                    <div class="cuptyp" onclick="checkCoupon(this)" data-coupon-name="{$userCoupon.coupon[name]}" data-coupon-id="{$userCoupon[id]}">
+                                        <a href="javascript:;">
+                                            <div class="le_pri">
+                                                <h1><em>￥</em>{:round($userCoupon.coupon[money],0)}</h1>
+                                                <p>满{$userCoupon.coupon[condition]}元可用</p>
+                                            </div>
+                                            <div class="ri_int">
+                                                <div class="to_two">
+                                                    <span class="ba">商城券</span>
+                                                    <span>{$userCoupon.coupon[name]}</span>
+                                                </div>
+                                                <div class="bo_two">
+                                                    <span class="cp9">有效期：{$userCoupon[coupon][use_start_time]|date='Y.m.d',###}-{$userCoupon[coupon][use_end_time]|date='Y.m.d',###}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </if>
+                            </volist>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="addressList" style="display: none">
+        <!--地址-s-->
+        <div class="dizhi-pop">
+            <div class="z-Package-hrader">
+                <i class="z-Package-icon Package-icon-close" id="address_list_back"></i>
+                <h5>选择地址</h5>
+            </div>
+            <div id="address_list_html" style="height: 19.5rem;overflow:  scroll;"></div>
+            <!--地址-e-->
+            <div class="createnew ">
+                <a id="add_address" >+新建地址</a>
+            </div>
+        </div>
+    </div>
+    <div id="addressAdd" style="display: none">
+        <div class="dizhi-pop">
+            <div class="z-Package-hrader">
+                <i class="z-Package-icon Package-icon-close" id="address_add_back"></i>
+                <h5>新建/编辑地址</h5>
+            </div>
+            <div class="floor my p edit">
+                <form id="address_form">
+                    <input type="hidden" value="" name="address_id"/>
+                    <input type="hidden" value="" name="province"/>
+                    <input type="hidden" value="" name="city"/>
+                    <input type="hidden" value="" name="district"/>
+
+                    <div class="content">
+                        <div class="floor list7">
+                            <div class="myorder p">
+                                <div class="content30">
+                                    <a href="javascript:void(0)">
+                                        <div class="order">
+                                            <div class="fl">
+                                                <span>收货人:</span>
+                                            </div>
+                                            <div class="fl">
+                                                <input type="text" value="" name="consignee"/>
+                                                <span class="err" id="err_address_consignee"></span>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="myorder p">
+                                <div class="content30">
+                                    <a href="javascript:void(0)">
+                                        <div class="order">
+                                            <div class="fl">
+                                                <span>手机号码:</span>
+                                            </div>
+                                            <div class="fl">
+                                                <input type="tel" value="" name="mobile" onkeyup="this.value=this.value.replace(/[^\d]/g,'')"/>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="myorder p">
+                                <div class="content30">
+                                    <a href="javascript:void(0)" onclick="location_address(this);">
+                                        <div class="order">
+                                            <div class="fl">
+                                                <span>所在地区: </span>
+                                            </div>
+                                            <div class="fl">
+                                                <span id="area"></span>
+                                            </div>
+                                            <div class="fr">
+                                                <i class="Mright"></i>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="myorder p">
+                                <div class="content30">
+                                    <a href="javascript:void(0)">
+                                        <div class="order">
+                                            <div class="fl">
+                                                <span>详细地址:</span>
+                                            </div>
+                                            <div class="fl">
+                                                <input type="text" value="" name="address"/>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="createnew ">
+                        <a id="address_form_confirm">确认</a>
+                    </div>
+                </form>
+            </div>
+            <!--选择地区-s-->
+            <div class="container">
+                <div class="city">
+                    <div class="screen_wi_loc">
+                        <div class="classreturn loginsignup">
+                            <div class="content">
+                                <div class="ds-in-bl return seac_retu">
+                                    <a href="javascript:void(0);" onclick="close_location();"><img src="__STATIC__/images/return.png" alt="返回"></a>
+                                </div>
+                                <div class="ds-in-bl search center">
+                                    <span class="sx_jsxz">选择地区</span>
+                                </div>
+                                <div class="ds-in-bl suce_ok">
+                                    <a href="javascript:void(0);">&nbsp;</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="province-list"></div>
+                    <div class="city-list" style="display:none"></div>
+                    <div class="area-list" style="display:none"></div>
+                </div>
+            </div>
+            <!--选择地区-e-->
+        </div>
+        <script src="__STATIC__/js/mobile-location.js"></script>
+        <script>
+            //选择地址回调
+            var address_form = $('#address_form');
+            function select_area_callback(province_name, city_name, district_name, province_id, city_id, district_id) {
+                var area = province_name + ' ' + city_name + ' ' + district_name;
+                $("#area").text(area);
+                address_form.find("input[name='province']").val(getCookie('province_id'));
+                address_form.find("input[name='city']").val(getCookie('city_id'));
+                address_form.find("input[name='district']").val(getCookie('district_id'));
+            }
+        </script>
+    </div>
+</div>
+<!--优惠券弹窗-e-->
+<script type="text/javascript">
+    //定义全局变量
+    var form = $('#form');
+    var is_shipping_able = true;
+    var shop_list_data;
+    var goods_id = $("input[name='goods_id']").val();
+    var team_id = $("input[name='team_id']").val();
+    window.addEventListener('popstate', function () {
+        panel();
+    });
+    $(document).ready(function(){
+        initDecrement();
+        var province = form.find("input[name='province']").val();
+        if(province > 0){
+            ajax_order_price();
+        }else{
+            get_address_list();
+        }
+    });
+    //各种弹窗返回上一步
+    $(function () {
+        //主页面返回上一步
+        $(document).on('click', '#back', function () {
+            window.location.href = "/index.php?m=Mobile&c=Team&a=Info&goods_id="+goods_id+"&team_id="+team_id;
+        });
+        //地址弹窗返回上一步
+        $(document).on('click', '#address_list_back,#invoice_list_back,#address_add_back,#shop_list_back,#shop_consignee_back,#map_back', function () {
+            history.back(-1);
+            panel();
+        });
+    })
+    //单页面显示
+    function panel(){
+        var hash = window.location.hash;
+        $('#wrapBody').children('div').hide();
+        if(hash == ''){
+            $('#pagePay').show();
+        }else{
+            $(hash).show();
+        }
+    }
+    //点击地址
+    $(function () {
+        //点击地址
+        $(document).on('click', '#addressDefault', function () {
+            window.location.hash = "#addressList";
+            get_address_list();
+            panel();
+        });
+        //选择地址
+        $(document).on('click', '.select_address', function () {
+            var address_id = $(this).data('address-id');
+            var mobile = $(this).data('mobile');
+            var consignee = $(this).data('consignee');
+            var address_area = $(this).data('address-area');
+            var address = $(this).data('address');
+            var longitude = $(this).data('longitude');
+            var latitude = $(this).data('latitude');
+            form.find("input[name='address_id']").val(address_id);
+            $("#default_address_mobile").empty().html(mobile);
+            $("#default_address_consignee").empty().html(consignee);
+            $("#default_address_text").empty().html(address_area + ' ' + address);
+            window.location.hash = "#";
+            panel();
+            ajax_order_price();
+        });
+        //点击新建地址
+        $(document).on('click', '#add_address', function () {
+            address_form.find("input[name='address_id']").val('');
+            address_form.find("input[name='consignee']").val('');
+            address_form.find("input[name='address']").val('');
+            address_form.find("input[name='mobile']").val('');
+            address_form.find("input[name='province']").val('');
+            address_form.find("input[name='city']").val('');
+            address_form.find("input[name='district']").val('');
+            $('#area').html('');
+            window.location.hash = "#addressAdd";
+            panel();
+        });
+        //添加地址
+        $(document).on('click', '#address_form_confirm', function () {
+            $.ajax({
+                type: "POST",
+                url: '/index.php?m=Mobile&c=User&a=addressSave',
+                data: $("#address_form").serialize(),
+                dataType: "json",
+                success: function (data) {
+                    if (data.status == 1) {
+                        $("#address_add_back").trigger('click');
+                        get_address_list(data.result.address_id);
+                    } else {
+                        var err_msg = data.msg;
+                        $.each(data.result, function (index, item) {
+                            err_msg = item;
+                        });
+                        layer.open({icon: 2, content: err_msg, time: 2});
+                    }
+                }
+            });
+        });
+        //编辑地址弹窗事件
+        $(document).on("click", '.address_item', function (e) {
+            window.location.hash = "#addressAdd";
+            panel();
+            var select_address = $(this).parent().parent().find('.select_address');
+            address_form.find("input[name='address_id']").val(select_address.data('address-id'));
+            address_form.find("input[name='consignee']").val(select_address.data('consignee'));
+            address_form.find("input[name='address']").val(select_address.data('address'));
+            address_form.find("input[name='mobile']").val(select_address.data('mobile'));
+            address_form.find("input[name='province']").val(select_address.data('province-id'));
+            address_form.find("input[name='city']").val(select_address.data('city-id'));
+            address_form.find("input[name='district']").val(select_address.data('district-id'));
+            $('#area').html(select_address.data('address-area'));
+        })
+    });
+    //获取地址列表
+    function get_address_list(select_address_id){
+        var address_id = form.find("input[name='address_id']");
+        $.ajax({
+            type: "get",
+            url: '/index.php?m=Mobile&c=User&a=ajaxAddressList',
+            dataType: "json",
+            success: function (data) {
+                var address_list_html = '';
+                for (var i = 0; i < data.length; i++) {
+                    address_list_html += '<div class="jd_listaddless p "> <div class="maleri30"> <a class="select_address address_id_'+data[i].address_id+'" ' +
+                            'data-address-id="'+data[i].address_id+'" data-mobile="'+ data[i].mobile +'" data-consignee="'+ data[i].consignee+'" ' +
+                            'data-address-area="'+ data[i].address_area+'" data-address="'+ data[i].address+'" data-province-id="'+data[i].province+'"  ' +
+                            'data-city-id="'+data[i].city+'" data-district-id="'+data[i].district+'" data-town-id="'+data[i].twon+'" data-longitude="'+data[i].longitude+'" ' +
+                            'data-latitude="'+data[i].latitude+'"  > <div class="name fl"> <h1>'+data[i].consignee+'</h1> </div> <div class="numberaddress fl"> ' +
+                            '<span class="number"><i class="number-dh">电话：</i>'+ data[i].mobile +'</span> <span class="similars">' + data[i].address_area + ' ' + data[i].address +'</span> ' +
+                            '</div> </a> <div class="editdiv fl"> <a class="address_item"> <i class="eedit"></i> </a> </div> </div> </div>';
+                }
+                $("#address_list_html").empty().html(address_list_html);
+                if(data.length == 0){
+                    $("#add_address").trigger('click');
+                }
+                if(data.length > 0 && address_id.val() == ''){
+                    $("#address_list_html").find('.select_address').eq(0).trigger('click');
+                }
+                if(select_address_id > 0){
+                    $("#address_list_html").find('.address_id_'+select_address_id).trigger('click');
+                }
+            }
+        });
+    }
+    //上门自提按钮显示
+    function door_to_door_hide_or_show(){
+        var door_to_door_div = $('#door_to_door_div');
+        if(is_shipping_able == true && shop_list_data.length > 0){
+            door_to_door_div.show();
+        }else{
+            door_to_door_div.hide();
+        }
+    }
+    function close_location(){
+        var province_div = $('.province-list');
+        var city_div = $('.city-list');
+        var area_div = $('.area-list');
+        if(area_div.is(":hidden") == false){
+            area_div.hide();
+            city_div.show();
+            province_div.hide();
+            return;
+        }
+        if(city_div.is(":hidden") == false){
+            area_div.hide();
+            city_div.hide();
+            province_div.show();
+            return;
+        }
+        if(province_div.is(":hidden") == false){
+            area_div.hide();
+            city_div.hide();
+            $('.container').animate({width: '0', opacity: 'show'}, 'normal',function(){
+                $('.container').hide();
+            });
+            undercover();
+            $('.mask-filter-div').css('z-index','inherit');
+            return;
+        }
+    }
+    function location_address(e){
+        $('.container').animate({width: '14.4rem', opacity: 'show'}, 'normal',function(){
+            $('.container').show();
+        });
+        if(!$('.container').is(":hidden")){
+            $('body').css('overflow','hidden')
+            cover();
+            $('.mask-filter-div').css('z-index','9999');
+        }
+    }
+    $(function () {
+        //默认选中第一个
+        $('.pay-list-4 div ul li:first').find('.che').addClass('check_t').end().find(':radio').attr('checked', true);
+    })
+    //切换支付方式
+    function changepay(obj) {
+        $(obj).find('.che').addClass('check_t').parents('li').siblings('li').find('.che').removeClass('check_t');
+        //改变中状态
+        if ($(obj).find('.che').hasClass('check_t')) {
+            //选中
+            $(obj).find(':radio').attr('checked', true);
+            $(obj).siblings('li').find(':radio').removeAttr('checked');
+        } else {
+            //取消选中
+            $(obj).find(':radio').removeAttr('checked');
+        }
+
+    }
+
+    function pay() {
+        var order_id = form.find("input[name=order_id]").val();
+        $.ajax({
+            type : "POST",
+            url:"{:U('Mobile/Team/getOrderInfo')}",
+            dataType:'json',
+            data: form.serialize()+ "&act=submit_order",
+            success: function(data){
+                if(data.status == 1){
+                    if(data.result.order_amount == 0){
+                        //应
+                        layer.open({content:data.msg, time:2,end:function(){
+                            location.href ='/index.php?m=mobile&c=Order&a=team_detail&order_id='+order_id;
+                        }});
+                    }else{
+                        form.submit();
+                    }
+                }else{
+                    layer.open({
+                        content: data.msg, time: 2, end: function () {
+                            if (data.result.url) {
+                                window.location.href = data.result.url;
+                            }
+                        }
+                    });
+                    return false;
+                }
+            }
+        });
+    }
+
+    //支付方式
+    $(function () {
+        //使用银行卡
+        $('.usedeb').click(function () {
+            cover();
+            $('.chooseebitcard').show();
+        })
+        $('.gb-close').click(function () {
+            undercover();
+            $('.chooseebitcard').hide();
+        })
+        //选择银行卡
+        $('.card').click(function () {
+            $(this).find('.che').toggleClass('check_t').parents('.card').siblings().find('.che').removeClass('check_t');
+        })
+        //支付失败弹窗
+        $('.lossbq').click(function () {
+            cover();
+            $('.losepay').show();
+        })
+        $('.qx-rebd .ax').click(function () {
+            undercover();
+            $('.losepay').hide();
+        })
+        $('.are').click(function () {
+            $('.losepay').hide();
+            $('.chooseebitcard').show();
+        })
+    })
+
+    //优惠券
+    $(function(){
+        $(document).on('click','.coupon_click',function(){
+            window.location.hash = "#couponList";
+            panel();
+            cover();
+            $('.coupongg').show();
+            $('html,body').addClass('ovfHiden');
+            $('.cuptyp').show();
+            var coupon_length = $(".cuptyp").length;
+            if(coupon_length == 0){
+                $('.soldout_cp').show();
+                $('.no_get_coupon').hide();
+            }else{
+                $('.no_get_coupon').show();
+                $('.soldout_cp').hide();
+            }
+        })
+    })
+    //关闭优惠券弹窗
+    function closer(){
+        window.location.hash = "#";
+        panel();
+        undercover();
+        $('.chooseebitcard').hide();
+        $('html,body').removeClass('ovfHiden');
+    }
+
+    //选择优惠券
+    function checkCoupon(obj) {
+        $(obj).toggleClass('checked'); //选中样式
+        if ($(obj).hasClass('checked')) {
+            var coupon_name = $(obj).data('coupon-name');
+            var coupon_id = $(obj).data('coupon-id');
+            $('#coupon_span').text(coupon_name);
+            $("input[name='coupon_id']").val(coupon_id);
+        } else {
+            $("input[name='coupon_id']").val('');
+            $('#coupon_span').text('未使用');
+        }
+        ajax_order_price();
+        closer();
+    }
+
+    //商品数量加减
+    $(function(){
+        //加数量
+        $('.mp_minous').click(function(){
+            if(!$(this).hasClass('disable')){
+                var inputs = $("input[name='goods_num']");
+                var val = inputs.val();
+                if(val>0){
+                    val--;
+                }
+                inputs.val(val);
+                inputs.attr('value',val);
+                initDecrement();
+                ajax_order_price();
+            }
+        })
+        //减数量
+        $('.mp_plus').click(function(){
+            if(!$(this).hasClass('disable')) {
+                var inputs = $("input[name='goods_num']");
+                var val = inputs.val();
+                val++;
+                inputs.val(val);
+                inputs.attr('value', val);
+                initDecrement();
+                ajax_order_price();
+            }
+        })
+        $(document).on("blur", '.get_mp input', function (e) {
+            var changeQuantityNum = parseInt($(this).val());
+            if(changeQuantityNum <= 0){
+                layer.open({
+                    content: '商品数量必须大于0'
+                    ,btn: '确定'
+                });
+                $(this).val($(this).attr('value'));
+            }else{
+                $(this).attr('value', changeQuantityNum);
+            }
+            initDecrement();
+            ajax_order_price();
+        })
+    })
+    //更改购买数量对减购买数量按钮的操作
+    function initDecrement(){
+        var inputs = $("input[name='goods_num']");
+        var total_amount = $("input[name='total_amount']");
+        var order_amount = $("input[name='order_amount']");
+        if(inputs.val() == 1){
+            inputs.parents('.get_mp').find('.mp_minous').addClass('disable');
+        }
+        if(inputs.val() > 1){
+            if(total_amount.val() != order_amount.val()){
+                inputs.parents('.get_mp').find('.mp_minous').addClass('disable');
+            }else{
+                inputs.parents('.get_mp').find('.mp_minous').removeClass('disable');
+            }
+        }
+    }
+
+    //获取订单信息
+    function ajax_order_price(){
+        var order_id = $("input[name='order_id']").val();
+        $.ajax({
+            type: "POST",
+            url: "{:U('Mobile/Team/getOrderInfo')}",//+tab,
+            dataType: 'json',
+            data: $('#form').serialize(),
+            success: function (data) {
+                is_shipping_able = true;
+                if(data.status != 1){
+                    layer.open({content:data.msg, time: 2,end:function(){
+                        if(data.hasOwnProperty('code')){
+                            if(data.code == 301){
+                                is_shipping_able = false;
+                                door_to_door_hide_or_show();
+                            }
+                            if(data.code == 808){
+                                window.location.href = "/index.php?m=Mobile&c=Order&a=order_list";
+                            }
+                            if(data.code == 810){
+                                window.location.href = "/index.php?m=Mobile&c=Order&a=order_detail&id=" + order_id;
+                            }
+                        }
+                    }});
+                    return false;
+                }
+                if(!$.isEmptyObject(data.result.order)){
+                    var order = data.result.order;
+                    $('#total_amount_txt').html('￥'+ order.total_amount+'元');
+                    $('#shipping_price_txt').html('￥'+ order.shipping_price+'元');
+                    $('#coupon_price_txt').html('-￥'+ order.coupon_price+'元');
+                    $('#user_money_txt').html('-￥'+ order.user_money+'元');
+                    $('#integral_money_txt').html('-￥'+ order.integral_money+'元');
+                    $('#order_amount_txt').html('￥'+ order.order_amount+'元');
+                    $('#goods_price_txt').html('￥'+ order.goods_price+'元');
+                }
+                set_coupon_list(data.result.couponList);
+            }
+        });
+    }
+
+    //使用积分，余额，兑换优惠券
+    //积分余额密码
+    $(function () {
+        //选择使用积分和余额
+        $(document).on('click', '#pay_points,#user_money', function () {
+            pay_pwd_view();
+            ajax_order_price();
+        });
+        //支付密码点击事件
+        $(document).on('blur', '#pay_pwd', function () {
+            var pay_pwd = md5($("input[name='auth_code']").val() + $.trim($('#pay_pwd').val()));
+            $('input[name="pay_pwd"]').val(pay_pwd);
+        })
+    })
+    //支付密码是否显示
+    function pay_pwd_view() {
+        var user_money = $('#user_money');
+        var pay_points = $('#pay_points');
+        if (user_money.is(':checked')) {
+            $("input[name='user_money']").val(user_money.val());
+        }else{
+            $("input[name='user_money']").val('');
+        }
+        if (pay_points.is(':checked')) {
+            $("input[name='pay_points']").val(pay_points.val());
+        }else{
+            $("input[name='pay_points']").val('');
+        }
+        if (user_money.is(':checked') || pay_points.is(':checked')) {
+            $('#paypwd_view').show();
+        } else {
+            $('#paypwd_view').hide();
+        }
+    }
+
+    //设置优惠券列表
+    function set_coupon_list(coupon_list){
+        if(!$.isEmptyObject(coupon_list)){
+            var coupon_id = $("input[name='coupon_id']").val();
+            var coupon_html = '';
+            var use_start_time = '';
+            var use_end_time = '';
+            var newDate = new Date();
+            var coupon_ids = [];
+            var coupon_count = 0;
+            for(var i = 0;i < coupon_list.length;i++){
+                var check_html = '';
+                if(coupon_list[i].coupon.able == 1){
+                    coupon_ids.push(coupon_list[i].id);
+                    if(coupon_list[i].id == coupon_id){
+                        check_html = 'checked';
+                    }
+                    newDate.setTime(parseInt(coupon_list[i].coupon.use_start_time)*1000);
+                    use_start_time =newDate.toLocaleDateString();
+                    newDate.setTime(parseInt(coupon_list[i].coupon.use_end_time)*1000);
+                    use_end_time = newDate.toLocaleDateString();
+                    coupon_html += '<div class="cuptyp '+check_html+'" onclick="checkCoupon(this)" data-coupon-name="'+coupon_list[i].coupon.name+'" data-coupon-id="'+coupon_list[i].id+'">' +
+                            ' <a href="javascript:;"> <div class="le_pri"> <h1><em>￥</em>'+coupon_list[i].coupon.money+'</h1> ' +
+                            '<p>满'+coupon_list[i].coupon.condition+'元可用</p> </div> <div class="ri_int"> <div class="to_two"> ' +
+                            '<span class="ba">商城券</span> <span>'+coupon_list[i].coupon.name+'</span> </div> <div class="bo_two"> ' +
+                            '<span class="cp9">有效期：'+use_start_time+'-'+use_end_time+'</span> </div> </div> </a> </div>';
+                    coupon_count ++;
+                }
+            }
+            $('#coupon_count').html(coupon_count);
+            $('#coupon_list_html').empty().html(coupon_html);
+            if(coupon_id > 0 && $.inArray(parseInt(coupon_id), coupon_ids) == -1){
+                $("input[name='coupon_id']").val('');
+                $('#coupon_span').text('未使用');
+                ajax_order_price(); //总价不符合使用优惠券，自调用下，重新计算价格
+            }
+        }
+        //备注输入
+        $(document).on('keyup', '#user_note', function () {
+            var len = this.value.length;
+            var limit = 50;
+            if(len > limit){
+                $(this).val($(this).val().substring(0,limit));
+            }
+            var num = limit - len;
+            if(num <= 0){
+                $("#zero").text(0);
+            }else{
+                $("#zero").text(num);
+            }
+        });
+    }
+</script>
+</body>
+</html>

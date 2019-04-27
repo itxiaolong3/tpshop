@@ -1,0 +1,143 @@
+<include file="public/layout" />
+ 
+<style type="text/css">
+html, body {
+	overflow: visible;
+}
+</style>  
+<body style="background-color: #FFF; overflow: auto;">
+<div id="toolTipLayer" style="position: absolute; z-index: 9999; display: none; visibility: visible; left: 95px; top: 573px;"></div>
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+  <div class="fixed-bar">
+    <div class="item-title">
+        <!--<a class="back" href="javascript:history.back();" title="微信公众号配置"><i class="fa fa-arrow-circle-o-left"></i></a>-->
+      <div class="subject">
+        <h3>微信粉丝详细信息</h3>
+        <h5>查看粉丝详细信息</h5>
+      </div>
+    </div>
+  </div>
+  <form class="form-horizontal" method="post" id="handlepost" action="">    
+    <div class="ncap-form-default">
+      <dl class="row">
+        <dt class="tit">
+          <label>用户ID</label>
+        </dt>
+        <dd class="opt">
+          <input type="text" readonly placeholder="" value="{$list.openid}" class="input-txt">
+          <span class="err"></span>
+          <p class="notic"></p>
+        </dd>
+      </dl>
+      <dl class="row">
+        <dt class="tit">
+          <label>昵称</label>
+        </dt>
+        <dd class="opt">
+          <input type="text" readonly placeholder="" value="{$list.nickname}" class="input-txt">
+          <span class="err"></span>
+          <p class="notic"></p>
+        </dd>
+      </dl>
+      <dl class="row">
+        <dt class="tit">
+          <label>性别</label>
+        </dt>
+        <dd class="opt">
+          <input type="text" readonly placeholder="" value="{$list.sex_name}" class="input-txt">
+          <span class="err"></span>
+          <p class="notic"></p>
+        </dd>
+      </dl>
+      <dl class="row">
+        <dt class="tit">
+          <label>所在地</label>
+        </dt>
+        <dd class="opt">
+          <input type="text" readonly placeholder="" value="{$list.country},{$list.province},{$list.city}" class="input-txt">
+          <span class="err"></span>
+          <p class="notic"></p>
+        </dd>
+      </dl>
+      <dl class="row">
+        <dt class="tit">
+          <label>用户语言</label>
+        </dt>
+        <dd class="opt">
+          <input type="text" readonly placeholder="" value="{$list.language}" class="input-txt">
+          <span class="err"></span>
+          <p class="notic"></p>
+        </dd>
+      </dl>
+      <dl class="row">
+        <dt class="tit">
+          <label>头像地址</label>
+        </dt>
+        <dd class="opt">
+          <p><img src="{$list.headimgurl}" width="100" height="100"></p>
+          <input type="text" readonly placeholder="" value="{$list.headimgurl}" class="input-txt">
+          <span class="err"></span>
+          <p class="notic"></p>
+        </dd>
+      </dl>
+      <dl class="row">
+        <dt class="tit">
+          <label>关注时间</label>
+        </dt>
+        <dd class="opt">
+          <input type="text" readonly placeholder="" value="{$list.subscribe_time|date='Y-m-d H:i:s',###}" class="input-txt">
+          <span class="err"></span>
+          <p class="notic"></p>
+        </dd>
+      </dl>
+      <dl class="row">
+        <dt class="tit">
+          <label>备注</label>
+        </dt>
+        <dd class="opt">
+          <input type="text" readonly placeholder="" value="{$list.remark}" class="input-txt">
+          <span class="err"></span>
+          <p class="notic"></p>
+        </dd>
+      </dl>
+      <dl class="row">
+        <dt class="tit">
+          <label>标签列表</label>
+        </dt>
+        <dd class="opt">
+          <input type="text" readonly placeholder="" value="{$list.tags|implode=',',###}" class="input-txt">
+          <span class="err"></span>
+          <p class="notic"></p>
+        </dd>
+      </dl>
+      <dl class="row">
+        <dt class="tit">
+          <label>开放平台ID</label>
+        </dt>
+        <dd class="opt">
+          <input type="text" readonly placeholder="" value="{$list.unionid}" class="input-txt">
+          <span class="err"></span>
+          <p class="notic"></p>
+        </dd>
+      </dl>
+      <dl class="row">
+        <dt class="tit">
+          <label>分组ID</label>
+        </dt>
+        <dd class="opt">
+          <input type="text" readonly placeholder="" value="{$list.groupid}" class="input-txt">
+          <span class="err"></span>
+          <p class="notic"></p>
+        </dd>
+      </dl>
+    </div>
+  </form>
+</div>
+
+<script type="text/javascript">
+
+</script>
+</body>
+</html>

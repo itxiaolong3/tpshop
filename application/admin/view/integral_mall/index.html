@@ -1,0 +1,150 @@
+<include file="public/layout"/>
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<style type="text/css">
+    .ncap-form-default dl.row{ border-color: #fff; }
+    .row{margin-bottom: 20px;}
+    .opt{margin-left: 16%; margin-top: 20px;}
+    .son{margin-left: 18%;}
+</style>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>积分商城管理</h3>
+            </div>
+        </div>
+    </div>
+    <!-- 操作说明 -->
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom"><i class="fa fa-lightbulb-o"></i>
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示"></span></div>
+        <ul>
+            <li>输入的积分必须为整数</li>
+        </ul>
+    </div>
+    <form method="post" enctype="multipart/form-data" id="handleposition" name="form1" action="{:U('IntegralMall/handle')}">
+        <input type="hidden" name="inc_type" value="integral">
+        <div class="ncap-form-default">
+            <dl class="row">
+                <dd class="opt">
+                    <span style="color: #ff0000;">*</span>   积分过期设置
+                </dd>
+                <dd class="opt">
+                    <input type="radio" name="is_integral_expired" value="1" <if condition="$confArr['is_integral_expired'] eq 1">checked</if> >    一直有效，永不过期
+                </dd>
+                <dd class="opt">
+                    <input type="radio" name="is_integral_expired" value="2" <if condition="$confArr['is_integral_expired'] eq 2">checked</if> >
+                    每年  &nbsp;
+                    <select name="month" id="month" onchange="changeData()">
+                        <for start="1" end="13" step="1">
+                            <option value="{$i}" <if condition="$confArr['expired_time'][0] eq $i">selected</if>>{$i}</option>
+                        </for>
+                    </select>
+                    &nbsp;月  &nbsp;
+                    <select name="day" id="day">
+                        <for start="1" end="32" step="1">
+                            <option value="{$i}" <if condition="$confArr['expired_time'][1] eq $i">selected</if> >{$i}</option>
+                        </for>
+                    </select>
+                    &nbsp;日，凌晨0：00，清零之前的所有积分
+                </dd>
+            </dl>
+            <!--<dl class="row">-->
+                <!--<dd class="opt">-->
+                    <!--积分赠送规则-->
+                <!--</dd>-->
+                <!--&lt;!&ndash;<dd class="opt">&ndash;&gt;-->
+                    <!--&lt;!&ndash;<input type="checkbox" name="is_consume_integral" value="1" <if condition="$confArr['is_consume_integral'] eq 1">checked</if> >      商城内每消费1元，赠送 <input type="text" name="consume_integral" size="8" value="{$confArr['consume_integral']}"> 积分&ndash;&gt;-->
+                <!--&lt;!&ndash;</dd>&ndash;&gt;-->
+                <!--<dd class="opt">-->
+                    <!--<input type="checkbox" name="is_reg_integral" value="1" <if condition="$confArr['is_reg_integral'] eq 1">checked</if>>      首次注册登录，可获得  <input type="text" name="reg_integral" size="8" value="{$confArr['reg_integral']}"> 积分-->
+                <!--</dd>-->
+                <!--<dd class="opt">-->
+                    <!--<input type="checkbox" name="invite" value="1" <if condition="$confArr['invite'] eq 1">checked</if>>      每成功邀请1位好友注册，邀请人可获得  <input type="text" name="invite_integral" size="8" value="{$confArr['invite_integral']}"> 积分，被邀请人可获得 <input type="text" name="invitee_integral" size="8" value="{$confArr['invitee_integral']}"> 积分-->
+                <!--</dd>-->
+                <!--<span class="err" id="err_give"></span>-->
+            <!--</dl>-->
+            <dl class="row">
+                <dd class="opt">
+                    <span style="color: #ff0000;">*</span>   积分交易抵扣规则
+                </dd>
+                <dd class="opt">
+                    <input type="radio" name="is_use_integral" value="0" <if condition="$confArr['is_use_integral'] eq 0">checked</if> >     不能使用积分
+                </dd>
+                <dd class="opt">
+                    <input type="radio" name="is_use_integral" value="1" <if condition="($confArr['is_use_integral'] eq 1) or ($confArr['is_use_integral'] eq '')">checked</if>>     可以使用积分
+                </dd>
+                <dd class="opt son">
+                    <input type="checkbox" name="is_point_min_limit" value="1" <if condition="$confArr['is_point_min_limit'] eq 1">checked</if>>     积分小于 <input type="text" name="point_min_limit" size="8" value="{$confArr['point_min_limit']}"> 时 ，不能使用积分
+                </dd>
+                <dd class="opt son">
+                    <input type="checkbox" name="is_point_rate" value="1"
+                    <php>
+                        if($confArr["is_point_rate"]==1 || !isset($confArr)){
+                            echo "checked";
+                        }
+                    </php>
+                    >     消费时，积分可抵扣订单金额，每 <!--<input type="text" name="point_rate" size="8" value="{$confArr['point_rate']}">-->
+                    <select name="point_rate">
+                        <option value="">请选择</option>
+                        <option value="1" <if condition="$confArr.point_rate eq 1">selected</if> >1</option>
+                        <option value="10" <if condition="($confArr.point_rate eq 10) or ($confArr.point_rate eq '')">selected</if>>10</option>
+                        <option value="100" <if condition="$confArr.point_rate eq 100">selected</if>>100</option>
+                    </select>
+                    积分抵扣1元
+                    <span style="color: #e30000">   &nbsp;&nbsp;（注：此项若不勾选，则不能使用积分）</span>
+                </dd>
+                <dd class="opt son">
+                    <input type="checkbox" name="is_point_use_percent" value="1" <if condition="$confArr.is_point_use_percent eq 1">checked</if> >     每笔消费，抵扣比例最多不能超过该笔订单应付金额的 <input type="text" name="point_use_percent" size="8" value="{$confArr['point_use_percent']}"> %
+                    <span style="color: #e30000">   &nbsp;&nbsp;（注：范围在1-100之间，没勾选则可100%抵扣）</span>
+                </dd>
+                <span class="err" id="err_deductible"></span>
+            </dl>
+            <div class="bot"><a href="JavaScript:void(0);" onclick="verifyForm()" class="ncap-btn-big ncap-btn-green" >确认提交</a></div>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+    function verifyForm(){
+        $.ajax({
+            type: "POST",
+            url: "{:U('Admin/IntegralMall/handle')}",
+            data: $('#handleposition').serialize(),
+            dataType: "json",
+            error: function () {
+                layer.alert("服务器繁忙, 请联系管理员!");
+            },
+            success: function (data) {
+                if (data.status == 1) {
+                    layer.msg(data.msg, {icon: 1, time: 2500}, function(){
+                        location.reload();
+                    });
+                } else {
+                    layer.msg(data.msg, {icon: 2,time: 2500});
+                }
+            }
+        });
+    }
+    function changeData(){
+        var month = $("#month").val();
+        var date = new Date();
+        var nowMonth = date.getMonth();
+        //当前月份大于2，则用下一年的月份
+        if(nowMonth > 2){
+            var nowYear = date.getFullYear() + 1;
+        }else {
+            var nowYear = date.getFullYear();
+        }
+        var new_date = new Date(nowYear,month,1);
+        var date_count =   (new Date(new_date.getTime()-1000*60*60*24)).getDate();
+        var dateStr = '';
+        for(var i= 1;i<=date_count;i++){
+            dateStr += '<option value="'+i+'">'+i+'</option>';
+        }
+        $("#day").html(dateStr);
+    }
+</script>
+</body>
+</html>

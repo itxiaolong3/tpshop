@@ -1,0 +1,236 @@
+/*关联手机号*/
+.tp-correlation{
+	width: 100%;
+	min-height:1080px;
+	background: url(../images/tp-pc-gl-bg.png) no-repeat;
+
+}
+.tp_correlation_warp{
+	position: absolute;
+    top: 35%;
+    left: 0;
+    width: 100%;
+}
+.tp-correlation-container{
+	width: 1000px;
+    height: auto;
+    margin: -198px auto 0;
+    box-shadow: #444 0px 0px 30px;
+    overflow: hidden;
+}
+.tp-correlation-container .correlation-left{
+	width: 430px;
+	height: 650px;
+	/*background: url(../img/tp-pc-gl-bg2.png) no-repeat;*/
+	padding: 0 35px;
+}
+.correlation-left a{
+	display: block;
+	margin-top: 36px;
+	width: 235px;
+	height: 90px;
+}
+.tp-correlation-container .container-right{
+	width: 299px;
+    height: 650px;
+    padding: 0 106px 0 95px;
+    background: #edf9ff;
+}
+ .container-right .container-head{
+	width: 92px;
+	height: 92px;
+	overflow: hidden;
+	border-radius: 50%;
+	margin: 0 auto;
+	margin-top: 50px;
+}
+ .container-right .container-head a{
+ 	display: block;
+ 	
+ }
+ .container-right .container-head img{
+ 	width: 100%;
+ 	height: auto;
+ }
+.container-right-cont{
+	text-align: center;
+}
+.container-right-cont h3{
+	font-size: 20px;
+	font-weight: 500;
+	color: #333333;
+	margin-top: 15px;
+}
+.container-yh-icon{
+	height: 25px;
+	margin-top: 10px;
+}
+.container-yh-icon i{
+	display: inline-block;
+	width: 20px;
+	height: 18px;
+	vertical-align: middle;
+}
+.container-yh-icon i img{
+	width: 100%;
+	height: 100%;
+}
+.container-yh-icon span{
+	height: 18px;
+	line-height: 18px;
+	display: inline-block;
+	margin-left: 5px;
+	vertical-align: middle;
+	font-size: 14px;
+	color: #a3a3a3;
+}
+.container-alt{
+	text-align: left;
+	font-size: 13px;
+	color: #414141;
+	padding: 0px 10px;
+	margin-top: 25px;
+}
+.container-list{
+	width: 97%;
+	padding-top: 10px;
+	margin: 0 auto;
+}
+.container-list li{
+	width: 50%;
+	height: 32px;
+	line-height: 32px;
+	font-size: 15px;
+	font-weight: 300;
+}
+.container-list li a{
+	border: 1px solid #b7b7b7;
+	border-left:0px;
+	display: block;
+	height: 32px;
+	line-height: 32px;
+}
+.container-list li:first-of-type a{
+	border-left:1px solid #b7b7b7;
+	border-bottom-left-radius:20px;
+	border-top-left-radius:20px;
+}
+.container-list li:last-of-type a{
+	border-bottom-right-radius:20px;
+	border-top-right-radius:20px;
+}
+
+.container-list li a:hover{
+	/*color: #4e4e4e;*/
+	/*background: #e02b20;*/
+	text-decoration: none;
+}
+.items-warp{
+	margin-top: 20px;
+	display: none;
+}
+.tp-list-bg{
+	color: #fff;
+	background: #e02b20;
+	border:1px solid #db261e !important;
+}
+.item_cont{
+	height: 45px;
+    line-height: 45px;
+    position: relative;
+}
+.item_cont i{
+	position: absolute;
+	top: 15px;
+    line-height: 35px;
+    left: 0px;
+    width: 18px !important;
+    height: 18px;
+    text-align: center;
+}
+.item_cont i img{
+	width: 100%;
+	vertical-align: top;
+}
+.item-inputs{
+	border-bottom: 1px solid #e6e6e6;
+	margin-bottom: 10px;
+	margin-left: 30px;
+}
+.item-inputs input{
+	border: 0px;
+    background: #edf9ff;
+    width: 180px;
+    height: 35px;
+    line-height: 35px;
+    font-size: 12px;
+    font-family: "microsoft yahei";
+}
+.item-inputs span{
+	display: inline-block;
+	font-weight: 500;
+	font-size: 14px;
+	width: 70px;
+}
+.item-input-yz input{
+	width: 100px;
+}
+.item-input-yz span{
+	width: 66px;
+}
+.correlation-submit{
+	width: 100%;
+	height: 46px;
+	background: #db261e;
+	border: 0px;
+	border-radius:20px ;
+	font-size: 16px;
+	color: #ffffff;
+	font-weight: 600;
+	cursor: pointer;
+}
+.cont15{
+	padding-top: 15px;
+}
+.tp-get-gode{
+	position: absolute;
+	right: 0px;
+	top: 0px;
+}
+.tp-get-gode .correlation-get-gode {
+	width: 80px;
+	height: 22px;
+	line-height: 19px;
+	cursor: pointer;
+	border: 1px solid #e2372d;
+	border-radius: 25px;
+	background-color:#edf9ff;
+	color:#e2372d ;
+	font-size: 12px;
+}
+.tp-chenboxs{
+	display:block;
+	margin-top: 22px;
+	padding-left: 14px;
+	height: 20px;
+	position: relative;
+}
+.tp-chenboxs input{
+	position: absolute;
+	display: inline-block;
+	height: 14px;
+	width: 14px;
+	top: 3px;
+	left:14px;
+}
+.tp-chenboxs label{
+	margin-left: 25px;
+}
+.tp-chenboxs label, a{
+    display: inline-block;
+    height: 20px;
+	line-height: 20px;
+}
+.tp-chenboxs a{
+	color: #1a76fe;
+}

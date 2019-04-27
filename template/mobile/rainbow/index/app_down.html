@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>APP下载</title>
+<script src="__STATIC__/js/jquery-3.1.1.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="__STATIC__/js/mobile-util.js" type="text/javascript" charset="utf-8"></script>
+ <style>
+a{text-decoration:none;}
+i,a,big,small,b,span,em,strong,font{ display:inline-block;font-style:normal; font-weight:normal;}
+</style>
+</head>
+<style>
+.install-app{ width:16rem; height:auto;}
+.install-app-tips{ width:100%; background-color:#333; padding:0.64rem 0; position:relative;}
+.install-app-tips span{ width:12.8rem; margin-left:1.024rem; line-height:0.768rem; font-size:0.512rem; color:#99918a; letter-spacing:2px;}
+.install-app-tips img{ position:absolute; top:0.256rem; right:0.512rem; width:1.792rem;}
+.install-app-top{ width:100%; height:6.912rem; text-align:center; margin:2rem 0; background:#fff url(__STATIC__/images/app_bg.png) center center no-repeat; background-size:6.912rem; line-height:6.912rem;}
+.install-app-top img{ width:4.8rem; vertical-align:middle;}
+.install-app-bot{ width:100%; text-align:center; color:#e23435;}
+.install-app-bot span{ font-size:1.28rem; margin-top:1.28rem;}
+.install-app-bot b{ font-size:0.64rem; margin-top:0.896rem; letter-spacing:3px;}
+.install-app-bot a{ width:12.8rem; height:1.28rem; border-radius:0.128rem; background-color:#e23435; color:#e23435; line-height:1.28rem; font-size:0.512rem; color:#fff; font-weight:bold; margin:0.768rem 0;}
+</style>
+<body>
+<div class="install-app">
+	<if condition="$showTip eq true">
+	<div class="install-app-tips">
+    	<span>点击右上角按钮，然后在弹出的菜单中，选择在浏览器中打开，即可安装</span>
+        <img src="__STATIC__/images/icon_jiantou.png">
+    </div>
+    </if>
+	<div class="install-app-top"><img src="{$tpshop_config.shop_info_store_logo|default='/public/static/images/logo/pc_home_logo_default.png'}"></div>
+    <div class="install-app-bot">
+    	<span>方便 · 快捷</span><br>
+        <b>电商服务行业领导品牌</b><br>
+        <a href="{$wap_url}">访问WAP</a>
+        <notempty name="down_url">
+        	<a href="{$down_url}">下载APP</a>
+        </notempty>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<include file="public/layout"/>
+<script type="text/javascript" src="__ROOT__/public/static/js/layer/laydate/laydate.js"></script>
+
+<body style="background-color: rgb(255, 255, 255); overflow: auto; cursor: default; -moz-user-select: inherit;">
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>自提订单核销</h3>
+                <h5>商城自提订单核销码</h5>
+            </div>
+            <ul class="tab-base nc-row">
+                <li><a class="current" href="{:U('ShopOrder/off')}"><span>核销提货码</span></a></li>
+                <li><a href="{:U('ShopOrder/index')}"><span>全部自提订单</span></a></li>
+                <li><a href="{:U('ShopOrder/index',['is_write_off'=>0])}"><span>待自提订单</span></a></li>
+                <li><a href="{:U('ShopOrder/statistic')}"><span>数据统计</span></a></li>
+            </ul>
+        </div>
+    </div>
+    <!-- 操作说明 -->
+    <div id="explanation" class="explanation" style="color: rgb(44, 188, 163); background-color: rgb(237, 251, 248); width: 99%; height: 100%;">
+        <div id="checkZoom" class="title"><i class="fa fa-lightbulb-o"></i>
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span title="收起提示" id="explanationZoom" style="display: block;"></span>
+        </div>
+        <!--<ul>-->
+        <!--<li>点击查看操作将显示订单（包括电子兑换码）的详细信息</li>-->
+        <!--<li>未付款的订单可以点击取消操作来取消订单</li>-->
+        <!--<li>如果平台已确认收到买家的付款，但系统支付状态并未变更，可以点击收到货款操作，并填写相关信息后更改订单支付状态</li>-->
+        <!--</ul>-->
+    </div>
+    <div class="flexigrid">
+        <div class="mDiv" style="height: auto;">
+            <div class="ncsc-vr-order-exchange">
+                <dl class="p" style="margin-top: 80px;">
+                    <dt class="ncsc-keyb0oard-title fl"><h6>提货核销码</h6></dt>
+                    <dd class="ncsc-vr-order-one fl p">
+                        <div class="fl" style="margin: 0 15px;">
+                            <input class="vr-code" name="shop_order_id" type="text" placeholder="请输入买家提供的提货核销码" maxlength="18"  />
+                        </div>
+                        <div class="ncsc-keyboard fl">
+                            <label class="enter-border">
+                                <input type="button" id="submit" class="enter" value="提交验证">
+                            </label>
+                        </div>
+                    </dd>
+                </dl>
+                <div class="keyboard-icon-wrap">
+                    <div class="ncsc-keyboard-icon">
+                        <i></i>
+                    </div>
+                    <div class="keyboard-icon-cont">{$shop_order_wait_off_num}个订单待自提</div>
+                    <div class="keyboard-icon-btn"><a href="{:U('ShopOrder/index',['is_write_off'=>0])}">查看</a></div>
+                </div>
+                <div class="bottom">
+
+                </div>
+            </div>
+        </div>
+
+        <!--分页位置-->
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+        //更换自提点
+        $(document).on("click", '#submit', function (e) {
+            $.ajax({
+                type: "POST",
+                url: "{:U('ShopOrder/writeOff')}",
+                dataType: 'json',
+                data: {shop_order_id: $("input[name='shop_order_id']").val()},
+                success: function (data) {
+                    if (data.status == 1) {
+                        layer.open({icon: 1, content: data.msg, time: 1000,end:function(){
+                            location.reload();
+                        }});
+                    } else {
+                        layer.open({icon: 2, content: data.msg, time: 1000});
+                    }
+                }
+            });
+        })
+    })
+</script>
+</body>
+</html>

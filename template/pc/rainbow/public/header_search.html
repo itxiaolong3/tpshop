@@ -1,0 +1,137 @@
+<div class="ecsc-logo">
+	<a href="/" class="logo">
+        <img src="{$tpshop_config['shop_info_store_logo']|default='__PUBLIC__/static/images/logo/pc_home_logo_default.png'}" style="max-width: 240px;max-height: 80px;">
+    </a>
+</div>
+<div class="ecsc-search">
+	<form id="sourch_form" name="sourch_form" method="post" action="{:U('Home/Goods/search')}" class="ecsc-search-form">
+		<div class="search-select-h">
+			<span><em>商品</em><i class="jt-x"></i></span>
+			<ul id="select-h">
+				<li rel="{:U('Home/Goods/search')}">商品</li>
+				<li rel="{:U('Home/Index/street')}">店铺</li>
+				<!--<li>服务</li>-->
+			</ul>
+			<script>
+				var select = $('#select-h');
+				$('.search-select-h').mouseenter(function(){
+					select.show();
+				});
+				$('.search-select-h').mouseleave(function(){
+					select.hide();
+				});
+				select.find('li').click(function() {
+					select.hide();
+					$('#sourch_form').attr('action',$(this).attr("rel"));
+					$('.search-select-h').find('em').text($(this).text());
+				});
+			</script>
+		</div>
+		<input autocomplete="off" name="q" id="q" type="text" value="{$Request.param.q}" placeholder="搜索关键字" class="ecsc-search-input">
+		<button type="button" class="ecsc-search-button" >搜索</button>
+		<div class="candidate p">
+			<ul id="search_list"></ul>
+		</div>
+		<script type="text/javascript">
+
+            $('.ecsc-search-button').on('click',function(){
+                if($.trim($('#q').val()) != ''){
+                    $('#sourch_form').submit();
+                }else{
+                    $('#q').css('background-color','#F6D4CB');
+                    $('#q').attr('placeholder','请输入关键字');
+                }
+            })
+			;(function($){
+				$.fn.extend({
+					donetyping: function(callback,timeout){
+						timeout = timeout || 1e3;
+						var timeoutReference,
+								doneTyping = function(el){
+									if (!timeoutReference) return;
+									timeoutReference = null;
+									callback.call(el);
+								};
+						return this.each(function(i,el){
+							var $el = $(el);
+							$el.is(':input') && $el.on('keyup keypress',function(e){
+								if (e.type=='keyup' && e.keyCode!=8) return;
+								if (timeoutReference) clearTimeout(timeoutReference);
+								timeoutReference = setTimeout(function(){
+									doneTyping(el);
+								}, timeout);
+							}).on('blur',function(){
+								doneTyping(el);
+							});
+						});
+					}
+				});
+			})(jQuery);
+
+			$('.ecsc-search-input').donetyping(function(){
+				search_key();
+			},500).focus(function(){
+				var search_key = $.trim($('#q').val());
+				if(search_key != ''){
+					$('.candidate').show();
+				}
+			});
+			$('.candidate').mouseleave(function(){
+				$(this).hide();
+			});
+
+			function searchWord(words){
+				$('#q').val(words);
+				$('#sourch_form').submit();
+			}
+			function search_key(){
+				var search_key = $.trim($('#q').val());
+				if(search_key != ''){
+					$.ajax({
+						type:'post',
+						dataType:'json',
+						data: {key: search_key},
+						url:"{:U('Home/Api/searchKey')}",
+						success:function(data){
+							if(data.status == 1){
+								var html = '';
+								$.each(data.result, function (n, value) {
+									html += '<li onclick="searchWord(\''+value.keywords+'\');"><div class="search-item">'+value.keywords+'</div><div class="search-count">约'+value.goods_num+'个商品</div></li>';
+								});
+//								html += '<li class="close"><div class="search-count">关闭</div></li>';
+								$('#search_list').empty().append(html);
+								$('.candidate').show();
+							}else{
+								$('#search_list').empty();
+							}
+						}
+					});
+				}
+			}
+		</script>
+	</form>
+	<div class="keyword">
+		<ul>
+			<foreach name="tpshop_config.hot_keywords" item="wd" key="k">
+				<li>
+					<a href="{:U('Home/Goods/search',array('q'=>$wd))}" target="_blank">{$wd}</a>
+				</li>
+			</foreach>
+		</ul>
+	</div>
+</div>
+<div class="shopingcar-index fr">
+	<div class="u-g-cart fr fixed" id="hd-my-cart">
+		<a href="{:U('Home/Cart/index')}">
+			<p class="c-num">
+				<i class="car2_0"></i>
+				<span>我的购物车</span>
+				<span class="count cart_quantity" id="cart_quantity"></span>
+			</p>
+		</a>
+		<div class="u-fn-cart u-mn-cart" id="show_minicart">
+			<div class="minicartContent" id="minicart">
+			</div>
+		</div>
+	</div>
+</div>

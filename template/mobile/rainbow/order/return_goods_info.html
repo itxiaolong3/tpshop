@@ -1,0 +1,415 @@
+<include file="public/header" title="服务单详情" body="g4"/>
+<include file="public/header_nav" title="服务单详情" href="javascript:history.back(-1);"/>
+<link rel="stylesheet" type="text/css" href="__STATIC__/css/iconfont.css"/>
+<div class="servicedetail p">
+    <div class="maleri30">
+        <div class="no_service p">
+            <span class="item-no">服务单号：<em>{$return_goods.id}</em></span>
+        </div>
+        <div class="no_service p">
+            <span class="item-no">订单编号：<em>{$return_goods.order_sn}</em></span>
+        </div>
+        <div class="no_service overwell p">
+            <span class="item-no">
+                <p class="itemno-title-h">
+                    审核进度：
+                    <if condition="($return_goods[status] eq 1) AND ($return_goods[is_receive] eq 1)  AND ($return_goods[type] gt 0)">
+                        <a class="btn-write-order" href="javascript:;">填写物流信息</a>
+                    </if>
+                </p>
+                <em>
+                    <if condition="$return_goods[status] eq 0">
+                        <p>亲爱的客户，您的服务单已经提交成功，请您耐心等待客服审核</p>
+                    </if>
+                    <if condition="$return_goods[status] eq 1 and $return_goods[type] gt 0">
+                        尊敬的客户，很抱歉出现这样的情况，如情况属实且非人为因素造成损坏，我们可以为您办理。请将商品全套及发票原件自行返回，
+                        如属商品质量问题，运费会以余额方式返还到您的商城账户；如非质量问题（误购），运费将由您承担(拒收到付），
+                        寄回商品时请附上您的订单号及收货人姓名电话、发货单详情（运单号、快递公司、快递费用），以便我们在收到返回商品时及时为您处理，感谢您的支持，谢谢！
+                    </if>
+                    <if condition="$return_goods[status] gt 1 || $return_goods[status] eq 1">
+                        <p>亲爱的客户，您的服务单客服已审核</p>
+                    </if>
+                    <if condition="$return_goods[status] eq -1">{$return_goods.remark}</if>
+                    <if condition="$return_goods[status] eq 2">尊敬的客户，您的快递已寄出，等待卖家收货</if>
+                    <if condition="$return_goods[status] eq 3 and $return_goods[type] gt 0">
+                        尊敬的客户，已收到您的快递，正在处理您的服务单</if>
+                    <if condition="$return_goods[status] eq 3 and $return_goods[type] eq 0">
+                        尊敬的客户，您的服务单已审核</if>
+                    <if condition="$return_goods[status] eq 4 or $return_goods[status] eq 5">
+                        尊敬的客户，您的服务单已完成，感谢您对{$tpshop_config['shop_info_store_name']}的大力支持,
+                    </if>
+                    <if condition="$return_goods[status] eq -2">尊敬的客户，您的服务单已取消，感谢您对{$tpshop_config['shop_info_store_name']}的大力支持</if>
+                </em>
+            </span>
+            <!--<span class="status"><i class="Mright"></i></span>-->
+        </div>
+
+        <!--进度条-s-->
+        <div class="schdule_t sc_lc">
+            <div class="lc f-s pass"><!--增加或删除pass来切换状态-->
+                <em class="tis">已完成</em>
+                <i class="sendapply"></i>
+                <span class="gr">提交申请</span>
+            </div>
+            <if condition="$return_goods[status] elt 0">
+                <div class="last_lc ml86 pass"><!--增加或删除pass来切换状态-->
+                    <div class="lc m-s ">
+                        <div class="box"><span class="half"></span></div>
+                    </div>
+                    <div class="lc e-s">
+                        <em class="tis" <if condition="$return_goods[status] eq 0">style="display: block"</if>>待审核</em>
+                        <i class="thirdsales"></i>
+                        <span class="gr">商城审核</span>
+                    </div>
+                </div>
+            </if>
+            <if condition="$return_goods[status] eq -2">    <!--取消服务单-->
+                <div class="last_lc pass">
+                    <div class="lc m-s ">
+                        <div class="box"><span class="half"></span></div>
+                    </div>
+                    <div class="lc e-s">
+                        <em class="tis" style="display: block">已取消</em>
+                        <i class="thirdsales"></i>
+                        <span class="gr">服务单已取消</span>
+                    </div>
+                </div>
+            <elseif condition="$return_goods[status] eq -1" />  <!--审核失败-->
+                <div class="last_lc pass">
+                    <div class="lc m-s ">
+                        <div class="box"><span class="half"></span></div>
+                    </div>
+                    <div class="lc e-s">
+                        <i class="thirdsales"></i>
+                        <span class="gr">审核不通过</span>
+                    </div>
+                </div>
+            <elseif condition="$return_goods[status] lt 6" />
+                <!--审核通过的-s-->
+                <if condition="$return_goods[type] lt 2">
+                    <!--退货的-->
+                    <if condition="$return_goods[status] egt 1">
+                        <div class="last_lc ml86 pass"><!--增加或删除pass来切换状态-->
+                            <div class="lc m-s ">
+                                <div class="box">
+                                    <span class="half" <if condition="$return_goods[status] egt 1">style="width: 100%"<else/>style="width:0%"</if>></span>
+                                </div>
+                            </div>
+                            <div class="lc e-s">
+                                <i class="thirdsales"></i>
+                                <span class="gr">卖家审核通过</span>
+                            </div>
+                        </div>
+                    </if>
+                    <if condition="$return_goods[type] eq 1">
+                        <div class="last_lc   <if condition="$return_goods[status] egt 2">pass</if>">
+                            <div class="lc m-s ">
+                                <div class="box">
+                                    <span class="half" <if condition="$return_goods[status] egt 2">style="width: 100%"<else/>style="width:0%"</if>></span>
+                                </div>
+                            </div>
+                            <div class="lc e-s">
+                                <em class="tis" <if condition="$return_goods[status] eq 2">style="display: block"</if>>待卖家收货</em>
+                                <i class="thirdsales"></i>
+                                <span class="gr">用户已发货</span>
+                            </div>
+                        </div>
+                        <div class="last_lc <if condition="$return_goods[status] egt 3">pass</if>">
+                            <div class="lc m-s ">
+                                <div class="box">
+                                    <span class="half" <if condition="$return_goods[status] egt 3">style="width: 100%"<else/>style="width:0%"</if>></span>
+                                </div>
+                            </div>
+                            <div class="lc e-s">
+                                <em class="tis" <if condition="$return_goods[status] eq 3">style="display: block"</if>>待退款</em>
+                                <i class="thirdsales"></i>
+                                <span class="gr">卖家已收货</span>
+                            </div>
+                        </div>
+                    </if>
+                    <div class="last_lc <if condition="$return_goods[status] eq 5">pass</if>">
+                        <div class="lc m-s ">
+                            <div class="box">
+                                <span class="half" <if condition="$return_goods[status] eq 5">style="width: 100%"<else/>style="width:0%"</if>></span>
+                            </div>
+                        </div>
+                        <div class="lc e-s">
+                            <em class="tis" <if condition="$return_goods[status] eq 5">style="display: block"</if>>已完成</em>
+                            <i class="thirdsales"></i>
+                            <span class="gr">完成退款</span>
+                        </div>
+                    </div>
+                <else/>
+                <!--换货的-->
+                    <if condition="$return_goods[status] egt 1">
+                        <div class="last_lc ml86 pass"><!--增加或删除pass来切换状态-->
+                            <div class="lc m-s ">
+                                <div class="box"><span class="half"></span></div>
+                            </div>
+                            <div class="lc e-s">
+                                <em class="tis" <if condition="$return_goods[status] eq 1">style="display: block;"</if>>用户发货</em>
+                                <i class="thirdsales"></i>
+                                <span class="gr">审核通过</span>
+                            </div>
+                        </div>
+                    </if>
+                    <div class="last_lc   <if condition="$return_goods[status] egt 2">pass</if>"><!--增加或删除pass来切换状态-->
+                        <div class="lc m-s ">
+                            <div class="box">
+                                <span class="half" <if condition="$return_goods[status] egt 2">style="width: 100%"<else/>style="width:0%"</if>></span>
+                            </div>
+                        </div>
+                        <div class="lc e-s">
+                            <em class="tis" <if condition="$return_goods[status] eq 2">style="display: block"</if>>待卖家收货</em>
+                            <i class="thirdsales"></i>
+                            <span class="gr">用户已发货</span>
+                        </div>
+                    </div>
+                    <div class="last_lc <if condition="$return_goods[status] egt 3">pass</if>">
+                        <div class="lc m-s ">
+                            <div class="box">
+                                <span class="half" <if condition="$return_goods[status] egt 3">style="width: 100%"<else/>style="width:0%"</if>></span>
+                            </div>
+                        </div>
+                        <div class="lc e-s">
+                            <em class="tis" <if condition="$return_goods[status] eq 3">style="display: block"</if>>已收货</em>
+                            <i class="thirdsales"></i>
+                            <span class="gr">卖家发货</span>
+                        </div>
+                    </div>
+                    <div class="last_lc <if condition="$return_goods[status] eq 4">pass</if>">
+                        <div class="lc m-s ">
+                            <div class="box">
+                                <span class="half" <if condition="$return_goods[status] eq 4">style="width: 100%"<else/>style="width:0%"</if>></span>
+                            </div>
+                        </div>
+                        <div class="lc e-s">
+                            <em class="tis" <if condition="$return_goods[status] eq 4">style="display: block"</if>>已完成</em>
+                            <i class="thirdsales"></i>
+                            <span class="gr">完成</span>
+                        </div>
+                    </div>
+                </if>
+            </if>
+        </div>
+        <!--进度条-e-->
+    </div>
+</div>
+
+<!--问题描述-->
+<div class="askget servicedetail_q ma-to-20 p">
+    <div class="maleri30">
+        <div class="la_q_dis p">
+            <span class="item_ask_1">问题描述</span>
+          <!--  <if condition="$return_goods['status'] eq 0">
+                <span class="item_ask_2">
+                    <a class="y" href="{:U('Order/return_goods',array('rec_id'=>$return_goods.rec_id))}">补充描述</a>
+                </span>
+            </if>-->
+        </div>
+        <div class="la_q_q p">
+            <p class="dis">{$return_goods.describe}</p>
+            <p class="time">{$return_goods.addtime|date='Y-m-d H:i:s',###}</p>
+        </div>
+    </div>
+</div>
+<notempty name="return_goods.seller_delivery">
+    <div class="askget servicedetail_q ma-to-20 p">
+        <div class="maleri30">
+            <div class="la_q_dis p">
+                <span class="item_ask_1">卖家发货快递消息</span>
+            </div>
+            <div class="la_q_q p">
+                <p class="dis">快递公司：{$return_goods[seller_delivery][express_name]}</p>
+                <p class="dis">快递单号：{$return_goods[seller_delivery][express_sn]}</p>
+                <p class="time">发货时间：{$return_goods[seller_delivery][express_time]}</p>
+            </div>
+        </div>
+    </div>
+</notempty>
+<!--图片-->
+<notempty name="return_goods.imgs">
+    <div class="seravetype ma-to-20">
+        <div class="maleri30">
+            <p>上传的照片</p>
+            <ul>
+                <volist name="$return_goods.imgs" id="img">
+                    <a href="{$img}">
+                        <li class="file">
+                            <div class="shcph">
+                                <img src="{$img}">
+                            </div>
+                        </li>
+                    </a>
+                </volist>
+            </ul>
+        </div>
+    </div>
+</notempty>
+<!--审核留言-->
+<div class="askget servicedetail_q ma-to-20 p">
+    <div class="maleri30">
+        <div class="la_q_dis p">
+            <span class="item_ask_1">审核留言</span>
+        </div>
+        <div class="la_q_q p">
+            <p class="dis">{$return_goods.remark}
+                <br />
+                提示：为避免数据遗失或泄露，请您提前做好数据备份，商城将不承担相应责任。
+            </p>
+        </div>
+    </div>
+    <if condition="($return_goods[status] neq -2) and ($return_goods[status] lt 4)">
+        <div class="he108">
+            <div class="askget cancel_app p">
+                <div class="maleri30">
+                    <span class="item_ask_2">
+                        <a class="y closeorder_butt">取消申请</a>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </if> 
+</div>
+
+<!--取消订单-s-->
+<div class="losepay closeorder" style="display: none;">
+    <div class="maleri30">
+        <p class="con-lo">取消售后不能再申请售后,请谨慎操作？</p>
+        <div class="qx-rebd">
+            <a class="ax">取消</a>
+            <a class="are" onclick="returnGoodsCancel({$return_goods.id})">确定</a>
+        </div>
+    </div>
+</div>
+<div class="mask-filter-div" style=""></div>
+<!--取消订单-e-->
+<if condition="($return_goods[status] eq 1) AND ($return_goods[is_receive] eq 1)  AND ($return_goods[type] gt 0)">
+    <script type="text/javascript" src="__ROOT__/public/static/js/datePicker/datePicker.js"></script>
+<!-- pop-填写订单 -->
+    <form action="" method="post" id="return_form">
+        <div class="pop-write-order">
+            <div class="pop-title">售后申请信息填写</div>
+            <p class="item-order-input">
+                <span>*快递公司 : </span>
+                <input type="text" name="delivery[express_name]" value="{$return_goods[delivery][express_name]}">
+            </p>
+            <p class="item-order-input">
+                <span>*快递用费(元) : </span>
+                <input type="text" name="delivery[express_fee]" value="{$return_goods[delivery][express_fee]}" onpaste="this.value=this.value.replace(/[^\d.]/g,'')" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')"  onblur="checkInputNum(this.name,0,9999);" maxlength="4">
+            </p>
+            <p class="item-order-input">
+                <span>*快递单号 : </span>
+                <input type="text" name="delivery[express_sn]" value="{$return_goods[delivery][express_sn]}">
+            </p>
+            <p class="item-order-input">
+                <span>*发货时间 : </span>
+                <input type="text" id="express_time" value="{$return_goods[delivery][express_time]}" name="delivery[express_time]">
+            </p>
+            <p class="write-order-des">
+                <span>温馨提示 : </span>购买15日内商品因质量问题、包装损坏、缺少附件等原因办理退换货产生的运费，以余额的方式补偿
+                <!--<a href="#">补偿标准>></a>-->
+            </p>
+            <div class="pop-btns-wrap">
+                <input type="hidden" name="id" value="{$return_goods.id}">
+                <a class="btns-item pop-btns-true" href="javascript:;" onclick="submit_form();">确定</a>
+                <a class="btns-item pop-btns-false" href="javascript:;">取消</a>
+            </div>
+        </div>
+        <script>
+            var calendar = new datePicker();
+            calendar.init({
+                'trigger': '#express_time', /*按钮选择器，用于触发弹出插件*/
+                'type'   : 'date',      /*模式：date日期；datetime日期时间；time时间；ym年月；*/
+                'minDate':'2017-1-1',   /*最小日期*/
+                'maxDate':'2100-12-31',   /*最大日期*/
+                'onSubmit':function(){  /*确认时触发事件*/
+                    var theSelectData=calendar.value;
+                },
+                'onClose':function(){   /*取消时触发事件*/
+                }
+            });
+            $("#express_time").focus(function(){
+                document.activeElement.blur();
+            });
+        </script>
+    </form>
+</if>
+<script>
+    // 打开售后申请信息
+    $('.btn-write-order').click(function(){
+        $('.mask-filter-div').fadeIn(500);
+        $('.pop-write-order').addClass('pop-show');
+    });
+    // 售后申请信息取消按钮
+    $('.pop-btns-false').click(function(){
+        $('.mask-filter-div').fadeOut(500);
+        $('.pop-write-order').removeClass('pop-show');
+    });
+    //取消订单按钮
+    $('.closeorder_butt').click(function(){
+        $('.mask-filter-div').show();
+        $('.losepay').show();
+    })
+    //取消取消订单
+    $('.qx-rebd .ax').click(function(){
+        $('.mask-filter-div').hide();
+        $('.losepay').hide();
+    })
+    //发货
+    function submit_form()
+    {
+        var flag = true;
+        $('input[name*="delivery"]').each(function(i,o){
+            if($(o).val() == '' && flag){
+                layer.open({content:'请输入完整的快递信息!',time:2});
+                flag = false;
+            }
+        })
+        if(flag){
+            $.ajax({
+                type:"POST",
+                url: "{:U('Order/checkReturnInfo')}",
+                dataType: "json",
+                data: $('#return_form').serialize(),
+                success: function(data){
+                    if(data.status == 1){
+                        $('.pop-write-order').removeClass('pop-show');
+                        layer.open({content:data.msg,time:1,end:function () {
+                            location.href = data.url;
+                        }});
+                    }else{
+                        layer.open({content:data.msg,time:2});
+                    }
+                },
+                error:function(){
+                    layer.open({content:'网络连接失败，请稍后再试',time:2});
+                }
+            })
+        }else{
+            return false;
+        }
+    }
+    //取消申请
+    function returnGoodsCancel(id){
+        $.ajax({
+            type:"POST",
+            url: "{:U('Order/return_goods_cancel')}",
+            dataType: "json",
+            data: {'id':id},
+            success: function(data){
+                if(data.status == 1){
+                    layer.open({content:data.msg,time:1});
+                    location.href = '';
+                }else{
+                    layer.open({content:data.msg,time:2});
+                }
+            },
+            error:function(){
+                layer.open({content:'网络连接失败，请稍后再试',time:2});
+            }
+        })
+    }
+</script>
+	</body>
+</html>

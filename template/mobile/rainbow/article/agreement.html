@@ -1,0 +1,55 @@
+<include file="public/header" title="{$news.title}"/>
+<style>
+    html,body,div,p{
+        font-size: .6rem;
+    }
+    a{
+        color: steelblue;
+    }
+    img{
+        max-width: 100%;
+        margin: 0.1rem 0;
+    }
+    .title{
+        font-size: 1rem;
+        padding: 0.8rem 0.5rem 0.2rem;
+        text-align: center;
+    }
+    .state{
+        color: #aaa;
+        font-size: .6rem;
+        margin: 0.4rem 0.8rem 0.6rem;
+    }
+    .content{
+        font-size: .65rem;
+        padding: 0.2rem;
+        line-height: 0.95rem;
+    }
+    .source{
+        font-size: .65rem;
+        margin: 1rem 0.5rem 1.5rem;
+    }
+    strong {
+        font-size: 0.5rem;
+    }
+</style>
+
+<div class="classreturn loginsignup ">
+    <div class="content">
+        <div class="ds-in-bl return">
+            <a href="javascript:history.back(-1);"><img src="__STATIC__/images/return.png" alt="返回"></a>
+        </div>
+        <div class="ds-in-bl search center">
+            <span>{$article.doc_title}</span>
+        </div>
+
+    </div>
+</div>
+<div class="content">
+    {$article.doc_content|htmlspecialchars_decode}
+</div>
+<notempty name="article.content_source_url">
+    <div class="source"><a href="{$article.content_source_url}">阅读原文</a></div>
+</notempty>
+</body>
+</html>

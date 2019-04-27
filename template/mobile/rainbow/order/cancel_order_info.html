@@ -1,0 +1,94 @@
+<include file="public/header" title="取消订单详情" body="g4"/>
+<include file="public/header_nav" title="取消订单详情" href="javascript:history.back(-1);"/>
+<link rel="stylesheet" type="text/css" href="__STATIC__/css/iconfont.css"/>
+<div class="cancel-order-record" id="cancel-order-record" data-state="{$order.pay_status}">
+    <ul class="no-service-m">
+        <li>
+            <span class="item-title-s">订单单号：</span>
+            <span class="item-cont-s">{$order.order_sn}</span>
+        </li>
+        <li>
+            <span class="item-title-s">取消进度：</span>
+            <span class="item-cont-s show-record">取消处理</span>
+        </li>
+        <li>
+            <span class="item-title-s">订单总额：</span>
+            <span class="item-cont-s">￥{$order.total_amount}</span>
+        </li>
+        <li>
+            <span class="item-title-s">取消进度：</span>
+            <span class="item-cont-s">
+                  <if condition="$order.pay_status lt 3">
+                      亲爱的客户，我们正在为您处理中，请耐心等待。
+                  <else/>
+                      <if condition="$order.pay_status elt 3">
+                          亲爱的客户,您的退款订单已完成。{$order.admin_note}
+                      <else/>
+                          亲爱的客户,您的退款订单审核失败。原因：{$order.admin_note}
+                      </if>
+                  </if>
+              </span>
+        </li>
+    </ul>
+    <!--进度条-s-->
+    <div class="progress-bar"></div>
+		<script>
+			function setOrderRecord(){  //设置订单状态
+				var $_orderRecord=$('#cancel-order-record');
+				var orderState=parseInt($_orderRecord.attr('data-state'));
+				var data=[
+					{'state':1,'showRecord':'取消处理','progressBar':'__STATIC__/images/progress-bar-1.png'},
+					{'state':2,'showRecord':'退款处理','progressBar':'__STATIC__/images/progress-bar-2.png'},
+					{'state':3,'showRecord':'完成','progressBar':'__STATIC__/images/progress-bar-3.png'},
+					{'state':4,'showRecord':'审核失败','progressBar':'__STATIC__/images/progress-bar-3.png'}
+				]
+				$_orderRecord.find('.show-record').text(data[orderState-1].showRecord);
+				$_orderRecord.find('.progress-bar').css('backgroundImage','url('+data[orderState-1].progressBar+')');
+			}
+			setOrderRecord();
+		</script>
+	</div> 
+    <!--进度条-e-->
+</div>
+
+
+
+<!--申请单详情 b-->
+<div class="cancel-order-record">
+	<div class="cancel-order-title">申请单详细信息</div>
+	<ul class="no-service-m">
+		<li>
+			<span class="item-title-s">订单编号</span>
+			<span class="item-cont-s">{$order.order_sn}</span></span>
+		</li>		
+		<li>
+			<span class="item-title-s">取消原因</span>
+			<span class="item-cont-s">{$order.user_note}</span>
+		</li>
+		<li>
+			<span class="item-title-s">联系方式</span>
+			<span class="item-cont-s">{$order.mobile}</span>
+		</li>
+        <li>
+            <span class="item-title-s">支付明细</span>
+            <span class="item-cont-s">
+                <p class="cont-des">支付总金额 : <span class="co-red">￥{$order.total_amount}</span></p>
+                <p class="cont-des">余额支付 : <span class="co-red">￥{$order.user_money}</span></p>
+                <p class="cont-des">积分抵扣 : <span class="co-red">￥{$order.integral_money}</span></p>
+                <p class="cont-des">优惠券 : <span>￥{$order.coupon_price|default=0.00}</span></p>
+                <p class="cont-des">其他支付 : <span>￥{$order.order_amount|default=0.00}</span></p>
+            </span>
+        </li>
+	</ul>
+</div>
+<!--申请单详情 e-->
+<!-- 退款明显状态 b -->
+<div class="cancel-order-record">
+	<div class="cancel-order-title des-title2">退款明细状态详解</div>
+	<p class="refund-detail">1、已退：商城已完成退款处理，实际退款时间以到账时间为准。</p>
+	<p class="refund-detail">2、待退：订单含有未退款项，待系统处理，请您耐心等待。</p>
+	<p class="refund-detail">3、未退：商城劵发生拆分是不予返还、商城劵、手机红包请您联系客服处理。</p>
+</div>
+<!-- 退款明细状态 e -->
+</body>
+</html>

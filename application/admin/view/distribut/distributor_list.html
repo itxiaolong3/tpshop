@@ -1,0 +1,206 @@
+<include file="public/layout" />
+<script type="text/javascript" src="__ROOT__/public/static/js/layer/laydate/laydate.js"></script>
+
+<body style="background-color: rgb(255, 255, 255); overflow: auto; cursor: default; -moz-user-select: inherit;">
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+  <div class="fixed-bar">
+    <div class="item-title">
+      <div class="subject">
+        <h3>分销商列表</h3>
+        <h5>分销关系管理</h5>
+      </div>
+    </div>
+  </div>
+  <!-- 操作说明 -->
+  <div id="explanation" class="explanation" style="color: rgb(44, 188, 163); background-color: rgb(237, 251, 248); width: 99%; height: 100%;">
+    <div id="checkZoom" class="title"><i class="fa fa-lightbulb-o"></i>
+      <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+      <span title="收起提示" id="explanationZoom" style="display: block;"></span>
+    </div>
+     <ul>
+      <li>点击查看操作将显示当前用户上三级分销ID和该用户的下三级分销商数量</li>
+      <li>列表可根据用户ID和昵称搜索</li>
+      <li>列表中的三级分销商数量可点击, 点击后显示该级别下的会员列表</li>
+    </ul>
+  </div>
+  <div class="flexigrid">
+    <div class="mDiv">
+      <div class="ftitle">
+        <h3>分销商列表</h3>
+        <h5>(共{$pager->totalRows}条记录)</h5>
+      </div>
+      <div title="刷新数据" class="pReload"><i class="fa fa-refresh"></i></div>
+	  <form class="navbar-form form-inline"  method="post" action=""  name="search-form2" id="search-form2">  
+      <div class="sDiv">
+		<div class="sDiv2">
+			<input type="text" size="30" id="user_id"  value="{$user_id}" name="user_id" class="qsbox" placeholder="用户id" >
+		</div>
+		<div class="sDiv2">	 
+			<input type="text" size="30" id="nickname"  value="{$nickname}" name="nickname" class="qsbox" placeholder="用户昵称" >
+		</div>
+        <div class="sDiv2">	 
+          <input type="submit" class="btn" value="搜索">
+        </div>
+      </div>
+     </form>
+    </div>
+    <div class="hDiv">
+      <div class="hDivBox" id="ajax_return">
+        <table cellspacing="0" cellpadding="0">
+          <thead>
+	        	<tr>
+	              <th class="sign" axis="col0">
+	                <div style="width: 24px;"><i class="ico-check"></i></div>
+	              </th>
+	              <th align="left" abbr="order_sn" axis="col3" class="">
+	                <div style="text-align: left; width: 160px;" class="">编号</div>
+	              </th>
+	              <th align="left" abbr="consignee" axis="col4" class="">
+	                <div style="text-align: left; width: 120px;" class="">微信昵称</div>
+	              </th>
+	              <th align="center" abbr="article_show" axis="col5" class="">
+	                <div style="text-align: center; width: 120px;" class="">可用资金</div>
+	              </th>
+	              <th align="center" abbr="article_time" axis="col6" class="">
+	                <div style="text-align: center; width: 120px;" class="">冻结资金</div>
+	              </th>
+	              <th align="center" abbr="article_time" axis="col6" class="">
+	                <div style="text-align: center; width: 120px;" class="">总分成金额</div>
+	              </th>
+	              <th align="center" abbr="article_time" axis="col6" class="">
+	                <div style="text-align: center; width: 80px;" class="">下线会员总数</div>
+	              </th>
+	              <th align="center" abbr="article_time" axis="col6" class="">
+	                <div style="text-align: center; width: 80px;" class="">一级会员数</div>
+	              </th>
+	              <th align="center" abbr="article_time" axis="col6" class="">
+	                <div style="text-align: center; width: 80px;" class="">二级会员数</div>
+	              </th>
+	              <th align="center" abbr="article_time" axis="col6" class="">
+	                <div style="text-align: center; width: 80px;" class="">三级会员数</div>
+	              </th>
+	              <th align="center" axis="col1" class="handle">
+	                <div style="text-align: center; width: 150px;">操作</div>
+	              </th>
+	              <th style="width:100%" axis="col7">
+	                <div></div>
+	              </th>
+	            </tr>
+	          </thead>
+        </table>
+      </div>
+    </div>
+    <div class="bDiv" style="height: auto;">
+      <div id="flexigrid" cellpadding="0" cellspacing="0" border="0">
+        	<table cellspacing="0" cellpadding="0">
+	          <tbody>
+	          <if condition="empty($user_list) eq true">
+		 		<tr data-id="0">
+			        <td class="no-data" align="center" axis="col0" colspan="50">
+			        	<i class="fa fa-exclamation-circle"></i>没有符合条件的记录
+			        </td>
+			     </tr>
+			<else/>
+	          <volist name="user_list" id="v">
+		        	<tr>
+		              <td class="sign" axis="col0">
+		                <div style="width: 24px;"><i class="ico-check"></i></div>
+		              </td>
+		              <td align="left" abbr="order_sn" axis="col3" class="">
+		                <div style="text-align: left; width: 160px;" class="">{$v.user_id}</div>
+		              </td>
+		              <td align="left" abbr="consignee" axis="col4" class="">
+		                <div style="text-align: left; width: 120px;" class="">{$v.nickname}</div>
+		              </td>
+		              <td align="center" abbr="article_show" axis="col5" class="">
+		                <div style="text-align: center; width: 120px;" class="">{$v.user_money}</div>
+		              </td>
+		              <td align="center" abbr="article_time" axis="col6" class="">
+		                <div style="text-align: center; width: 120px;" class="">{$v.frozen_money}</div>
+		              </td>
+		              <td align="center" abbr="article_time" axis="col6" class="">
+		                <div style="text-align: center; width: 120px;" class="">{$v.distribut_money}</div>
+		              </td>
+		              <td align="center" abbr="article_time" axis="col6" class="">
+		                <div style="text-align: center; width: 80px;" class="">{$v.lower_sum}</div>
+		              </td>
+		              <td align="center" abbr="article_time" axis="col6" class="">
+			                <div style="text-align: center; width: 80px;" class="">
+				                <if condition='$v[fisrt_leader] gt 0'>
+	                            	<a href="{:U('Admin/User/index',array('first_leader'=>$v['user_id']))}">{$v.fisrt_leader}</a>
+	                            <else />
+	                            	{$v.fisrt_leader}
+	                             </if>
+			                </div>
+		              </td>
+		              <td align="center" abbr="article_time" axis="col6" class="">
+			                <div style="text-align: center; width: 80px;" class="">
+				                <if condition='$v[second_leader] gt 0'>
+	                            	<a href="{:U('Admin/User/index',array('second_leader'=>$v['user_id']))}">{$v.second_leader}</a>
+	                            <else />
+	                            	{$v.second_leader}
+	                             </if>
+			                </div>
+		              </td>
+		              <td align="center" abbr="article_time" axis="col6" class="">
+		                <div style="text-align: center; width: 80px;" class="">
+				                <if condition='$v[third_leader] gt 0'>
+	                            	<a href="{:U('Admin/User/index',array('third_leader'=>$v['user_id']))}">{$v.third_leader}</a>
+	                            <else />
+	                            	{$v.third_leader}
+	                             </if>
+			                </div>
+		              </td>
+		              <td align="center" axis="col1" class="handle">
+		                <div style="text-align: center; width: 150px;">
+							<a class="btn green" href="{:U('Admin/User/detail',array('id'=>$v[user_id]))}"><i class="fa fa-list-alt"></i>查看</a>
+						</div>
+		              </td>
+		              <td style="width:100%" axis="col7">
+		                <div></div>
+		              </td>
+		            </tr>
+		            </volist>
+		            </if>
+		          </tbody>
+	        </table>
+      </div>
+      <div class="iDiv" style="display: none;"></div>
+    </div>
+    <!--分页位置--> 
+    <div class="row">
+	    <div class="col-sm-6 text-left"></div>
+	    <div class="col-sm-6 text-right">{$page}</div>
+	</div>
+   	</div>
+</div>
+<script type="text/javascript">
+
+	 
+    $(document).ready(function(){	
+	   
+      
+		// 点击刷新数据
+		$('.fa-refresh').click(function(){
+			location.href = location.href;
+		});
+		 
+		$('.ico-check ' , '.hDivBox').click(function(){
+			$('tr' ,'.hDivBox').toggleClass('trSelected' , function(index,currentclass){
+	    		var hasClass = $(this).hasClass('trSelected');
+	    		$('tr' , '#flexigrid').each(function(){
+	    			if(hasClass){
+	    				$(this).addClass('trSelected');
+	    			}else{
+	    				$(this).removeClass('trSelected');
+	    			}
+	    		});  
+	    	});
+		});
+	});
+     
+</script>
+</body>
+</html>

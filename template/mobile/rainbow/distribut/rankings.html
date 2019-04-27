@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>分销排行榜</title>
+		<link rel="stylesheet" type="text/css" href="__STATIC__/distribut/css/main.css"/>
+		<script src="__STATIC__/js/mobile-util.js" type="text/javascript" charset="utf-8"></script>
+        <script src="__STATIC__/js/jquery-3.1.1.min.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body class="bag_gray3">
+		<div class="ranking_tit">
+			<img class="ran1" src="__STATIC__/images/liba.jpg"/>
+			<img class="ran2" src="__STATIC__/images/topb.png"/>
+			<i class="fla-f1"></i>
+			<i class="fla-f2"></i>
+			<i class="fla-f3"></i>
+			<i class="flab"></i>
+		</div>
+		<div class="ranking_main">
+			<div class="list2_rank">
+				<a href="{:U('mobile/Distribut/rankings',array('sort'=>'distribut_money'))}" <if condition="$Request.param.sort eq 'distribut_money'">class="current" </if>>佣金排行</a>
+				<a href="{:U('mobile/Distribut/rankings',array('sort'=>'underling_number'))}" <if condition="$Request.param.sort eq 'underling_number'">class="current" </if> >下线排行</a>
+			</div>
+			<div class="form_list">
+				<div class="board_yellow_dark">
+					<div class="board_yellow_light">
+                        <div class="rank_alone p"  style="margin-top: 0.5rem;">
+                            <div class="flo rank_data1">
+                                <if condition="$user['is_distribut'] eq  1">
+                                 <span>{$place}</span>
+                                <else/>
+                                    <span>--</span>
+                                </if>
+                            </div>
+                            <div class="flo rank_data2">
+                                <div class="my_team_alon p">
+                                    <div class="team_head">
+                                        <img src="{$user[head_pic]|default="__STATIC__/distribut/images/user68.jpg"}"/>
+                                    </div>
+                                    <div class="team_name_time">
+                                        <span class="t_n">{$user[nickname]}</span>
+                                        <if condition="$Request.param.sort eq  'distribut_money'">
+                                            <span class="t_t">获得佣金：<em>￥{$user[distribut_money]}</em></span>
+                                        <else/>
+                                            <span class="t_t">下线人数：<em>{$user[underling_number]}</em>人</span>
+                                        </if>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flo rank_data3"><a href="{:U('Distribut/my_store')}"><i class="icon-big_arrow_r"></i></a></div>
+                        </div>
+						<div class="board_green" id="rankings">
+                            <foreach name="lists" item="v" key="k">
+                                <div class="rank_alone p">
+                                    <div class="flo rank_data1">
+                                        <if condition="$k lt 3 and $firsRrow eq 0">
+                                            <i class="fla-top{$k+1}"></i>
+                                        <else/>
+                                            <span>{$k+1}</span>
+                                        </if>
+                                    </div>
+                                    <div class="flo rank_data2">
+                                        <div class="my_team_alon p">
+                                            <div class="team_head">
+                                                <img src="{$v[head_pic]|default="__STATIC__/distribut/images/user68.jpg"}"/>
+                                            </div>
+                                            <div class="team_name_time">
+                                                <span class="t_n">{$v[nickname]}</span>
+                                                <if condition="$Request.param.sort eq  'distribut_money'">
+                                                    <span class="t_t">获得佣金：<em>￥{$v[distribut_money]}</em></span>
+                                                <else/>
+                                                    <span class="t_t">下线人数：<em>{$v[underling_number]}</em>人</span>
+                                                </if>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--<div class="flo rank_data3"><a href=""><i class="icon-big_arrow_r"></i></a></div>-->
+                                </div>
+                            </foreach>
+						</div>
+                        <notempty name="lists">
+                            <p class="nextpage" onclick="ajax_sourch_submit(-1)">上一页</p>
+                            <p class="nextpage" onclick="ajax_sourch_submit(1)">下一页</p>
+                        </notempty>
+					</div>
+				</div>
+			</div>
+			<i class="fla-f1"></i>
+		</div>
+		<div class="ranking_foot">
+			<img class="big_pocket" src="__STATIC__/distribut/images/pock_02.png"/>
+			<img class="litt_mony" src="__STATIC__/distribut/images/pock_05.png"/>
+		</div>
+	</body>
+<script>
+    var  page = 1;
+    /*** ajax 提交表单 查询订单列表结果*/
+    // ajax 提交购物车
+    var before_request = 1; // 上一次请求是否已经有返回来, 有才可以进行下一次请求
+    function ajax_sourch_submit(p)
+    {
+        if(before_request == 0)// 上一次请求没回来 不进行下一次请求
+            return false;
+        before_request = 0;
+        page += p;
+        page = page<=0 ? 0 : page;
+        $.ajax({
+            type : "GET",
+            url:"/index.php?m=Mobile&c=Distribut&a=rankings&sort={$Request.param.sort}&is_ajax=1&p="+page,//+tab,
+            success: function(data)
+            {
+                if($.trim(data) == '')
+                    $('#getmore').hide();
+                else{
+                    $("#rankings").html('');
+                    $("#rankings").append(data);
+                    $('#getmore').show();
+                    before_request = 1;
+                }
+            }
+        });
+    }
+</script>
+</html>

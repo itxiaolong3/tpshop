@@ -1,0 +1,175 @@
+<!-- footer start [[-->
+<style>
+    .foot, .foot-info {
+        border-top: 1px solid #F1F1F1;
+    }
+    .foot {
+        background-color: #FEFEFE;
+        padding-top: 35px;
+        margin-top: 30px;
+    }
+    .fn-clear::after {
+        display: table;
+        content: '';
+        clear: both;
+    }
+    .container {
+        width: 1190px;
+        margin: 0 auto;
+    }
+    .fixed {
+        display: block;
+        min-height: 1%;
+    }
+    .foot-attention dd, .foot-item {
+        float: left;
+    }
+    .foot-item dd {
+        line-height: 20px;
+        color: #6C6C6C;
+    }
+
+    .foot-attention dd {
+        width: 85px;
+        height: 110px;
+        margin-left: 25px;
+    }
+    .foot-attention dd p {
+        text-align: center;
+        margin-top: 5px;
+    }
+    .foot-attention {
+        width: 220px;
+        margin-left: 30px;
+    }
+    .att-client {
+        width: 85px;
+        height: 85px;
+        text-align: center;
+    }
+    .foot .foot-phone dt {
+        height: 35px;
+        line-height: 35px;
+        font-family: Tahoma;
+        font-size: 23px;
+        margin-bottom: 20px;
+        font-weight: 700;
+    }
+    .foot-item dd {
+        line-height: 20px;
+        color: #6C6C6C;
+    }
+    .foot-list {
+        width: 75px;
+        padding-left: 45px;
+    }
+    .foot-item dt {
+        font-size: 16px;
+        font-weight: 700;
+        margin-bottom: 5px;
+    }
+    a:active, a:hover, a:link, a:visited {
+        border: 0;
+        outline: 0;
+    }
+    a:link, a:visited, a:active {
+        text-decoration: none;
+    }
+    .foot-list {
+        width: 75px;
+        padding-left: 45px;
+    }
+    .foot-info p {
+        text-align: center;
+        line-height: 22px;
+    }
+    .foot-info {
+        padding-top: 25px;
+        padding-bottom: 45px;
+    }
+    .foot-chop {
+        text-align: center;
+        margin-top: 10px;
+    }
+    ol, ul {
+        list-style: none;
+    }
+    .foot-chop li {
+        display: inline-block;
+        margin: 0 5px;
+        vertical-align: middle;
+    }
+    .gongshang {
+        background-position: 0 -82px;
+        width: 96px;
+        height: 40px;
+    }
+    .sh-letter {
+        background-position: 0 -205px;
+    }
+    .honesty {
+        background-position: 0 -246px;
+    }
+    .foot-chop li a {
+        display: block;
+        width: 100%;
+        height: 100%;
+    }
+    a:hover {
+        text-decoration: none;
+        color: #0085CF;
+    }
+</style>
+<div class="foot">
+          <div class="foot-box container fn-clear fixed">
+    <dl class="foot-item foot-phone">
+              <dt>{$tpshop_config['shop_info_phone']}</dt>
+              <!--<dd>CEO邮箱：ceo@tp-shop.cn</dd>-->
+              <dd>客服邮箱：673964249@qq.com</dd>
+            </dl>
+	    <tpshop sql="select * from `__PREFIX__article_cat` where parent_id = 2" key="k" item='v'>
+	    	<dl class="foot-item foot-list">
+              <dt class="">{$v[cat_name]}</dt>
+              <tpshop sql="select * from `__PREFIX__article` where cat_id = $v[cat_id]" key="k2" item='v2'>
+            	<dd><a target="_blank" href="{:U('Home/Article/detail',array('article_id'=>$v2[article_id]))}">{$v2[title]}</a></dd>
+              </tpshop>
+	        </dl>
+	    </tpshop>  
+    <dl class="foot-item foot-attention">
+              <dd>
+        <div class="att-weixin"> <img src="__STATIC__/images/weixin.png" width="85" height="85"> </div>
+        <p>TPshop网微信</p>
+      </dd>
+              <dd>
+        <div class="att-client"> <img src="__STATIC__/images/app.png" width="85" height="85"> </div>
+        <p>TPshop客户端</p>
+      </dd>
+            </dl>
+  </div>
+  <div class="foot-info container">
+    <p>Copyright <em>©</em> 2016-2025 {$tpshop_config.shop_info_store_name|default='时代万网'}  版权所有 保留一切权利 备案号:{$tpshop_config['shop_info_record_no']}</p>
+    <ul class="foot-chop">
+      <!--			<li class="icbc">
+                    <a href="" target="_blank"></a>
+                </li>
+                <li class="alipay">
+                    <a href="" target="_blank"></a>
+                </li>
+                <li class="unionpay">
+                    <a href="" target="_blank"></a>
+                </li>
+                <li class="tenpay">
+                    <a href="" target="_blank"></a>
+                </li>-->
+      <li class="gongshang"> <a href="" target="_blank"></a> </li>
+      <li class="sh-letter"> <a href="" target="_blank"></a> </li>
+      <li class="honesty"> <a href="" target="_blank"></a> </li>
+      <li> <a href="" target="_blank"> <img src="__STATIC__/images/time_cnnic.jpg"> </a> </li>
+      <li> <a href="" target="_blank"> <img src="__STATIC__/images/aqlm.jpg"> </a> </li>
+    </ul>
+  </div>
+</div>
+<script type="text/javascript" src="__STATIC__/js/jquery.lazyload.js"></script>
+<script src="__PUBLIC__/js/global.js"></script>
+<script type="text/javascript" src="__STATIC__/js/common.js"></script>
+<!-- footer end ]]-->

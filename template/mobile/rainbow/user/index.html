@@ -1,0 +1,125 @@
+<include file="public/header" title="个人中心" body=""/>
+<link rel="stylesheet" type="text/css" href="__STATIC__/css/personal.css"/>
+<div class="z_user_vs">
+    <div class="z_user_head">
+        <div class="z_user_top">
+            <div class="user_top_tx">
+                <img src="{$user.head_pic}"/>
+            </div>
+            <div class="user_top_name">
+                <a href="javascript:void(0);">{$user['nickname']}</a>
+            </div>
+            <div class="user_top_title">
+                <a href="javascript:void(0);">{$user.user_level.level_name}</a>
+            </div>
+        </div>
+        <div class="z_user_down">
+            <div class="user_down_bg"></div>
+            <ul>
+                <li>
+                    <a href="{:U('Mobile/User/account')}">
+                        <div class="user_down_dev">{$user['user_money']}</div>
+                        <div class="user_down_name">余额</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="{:U('Mobile/User/points_list')}">
+                        <div class="user_down_dev">{$user['pay_points']}</div>
+                        <div class="user_down_name">积分</div>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        
+       <div class="z_user_icon">
+       	<a href="/Mobile/User/userinfo.html">
+       		<i></i>
+       	</a>
+       </div> 
+    </div>
+    <div class="z_user_li_wrap">
+        <volist name="menu_list" id="menu">
+            <switch name="$menu['menu_id']">
+                <case value="1">
+                        <div class="z_user_list border10">
+                            <a href="{$menu.menu_url}">
+                                <div class="user_list_cont padd10">
+                                    <div class="cont_fl">
+                                        <img src="__PUBLIC__/static/images/mlist.png"/>
+                                        <span>我的订单</span>
+                                    </div>
+                                    <div class="cont_fr">
+                                                <span>
+                                                    查看全部
+                                                </span>
+                                        <i class="zMright"></i>
+                                    </div>
+                                </div>
+                            </a>
+                        <div class="z_user_nav">
+                            <ul>
+                                <li>
+                                    <a href="{:U('/Mobile/Order/order_list',array('type'=>'WAITPAY'))}">
+                                        <img src="__PUBLIC__/static/images/q1.png"/>
+
+                                        <p>待付款</p>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{:U('/Mobile/Order/wait_receive',array('type'=>'WAITRECEIVE'))}">
+                                        <img src="__PUBLIC__/static/images/q2.png"/>
+
+                                        <p>待收货</p>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{:U('Mobile/Order/comment',array('status'=>0))}">
+                                        <img src="__PUBLIC__/static/images/q3.png"/>
+
+                                        <p>待评价</p>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{:U('Mobile/Order/return_goods_list',array('type'=>1))}">
+                                        <img src="__PUBLIC__/static/images/q4.png"/>
+
+                                        <p>售后服务</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </case>
+                <default />
+                <a href="{$menu.menu_url}">
+                    <div class="z_user_list <if condition='$menu.is_tab eq 1'>border10</if>">
+                        <div class="user_list_cont padd10">
+                            <div class="cont_fl">
+                                <img src="__PUBLIC__/static/images/w{$menu.menu_id}.png"/>
+                                <span>{$menu.menu_name}</span>
+                            </div>
+                            <div class="cont_fr">
+                                <i class="zMright"></i>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </switch>
+        </volist>
+    </div>
+</div>
+<!--底部导航-start-->
+<include file="public/footer_nav"/>
+<!--底部导航-end-->
+<script>
+    $('.z_user_head').css("background-color", "{$tpshop_config['basic_header_background']}");
+    $(function(){		
+        var ua = window.navigator.userAgent.toLowerCase();
+        if(ua.match(/MicroMessenger/i) == 'micromessenger'){
+            $('#logout').hide();
+        }
+    });
+	$('.border10').css('border-color','#f8f8f8');
+</script>
+</body>
+</html>

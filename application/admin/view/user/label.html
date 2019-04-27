@@ -1,0 +1,126 @@
+<include file="public/layout" />
+<body style="background-color: #FFF; overflow: auto;">
+<div id="toolTipLayer" style="position: absolute; z-index: 9999; display: none; visibility: visible; left: 95px; top: 573px;"></div>
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title"><a class="back" href="javascript:history.back();" title="返回列表"><i class="fa fa-arrow-circle-o-left"></i></a>
+            <div class="subject">
+                <h3>会员标签管理 - 编辑会员标签</h3>
+                <h5>网站系统会员标签管理</h5>
+            </div>
+        </div>
+    </div>
+    <form class="form-horizontal" id="handleposition" method="post">
+        <input type="hidden" name="act" value="{$act}">
+        <input type="hidden" name="label_id" value="{$info.id}">
+        <div class="ncap-form-default">
+
+            <dl class="row">
+                <dt class="tit">
+                    <label for="label_name"><em>*</em>标签名称</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" name="label_name" value="{$info.label_name}" id="label_name" class="input-txt">
+                    <span class="err" id="err_label_name"></span>
+                    <p class="notic">设置会员标签名称</p>
+                </dd>
+            </dl>
+
+            <dl class="row">
+                <dt class="tit">
+                    <label for="label_order"><em>*</em>标签排序</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" name="label_order" value="{$info.label_order}" id="label_order" class="input-txt">
+                    <span class="err" id="err_label_order"></span>
+                    <p class="notic">设置会员标签排序,输入数字(0-99)越小排序约靠前</p>
+                </dd>
+            </dl>
+
+            <dl class="row">
+                <dt class="tit">
+                    <label><em>*</em>标签图片</label>
+                </dt>
+                <dd class="opt">
+                    <div class="input-file-show">
+                        <span class="show">
+                            <a id="img_a" target="_blank" class="nyroModal" rel="gal" href="{$info.label_code}">
+                              <i id="img_i" class="fa fa-picture-o" onmouseover="layer.tips('<img src={$info.label_code}>',this,{tips: [1, '#fff']});" onmouseout="layer.closeAll();"></i>
+                            </a>
+                        </span>
+                        <span class="type-file-box">
+                            <input type="text" id="label_code" name="label_code" value="{$info.label_code}" class="type-file-text">
+                            <input type="button" name="button" id="button1" value="选择上传..." class="type-file-button">
+                            <input class="type-file-file" onClick="GetUploadify(1,'','label','img_call_back')" size="30" hidefocus="true" nc_type="change_site_logo" title="点击前方预览图可查看大图，点击按钮选择文件并提交表单后上传生效">
+                        </span>
+                    </div>
+                    <span class="err"></span>
+                    <p class="notic">请上传图片格式文件,建议图片尺寸400*168像素(宽*高, 如果不按要求上传图片将会导致前端广告显示不友好)</p>
+                </dd>
+            </dl>
+
+            <dl class="row">
+                <dt class="tit">
+                    <label for="label_name"><em></em>标签描述</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" name="label_describe" value="{$info.label_describe}" id="label_describe" class="input-txt">
+                    <span class="err" id="err_label_describe"></span>
+                    <p class="notic">设置会员标签描述</p>
+                </dd>
+            </dl>
+
+            <dl class="row">
+                <dt class="tit">
+                    <label for="label_recommend">标签推荐</label>
+                </dt>
+                <dd class="opt">
+                    <input type="radio" name="is_recommend" value="1" <if condition="$info[is_recommend] eq 1"> checked="checked"</if>> 是
+                    <input type="radio" name="is_recommend" value="0" <if condition="$info[is_recommend] eq 0"> checked="checked"</if>> 否
+                    <span class="err"></span>
+                    <p class="notic"></p>
+                </dd>
+            </dl>
+
+
+
+
+            <div class="bot"><a href="JavaScript:void(0);" onclick="verifyForm()" class="ncap-btn-big ncap-btn-green" id="submitBtn">确认提交</a></div>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+    function verifyForm(){
+        $('span.err').show();
+        $.ajax({
+            type: "POST",
+            url: "{:U('Admin/User/labelHandle')}",
+            data: $('#handleposition').serialize(),
+            dataType: "json",
+            error: function () {
+                layer.alert("服务器繁忙, 请联系管理员!");
+            },
+            success: function (data) {
+                if (data.status == 1) {
+                    layer.msg(data.msg, {icon: 1});
+                    location.href = "{:U('Admin/User/labelList')}";
+                } else {
+                    layer.msg(data.msg, {icon: 2});
+                    $.each(data.result, function (index, item) {
+                        $('#err_' + index).text(item).show();
+                    });
+                }
+            }
+        });
+    }
+    function img_call_back(fileurl_tmp)
+    {
+        $("#label_code").val(fileurl_tmp);
+        $("#img_a").attr('href', fileurl_tmp);
+        $("#img_i").attr('onmouseover', "layer.tips('<img src="+fileurl_tmp+">',this,{tips: [1, '#fff']});");
+    }
+</script>
+</body>
+</html>

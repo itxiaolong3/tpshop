@@ -1,0 +1,395 @@
+<include file="public/layout" />
+<style>
+    .system_img_location{text-align: center; width: 120px;position:absolute;top:15px; margin-left:265px;}
+</style>
+<body style="background-color: #FFF; overflow: auto;">
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>商城设置</h3>
+                <h5>网站全局内容基本选项设置</h5>
+            </div>
+            <ul class="tab-base nc-row">
+                <foreach name="group_list" item="v" key="k">
+                    <li><a href="{:U('System/index',['inc_type'=> $k])}" <if condition="$k==$inc_type">class="current"</if>><span>{$v}</span></a></li>
+                </foreach>
+            </ul>
+        </div>
+    </div>
+    <!-- 操作说明 -->
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom"><i class="fa fa-lightbulb-o"></i>
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示"></span> </div>
+        <ul>
+            <!--<li>系统平台全局设置,包括基础设置、购物、短信、邮件、水印和分销等相关模块。</li>-->
+            <!--<li>该页面的所有默认图标logo在"网站根目录/public/static/images/logo"目录下, 如果需要重新设计图标可参考默认图</li>-->
+            <!--<li>鼠标移到图标LOGO右侧 <a title="图片所在位置" class="pic-thumb-tip" ><i class="fa fa-picture-o"></i></a>会显示该图片大概所在位置</li>-->
+        </ul>
+    </div>
+    <form method="post" id="handlepost" action="{:U('System/handle')}" enctype="multipart/form-data" name="form1">
+        <input type="hidden" name="form_submit" value="ok" />
+        <div class="ncap-form-default">
+            <dl class="row">
+                <dt class="tit">
+                    <label for="record_no">网站备案号</label>
+                </dt>
+                <dd class="opt">
+                    <input id="record_no" name="record_no" value="{$config.record_no}" class="input-txt" type="text" />
+                    <p class="notic">网站备案号，将显示在前台底部欢迎信息等位置</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label for="store_name">网站名称</label>
+                </dt>
+                <dd class="opt">
+                    <input id="store_name" name="store_name" value="{$config.store_name}" class="input-txt" type="text" />
+                    <p class="notic">网站名称，将显示在前台顶部欢迎信息等位置</p>
+                </dd>
+            </dl>
+
+            <!--<dl class="row">-->
+                <!--<dt class="tit">-->
+                    <!--<label for="store_logo">网站Logo</label>-->
+                <!--</dt>-->
+                <!--<dd class="opt">-->
+                    <!--<div class="input-file-show">-->
+                        <!--<span class="show">-->
+                            <!--<a id="store_logo_a" target="_blank" class="nyroModal" rel="gal" href="{$config.store_logo|default='/public/static/images/logo/pc_home_logo_default.png'}">-->
+                                <!--<i id="store_logo_i" class="fa fa-picture-o" onmouseover="layer.tips('<img src={$config.store_logo|default=\'/public/static/images/logo/pc_home_logo_default.png\'}>',this,{tips: [1, '#fff']});" onmouseout="layer.closeAll();"></i>-->
+                            <!--</a>-->
+                        <!--</span>-->
+           	            <!--<span class="type-file-box">-->
+                            <!--<input type="text" id="store_logo" name="store_logo" value="{$config.store_logo|default='/public/static/images/logo/pc_home_logo_default.png'}" class="type-file-text">-->
+                            <!--<input type="button" name="button" id="button1" value="选择上传..." class="type-file-button">-->
+                            <!--<input class="type-file-file" onClick="GetUploadify(1,'store_logo','logo','img_call_back')" size="30" hidefocus="true" nc_type="change_site_logo" title="点击前方预览图可查看大图，点击按钮选择文件并提交表单后上传生效">-->
+                        <!--</span>-->
+                    <!--</div>-->
+                    <!--<div class="system_img_location">-->
+                        <!--<a title="图片所在位置" href="/public/static/images/logo/pc_home_logo_pos.png" class="pic-thumb-tip" onmouseover="layer.tips('<img src=\'/public/static/images/logo/pc_home_logo_pos.png\' style=\'height:500px;width: 500px\'>',this,{tips: [1, '#fff']});" onmouseout="layer.closeAll();"><i class="fa fa-picture-o"></i></a>-->
+                    <!--</div>-->
+                    <!--<span class="err"></span>-->
+                    <!--<p class="notic">默认网站首页LOGO,通用头部显示，最佳显示尺寸为230*58像素</p>-->
+                <!--</dd>-->
+            <!--</dl>-->
+            <!--<dl class="row">-->
+                <!--<dt class="tit">-->
+                    <!--<label for="store_user_logo">网站用户中心Logo</label>-->
+                <!--</dt>-->
+                <!--<dd class="opt">-->
+                    <!--<div class="input-file-show">-->
+                        <!--<span class="show">-->
+                            <!--<a id="store_user_logo_a" class="nyroModal" rel="gal" href="{$config.store_user_logo|default='/public/static/images/logo/pc_home_user_logo_default.png'}">-->
+                                <!--<i id="store_user_logo_i" class="fa fa-picture-o" onmouseover="layer.tips('<img src={$config.store_user_logo|default=\'/public/static/images/logo/pc_home_user_logo_default.png\'}>',this,{tips: [1, '#fff']});" onmouseout="layer.closeAll();"></i>-->
+                            <!--</a>-->
+                        <!--</span>-->
+           	            <!--<span class="type-file-box">-->
+                            <!--<input type="text" id="store_user_logo" name="store_user_logo" value="{$config.store_user_logo|default='/public/static/images/logo/pc_home_user_logo_default.png'}" class="type-file-text">-->
+                            <!--<input type="button" name="button" value="选择上传..." class="type-file-button">-->
+                            <!--<input class="type-file-file" onClick="GetUploadify(1,'store_user_logo','logo','img_call_back')" size="30" hidefocus="true" nc_type="change_site_logo" title="点击前方预览图可查看大图，点击按钮选择文件并提交表单后上传生效">-->
+                        <!--</span>-->
+                    <!--</div>-->
+                    <!--<div class="system_img_location">-->
+                        <!--<a title="图片所在位置" href="/public/static/images/logo/pc_home_user_logo_pos.png" class="pic-thumb-tip" onmouseover="layer.tips('<img src=\'/public/static/images/logo/pc_home_user_logo_pos.png\' style=\'height:500px;width: 500px\'>',this,{tips: [1, '#fff']});" onmouseout="layer.closeAll();">-->
+                            <!--<i class="fa fa-picture-o"></i>-->
+                        <!--</a>-->
+                    <!--</div>-->
+                    <!--<span class="err"></span>-->
+                    <!--<p class="notic">默认用户中心网站LOGO,用户中心通用头部显示，最佳显示尺寸为230*58像素</p>-->
+                <!--</dd>-->
+            <!--</dl>-->
+            <!--<dl class="row">-->
+                <!--<dt class="tit">-->
+                    <!--<label for="store_logo">网站标题图标</label>-->
+                <!--</dt>-->
+                <!--<dd class="opt">-->
+                    <!--<div class="input-file-show">-->
+                        <!--<span class="show">-->
+                            <!--<a id="storeico_a" target="_blank" class="nyroModal" rel="gal" href="{$config.store_ico}">-->
+                                <!--<i id="storeico_i" class="fa fa-picture-o" onmouseover="layer.tips('<img src={$config.store_ico}>',this,{tips: [1, '#fff']});" onmouseout="layer.closeAll();"></i>-->
+                            <!--</a>-->
+                        <!--</span>-->
+           	            <!--<span class="type-file-box">-->
+                            <!--<input type="text" id="store_ico" name="store_ico" value="{$config.store_ico}" class="type-file-text">-->
+                            <!--<input type="button" name="button" id="button_ico" value="选择上传..." class="type-file-button">-->
+                            <!--<input class="type-file-file" onClick="GetUploadify(1,'store_ico','logo','store_ico_call_back')" size="30" hidefocus="true" nc_type="change_site_logo" title="点击前方预览图可查看大图，点击按钮选择文件并提交表单后上传生效">-->
+                        <!--</span>-->
+                    <!--</div>-->
+                    <!--<div class="system_img_location"><a title="图片所在位置" href="/public/static/images/logo/storeico_pos.png" class="pic-thumb-tip" onmouseover="layer.tips('<img src=\'/public/static/images/logo/storeico_pos.png\' style=\'height:500px;width: 500px\'>',this,{tips: [1, '#fff']});" onmouseout="layer.closeAll();"><i class="fa fa-picture-o"></i></a>-->
+                    <!--</div>-->
+                    <!--<span class="err"></span>-->
+                    <!--<p class="notic">网站标题图标LOGO,最佳显示尺寸为48*48像素</p>-->
+                <!--</dd>-->
+            <!--</dl>-->
+            <!--<dl class="row">-->
+                <!--<dt class="tit">-->
+                    <!--<label for="store_title">网站标题</label>-->
+                <!--</dt>-->
+                <!--<dd class="opt">-->
+                    <!--<input id="store_title" name="store_title" value="{$config.store_title}" class="input-txt" type="text" />-->
+                    <!--<p class="notic">网站标题，将显示在前台顶部欢迎信息等位置</p>-->
+                <!--</dd>-->
+            <!--</dl>-->
+            <dl class="row">
+                <dt class="tit">
+                    <label for="store_desc">首页公告</label>
+                </dt>
+                <dd class="opt">
+                    <input id="store_desc" name="store_desc" value="{$config.store_desc}" class="input-txt" type="text" />
+                    <p class="notic">首页公告，将显示在小程序首页位置显示</p>
+                </dd>
+            </dl>
+            <!--<dl class="row">-->
+                <!--<dt class="tit">-->
+                    <!--<label for="store_keyword">网站关键字</label>-->
+                <!--</dt>-->
+                <!--<dd class="opt">-->
+                    <!--<input id="store_keyword" name="store_keyword" value="{$config.store_keyword}" class="input-txt" type="text" />-->
+                    <!--<p class="notic">网站关键字，便于SEO</p>-->
+                <!--</dd>-->
+            <!--</dl>-->
+            <!--<dl class="row">-->
+                <!--<dt class="tit">-->
+                    <!--<label for="admin_login_logo">平台管理员登录页Logo</label>-->
+                <!--</dt>-->
+                <!--<dd class="opt">-->
+                    <!--<div class="input-file-show">-->
+                        <!--<span class="show">-->
+                            <!--<a id="admin_login_logo_a" class="nyroModal" rel="gal" href="{$config.admin_login_logo|default='/public/static/images/logo/admin_login_logo_default.png'}">-->
+                                <!--<i id="admin_login_logo_i" class="fa fa-picture-o" onmouseover="layer.tips('<img src={$config.admin_login_logo|default=\'/public/static/images/logo/admin_login_logo_default.png\'}>',this,{tips: [1, '#fff']});" onmouseout="layer.closeAll();"></i>-->
+                            <!--</a>-->
+                        <!--</span>-->
+           	            <!--<span class="type-file-box">-->
+                            <!--<input type="text" id="admin_login_logo" name="admin_login_logo" value="{$config.admin_login_logo|default='/public/static/images/logo/admin_login_logo_default.png'}" class="type-file-text">-->
+                            <!--<input type="button" name="button" value="选择上传..." class="type-file-button">-->
+                            <!--<input class="type-file-file" onClick="GetUploadify(1,'admin_login_logo','logo','img_call_back')" size="30" hidefocus="true" nc_type="change_site_logo" title="点击前方预览图可查看大图，点击按钮选择文件并提交表单后上传生效">-->
+                        <!--</span>-->
+                    <!--</div>-->
+                    <!--<div class="system_img_location">-->
+                        <!--<a title="图片所在位置" href="/public/static/images/logo/admin_login_logo_pos.png" class="pic-thumb-tip" onmouseover="layer.tips('<img src=\'/public/static/images/logo/admin_login_logo_pos.png\' style=\'height:500px;width: 500px\'>',this,{tips: [1, '#fff']});" onmouseout="layer.closeAll();"><i class="fa fa-picture-o"></i></a>-->
+                    <!--</div>-->
+                    <!--<span class="err"></span>-->
+                    <!--<p class="notic">平台管理员登录页LOGO,最佳显示尺寸为220*82像素</p>-->
+                <!--</dd>-->
+
+            <!--</dl>-->
+            <!--<dl class="row">-->
+                <!--<dt class="tit">-->
+                    <!--<label for="admin_home_logo">平台后台顶部Logo</label>-->
+                <!--</dt>-->
+                <!--<dd class="opt">-->
+                    <!--<div class="input-file-show">-->
+                        <!--<span class="show">-->
+                            <!--<a id="admin_home_logo_a" class="nyroModal" rel="gal" href="{$config.admin_home_logo|default='/public/static/images/logo/admin_home_logo_default.png'}">-->
+                                <!--<i id="admin_home_logo_i" class="fa fa-picture-o" onmouseover="layer.tips('<img src={$config.admin_home_logo|default=\'/public/static/images/logo/admin_home_logo_default.png\'}>',this,{tips: [1, '#fff']});" onmouseout="layer.closeAll();"></i>-->
+                            <!--</a>-->
+                        <!--</span>-->
+           	            <!--<span class="type-file-box">-->
+                            <!--<input type="text" id="admin_home_logo" name="admin_home_logo" value="{$config.admin_home_logo|default='/public/static/images/logo/admin_home_logo_default.png'}" class="type-file-text">-->
+                            <!--<input type="button" name="button" value="选择上传..." class="type-file-button">-->
+                            <!--<input class="type-file-file" onClick="GetUploadify(1,'admin_home_logo','logo','img_call_back')" size="30" hidefocus="true" nc_type="change_site_logo" title="点击前方预览图可查看大图，点击按钮选择文件并提交表单后上传生效">-->
+                        <!--</span>-->
+                    <!--</div>-->
+                    <!--<div class="system_img_location">-->
+                        <!--<a title="图片所在位置" href="/public/static/images/logo/admin_home_logo_pos.png" class="pic-thumb-tip" onmouseover="layer.tips('<img src=\'/public/static/images/logo/admin_home_logo_pos.png\' style=\'height:500px;width: 500px\'>',this,{tips: [1, '#fff']});" onmouseout="layer.closeAll();"><i class="fa fa-picture-o"></i></a>-->
+                    <!--</div>-->
+                    <!--<span class="err"></span>-->
+                    <!--<p class="notic">平台后台顶部LOGO,最佳显示尺寸为148*28像素</p>-->
+                <!--</dd>-->
+
+            <!--</dl>-->
+            <!--<dl class="row">-->
+                <!--<dt class="tit">-->
+                    <!--<label for="wap_home_logo">手机端首页Logo</label>-->
+                <!--</dt>-->
+                <!--<dd class="opt">-->
+                    <!--<div class="input-file-show">-->
+                        <!--<span class="show">-->
+                            <!--<a id="wap_home_logo_a" class="nyroModal" rel="gal" href="{$config.wap_home_logo|default='/public/static/images/logo/wap_home_logo_default.png'}">-->
+                                <!--<i id="wap_home_logo_i" class="fa fa-picture-o" onmouseover="layer.tips('<img src={$config.wap_home_logo|default=\'/public/static/images/logo/wap_home_logo_default.png\'}>',this,{tips: [1, '#fff']});" onmouseout="layer.closeAll();"></i>-->
+                            <!--</a>-->
+                        <!--</span>-->
+           	            <!--<span class="type-file-box">-->
+                            <!--<input type="text" id="wap_home_logo" name="wap_home_logo" value="{$config.wap_home_logo|default='/public/static/images/logo/wap_home_logo_default.png'}" class="type-file-text">-->
+                            <!--<input type="button" name="button" value="选择上传..." class="type-file-button">-->
+                            <!--<input class="type-file-file" onClick="GetUploadify(1,'wap_home_logo','logo','img_call_back')" size="30" hidefocus="true" nc_type="change_site_logo" title="点击前方预览图可查看大图，点击按钮选择文件并提交表单后上传生效">-->
+                        <!--</span>-->
+                    <!--</div>-->
+                    <!--<div class="system_img_location">-->
+                        <!--<a title="图片所在位置" href="/public/static/images/logo/wap_home_logo_pos.png" class="pic-thumb-tip" onmouseover="layer.tips('<img src=\'/public/static/images/logo/wap_home_logo_pos.png\' style=\'height:500px;width: 500px\'>',this,{tips: [1, '#fff']});" onmouseout="layer.closeAll();"><i class="fa fa-picture-o"></i></a>-->
+                    <!--</div>-->
+                    <!--<span class="err"></span>-->
+                    <!--<p class="notic">手机端首页搜索框LOGO,最佳显示尺寸为48*48像素</p>-->
+                <!--</dd>-->
+            <!--</dl>-->
+            <!--<dl class="row">-->
+                <!--<dt class="tit">-->
+                    <!--<label for="wap_login_logo">手机端登录页Logo</label>-->
+                <!--</dt>-->
+                <!--<dd class="opt">-->
+                    <!--<div class="input-file-show">-->
+                        <!--<span class="show">-->
+                            <!--<a id="wap_login_logo_a" class="nyroModal" rel="gal" href="{$config.wap_login_logo|default='/public/static/images/logo/wap_logo_default.png'}">-->
+                                <!--<i id="wap_login_logo_i" class="fa fa-picture-o" onmouseover="layer.tips('<img src={$config.wap_login_logo|default=\'/public/static/images/logo/wap_logo_default.png\'}>',this,{tips: [1, '#fff']});" onmouseout="layer.closeAll();"></i>-->
+                            <!--</a>-->
+                        <!--</span>-->
+           	            <!--<span class="type-file-box">-->
+                            <!--<input type="text" id="wap_login_logo" name="wap_login_logo" value="{$config.wap_login_logo|default='/public/static/images/logo/wap_logo_default.png'}" class="type-file-text">-->
+                            <!--<input type="button" name="button" value="选择上传..." class="type-file-button">-->
+                            <!--<input class="type-file-file" onClick="GetUploadify(1,'wap_login_logo','logo','img_call_back')" size="30" hidefocus="true" nc_type="change_site_logo" title="点击前方预览图可查看大图，点击按钮选择文件并提交表单后上传生效">-->
+                        <!--</span>-->
+                    <!--</div>-->
+                    <!--<div class="system_img_location">-->
+                        <!--<a title="图片所在位置" href="/public/static/images/logo/wap_login_logo_pos.png" class="pic-thumb-tip" onmouseover="layer.tips('<img src=\'/public/static/images/logo/wap_login_logo_pos.png\' style=\'height:500px;width: 500px\'>',this,{tips: [1, '#fff']});" onmouseout="layer.closeAll();"><i class="fa fa-picture-o"></i></a>-->
+                    <!--</div>-->
+                    <!--<span class="err"></span>-->
+                    <!--<p class="notic">手机端登录页LOGO,最佳显示尺寸为312*92像素</p>-->
+                <!--</dd>-->
+
+            <!--</dl>-->
+
+
+            <dl class="row">
+                <dt class="tit">
+                    <label for="contact">联系人</label>
+                </dt>
+                <dd class="opt">
+                    <input id="contact" name="contact" value="{$config.contact}" class="input-txt" type="text" />
+                    <p class="notic">联系人</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label for="phone">联系电话</label>
+                </dt>
+                <dd class="opt">
+                    <input id="phone" name="phone" value="{$config.phone}" class="input-txt" type="text" />
+                    <p class="notic">PC页面底部显示，方便买家遇到问题时咨询,固话格式如：0755-88888888</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label for="phone">联系手机</label>
+                </dt>
+                <dd class="opt">
+                    <input name="mobile" value="{$config.mobile}" class="input-txt" type="text" />
+                    <p class="notic">方便买家遇到问题时咨询</p>
+                    <!--<p class="notic">2.客服电话, 当用户下单时接收下单提示短信</p>-->
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label for="address">所在地区</label>
+                </dt>
+                <dd class="opt">
+                    <select onchange="get_city(this)" id="province" name="province">
+                        <option  value="0">选择省份</option>
+                        <volist name="province" id="vo">
+                            <option value="{$vo.id}" <if condition="$config[province] eq $vo[id]">selected</if>>{$vo.name}</option>
+                        </volist>
+                    </select>
+                    <select onchange="get_area(this);" id="city" name="city">
+                        <option value="0">选择城市</option>
+                        <volist name="city" id="vo">
+                            <option value="{$vo.id}" <if condition="$config[city] eq $vo[id]">selected</if>>{$vo.name}</option>
+                        </volist>
+                    </select>
+                    <select id="district" name="district">
+                        <option value="0">选择区域</option>
+                        <volist name="area" id="vo">
+                            <option value="{$vo.id}" <if condition="$config[district] eq $vo[id]">selected</if>>{$vo.name}</option>
+                        </volist>
+                    </select>
+                    
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label for="address">详细地址</label>
+                </dt>
+                <dd class="opt">
+                	<input id="address" name="address" value="{$config.address}" class="input-txt" type="text" />
+                </dd>	
+            </dl>   
+            <!--<dl class="row">-->
+                <!--<dt class="tit">-->
+                    <!--<label for="qq">平台客服QQ1</label>-->
+                <!--</dt>-->
+                <!--<dd class="opt">-->
+                    <!--<input id="qq" name="qq" value="{$config.qq}" class="input-txt" type="text">-->
+                    <!--<span class="err"></span>-->
+                    <!--<p class="notic">客户端显示，方便买家遇到问题时咨询</p>-->
+                <!--</dd>-->
+            <!--</dl>-->
+            <!--<dl class="row">-->
+                <!--<dt class="tit">-->
+                    <!--<label for="qq2">平台客服QQ2</label>-->
+                <!--</dt>-->
+                <!--<dd class="opt">-->
+                    <!--<input id="qq2" name="qq2" value="{$config.qq2}" class="input-txt" type="text">-->
+                    <!--<span class="err"></span>-->
+                    <!--<p class="notic">客户端显示，方便买家遇到问题时咨询</p>-->
+                <!--</dd>-->
+            <!--</dl>-->
+            <!--<dl class="row">-->
+                <!--<dt class="tit">-->
+                    <!--<label for="qq3">平台客服QQ3</label>-->
+                <!--</dt>-->
+                <!--<dd class="opt">-->
+                    <!--<input id="qq3"  name="qq3" value="{$config.qq3}" class="input-txt" type="text">-->
+                    <!--<span class="err"></span>-->
+                    <!--<p class="notic">客户端显示，方便买家遇到问题时咨询</p>-->
+                <!--</dd>-->
+            <!--</dl>-->
+            <div class="bot">
+                <input type="hidden" name="inc_type" value="{$inc_type}">
+                <a href="JavaScript:void(0);" class="ncap-btn-big ncap-btn-green" onclick="submit()">确认提交</a>
+            </div>
+        </div>
+    </form>
+</div>
+<div id="goTop"> <a href="JavaScript:void(0);" id="btntop"><i class="fa fa-angle-up"></i></a><a href="JavaScript:void(0);" id="btnbottom"><i class="fa fa-angle-down"></i></a></div>
+</body>
+<script type="text/javascript">
+    function submit(){
+        if(checkPhone()){
+            document.form1.submit();
+        };
+    }
+    function checkPhone()
+    {
+        var phone = $('#phone').val();
+        if( !checkTelphones(phone)){
+            layer.alert('请输入正确的号码！',{icon:2});
+            return false;
+        }
+        return true;
+    }
+    //网站图标
+    function img_call_back(fileurl_tmp , elementid)
+    {
+        $("#"+elementid).val(fileurl_tmp);
+        $("#"+elementid+'_a').attr('href', fileurl_tmp);
+        $("#"+elementid+'_i').attr('onmouseover', "layer.tips('<img src="+fileurl_tmp+">',this,{tips: [1, '#fff']});");
+    }
+    //网站用户中心logo
+    function user_img_call_back(fileurl_tmp)
+    {
+        $("#store_user_logo").val(fileurl_tmp);
+        $("#userimg_a").attr('href', fileurl_tmp);
+        $("#userimg_i").attr('onmouseover', "layer.tips('<img src="+fileurl_tmp+">',this,{tips: [1, '#fff']});");
+    }
+    //网站图标
+    function store_ico_call_back(fileurl_tmp)
+    {
+        $("#store_ico").val(fileurl_tmp);
+        $("#storeico_a").attr('href', fileurl_tmp);
+        $("#storeico_i").attr('onmouseover', "layer.tips('<img src="+fileurl_tmp+">',this,{tips: [1, '#fff']});");
+    }
+   
+</script>
+</html>

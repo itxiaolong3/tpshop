@@ -1,0 +1,250 @@
+<include file="public/header" title="设置" body="g4"/>
+<include file="public/header_nav" title="设置" href="javascript:history.back(-1);"/>
+<script type="text/javascript" src="__ROOT__/public/static/js/datePicker/datePicker.js"></script>
+		<div class="floor my p setting">
+			<div class="content">
+				<div class="floor list7">
+					<div class="myorder he p">
+						<div class="content30">
+							<div class="order">
+								<div class="fl">
+									<span>头像</span>
+									<span class="bridh"></span>
+								</div>
+								<div class="fr">
+									<!--<a href="">-->
+										<div class="hendicon">
+											<span></span>
+											<form id="head_pic" method="post" enctype="multipart/form-data">
+											<label class="file" style="cursor:pointer;">
+											<div class="around" id="fileList">
+												<img src="{$user.head_pic|default='__STATIC__/images/user68.jpg'}"/>
+												<input  type="file" accept="image/*" name="head_pic"  onchange="handleFiles(this)" style="display:none">
+											</div></label>
+											</form>
+										</div>
+									<!--</a>-->
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="myorder p">
+						<div class="content30">
+							<a href="{:U('Mobile/User/userinfo',array('action'=>'nickname'))}">
+								<div class="order">
+									<div class="fl">
+										<span>用户名</span>
+									</div>
+									<div class="fr">
+                                        <span>{$user.nickname}</span>
+										<i class="Mright"></i>
+									</div>
+								</div>
+							</a>
+						</div>
+					</div>
+					<div class="myorder p">
+						<div class="content30">
+							<a href="{:U('Mobile/User/userinfo',array('action'=>'sex'))}">
+								<div class="order">
+									<div class="fl">
+										<span>性别</span>
+									</div>
+									<div class="fr">
+                                        <span>{$sex[$user.sex]}</span>
+										<i class="Mright"></i>
+									</div>
+								</div>
+							</a>
+						</div>
+					</div>
+                    <div class="myorder p">
+						<div class="content30">
+								<div class="order">
+									<div class="fl">
+										<span>生日</span>
+									</div>
+									<div class="fr" id="birthday_time">
+                                        <form id="birthday_submit" method="post" enctype="multipart/form-data">
+                                            <span>{:date('Y-m-d',$user.birthday)}</span>
+                                            <input  type="hidden" name="birthday" id="birthday" value="{:date('Y-m-d',$user.birthday)}">
+                                            <i class="Mright"></i>
+                                        </form>
+									</div>
+								</div>
+						</div>
+					</div>
+                    <script>
+                        var calendar = new datePicker();
+                        calendar.init({
+                            'trigger': '#birthday_time', /*按钮选择器，用于触发弹出插件*/
+                            'type'   : 'date',      /*模式：date日期；datetime日期时间；time时间；ym年月；*/
+                            'minDate':'1900-1-1',   /*最小日期*/
+                            'maxDate':'2100-12-31',   /*最大日期*/
+                            'onSubmit':function(){  /*确认时触发事件*/
+                                $('#birthday').val(calendar.value);
+                                $('#birthday_submit').submit();
+                            },
+                            'onClose':function(){   /*取消时触发事件*/
+                            }
+                        });
+                        $("#birthday_time").focus(function(){
+                            document.activeElement.blur();
+                        });
+                    </script>
+					<div class="myorder p">
+						<div class="content30">
+							<a href="{:U('Mobile/User/setMobile')}">
+								<div class="order">
+									<div class="fl">
+										<span>手机</span>
+									</div>
+									<div class="fr">
+                                        <span>{$user.mobile}</span>
+										<i class="Mright"></i>
+									</div>
+								</div>
+							</a>
+						</div>
+					</div>
+					<div class="myorder p bo">
+						<div class="content30">
+							<a href="{:U('Mobile/User/userinfo',array('action'=>'email'))}">
+								<div class="order">
+									<div class="fl">
+										<span>邮箱</span>
+									</div>
+									<div class="fr">
+                                        <span>{$user.email}</span>
+										<i class="Mright"></i>
+									</div>
+								</div>
+							</a>
+						</div>
+					</div>
+					<div class="myorder p ma-to-20">
+						<div class="content30">
+							<a href="{:U('Mobile/User/password')}">
+								<div class="order">
+									<div class="fl">
+										<span>修改密码</span>
+									</div>
+									<div class="fr">
+										<i class="Mright"></i>
+									</div>
+								</div>
+							</a>
+						</div>
+					</div>
+                    <div class="myorder p">
+                        <div class="content30">
+                            <a href="{:U('Mobile/User/paypwd')}">
+                                <div class="order">
+                                    <div class="fl">
+                                        <span>支付密码</span>
+                                    </div>
+                                    <div class="fr">
+                                        <i class="Mright"></i>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+					<div class="myorder p">
+						<div class="content30">
+							<a href="{:U('Mobile/User/address_list')}">
+								<div class="order">
+									<div class="fl">
+										<span>收货地址</span>
+									</div>
+									<div class="fr">
+										<i class="Mright"></i>
+									</div>
+								</div>
+							</a>
+						</div>
+					</div>
+					<!--<div class="myorder p bo">
+						<div class="content30">
+							<a href="{:U('Mobile/User/authinfo')}">
+								<div class="order">
+									<div class="fl">
+										<span>实名认证</span>
+									</div>
+									<div class="fr">
+										<i class="Mright"></i>
+									</div>
+								</div>
+							</a>
+						</div>
+					&lt;!&ndash;</div>&ndash;&gt;
+				</div>-->
+			</div>
+			<div class="close">
+                <if condition="!$is_wx">
+				<a href="{:U('User/logout')}" id="logout">安全退出</a>
+                </if>
+				<a id="asubmit" style="display:none;" href="javascript:;" onclick="javascript:$('#head_pic').submit();">保存头像</a>
+			</div>
+		</div>
+      </div>
+<script>
+//显示上传照片
+window.URL = window.URL || window.webkitURL;
+function handleFiles(obj) {
+    fileList = document.getElementById("fileList");
+    var files = obj.files;
+    img = new Image();
+    if(window.URL){
+        img.src = window.URL.createObjectURL(files[0]); //创建一个object URL，并不是你的本地路径
+        img.width = 60;
+        img.height = 60;
+        img.onload = function(e) {
+            window.URL.revokeObjectURL(this.src); //图片加载后，释放object URL
+        }
+        if(fileList.firstElementChild){
+            fileList.removeChild(fileList.firstElementChild);
+        }
+        $('#fileList').find('img').remove();
+        fileList.appendChild(img);
+    }else if(window.FileReader){
+        //opera不支持createObjectURL/revokeObjectURL方法。我们用FileReader对象来处理
+        var reader = new FileReader();
+        reader.readAsDataURL(files[0]);
+        reader.onload = function(e){
+            img.src = this.result;
+            img.width = 60;
+            img.height = 60;
+            $('#fileList').find('img').remove();
+            fileList.appendChild(img);
+        }
+    }else
+    {
+        //ie
+        obj.select();
+        obj.blur();
+        var nfile = document.selection.createRange().text;
+        document.selection.empty();
+        img.src = nfile;
+        img.width = 60;
+        img.height = 60;
+        img.onload=function(){
+
+        }
+        $('#fileList').find('img').remove();
+        fileList.appendChild(img);
+    }
+    $('#asubmit').show();
+    $('#logout').hide();
+    $('#head_pic').submit();
+}
+$(function(){
+    var ua = window.navigator.userAgent.toLowerCase();
+    if(ua.match(/MicroMessenger/i) == 'micromessenger'){
+    	$('#logout').hide();
+    }
+});
+</script>
+
+	</body>
+</html>

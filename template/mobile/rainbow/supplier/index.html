@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>客服-{$tpshop_config['shop_info_store_title']}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="Access-Control-Allow-Origin" content="*" />
+    <link rel="stylesheet" href="http://{$tpshop_config.basic_im_website}/static/test/common/layui/css/layui.mobile.css" media="all">
+</head>
+<body>
+<!--订单编号 下单时间 收货地址 收货人-->
+<a user_id="{$user['user_id']}" uname="{$user['nickname']}" avatar="{$user['head_pic']}" sign="" goods_id="{$user['goods_id']}" web_id='{$Request.host}' im_href="{$tpshop_config.basic_im_website}"
+   order_id="{$order.order_id}" order_sn="{$order.order_sn}" add_time="{:date('Y-m-d  H:i:s', $order.add_time)}"  full_address="{$order.full_address}" consignee="{$order.consignee} {$order.mobile}" id="workerman-kefu"></a>
+</body>
+<script type="text/javascript" src="http://{$tpshop_config.basic_im_website}/static/test/common/jquery.min.js"></script>
+<script type="text/javascript" src="http://{$tpshop_config.basic_im_website}/static/test/common/layui/layui.js"></script>
+<script type="text/javascript" src="http://{$tpshop_config.basic_im_website}/static/test/common/js/main.mobile.js"></script>
+</html>

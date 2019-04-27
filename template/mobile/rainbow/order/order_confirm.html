@@ -1,0 +1,41 @@
+<include file="public/header" title="确认收货成功" body="f3"/>
+<include file="public/header_nav" title="确认收货成功" href="javascript:history.back(-1)" />
+<div class="euresucess">
+    <img src="__STATIC__/images/sch.png"/>
+    <p>确认收货成功</p>
+</div>
+<div class="sonfbst">
+    <div class="maleri30">
+        <if condition="$goods['is_send'] elt 2">
+        <span><i class="fbs"></i>立即发表评价晒图，最多可获得50积分</span>
+        </if>
+    </div>
+</div>
+<div class="quedbox bg_white">
+    <div class="fukcuid mae">
+        <div class="maleri30">
+            <foreach name="order_goods.result" item="goods">
+                <div class="shopprice p">
+                    <div class="img_or fl"><img src="{$goods[goods_id]|goods_thum_images=100,100}"></div>
+                    <div class="fon_or fl">
+                        <h2 class="similar-product-text">
+                            <a href="{:U('Mobile/Goods/goodsInfo',array('id'=>$goods[goods_id]))}">{$goods[goods_name]}</a>
+                            <p>{$goods[spec_key_name]}</p>
+                        </h2>
+                        <if condition="$goods['is_send'] elt 2">
+                            <a class="compj" href="{:U('Mobile/Order/add_comment',['rec_id'=>$goods[rec_id]])}">去评价</a>
+                        </if>
+                        <if condition="$goods['is_send'] egt 2">
+                            <a class="compj" href="{:U('Mobile/Order/order_detail',array('id'=>I('id')))}">已完成售后</a>
+                        </if>
+                        <if condition="$goods['is_send'] eq 0">
+                            <a class="compj">未发货</a>
+                        </if>
+                    </div>
+                </div>
+            </foreach>
+        </div>
+    </div>
+</div>
+</body>
+</html>

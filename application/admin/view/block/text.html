@@ -1,0 +1,156 @@
+<div class="tpd-diy-js tpd-text" data-eidtid="17">
+    <div class="tpd-diy-title">单文本</div>
+    <!--<div class="tpd-text-set">选择文本 </div>
+     <div class="tpd-txtnav-text tpd-select-chenr">
+        <div class="tpd-txtnav-list" >
+                                 普通版
+        </div>
+        <div class="tpd-txtnav-list">
+                                标题版
+        </div>
+    </div>-->
+    <div class="tpd-text-set">文字设置 </div>
+    
+    <div class="tpd-txtnav-text tpd-txtnav-chenr">
+        <label>字体位置 :</label>
+        <div class="tpd-txtnav-list" data-texts="left">
+            靠左
+        </div>
+        <div class="tpd-txtnav-list" data-texts="center" >
+            居中
+        </div>
+        <div class="tpd-txtnav-list" data-texts="right">
+            靠右
+        </div>
+    </div>
+    <div class="tpd-txtnav-text tpd-txtnav-bgcolor">
+        <label>背景颜色 :</label>
+        <input type="color"  name="text_bg_color" id="text_bg_color" value="" />
+    </div>
+    <div class="tpd-txtnav-text tpd-txtnav-bgcolor">
+        <label>字体颜色 :</label>
+        <input type="color"  name="text_font_color" id="text_font_color" value="" />
+    </div>
+    <label class="tpd-diy-bb tpd-cdiy-font28">下间距 :<input type="text"  value="0" id="text_margin_bottom" name="text_margin_bottom"/>px</label>
+    <div class="tpd-txtnav-text">
+        <label>字体大小 :</label>
+        <div  class="slider-font-wrap" >
+            <div id="slider-range-max" class="slider-font" ></div>
+        </div>
+        <em class="amount-font"><input type="text" id="amount" name="text_font"/>px</em>
+    </div>
+    <ul class="tpd-cdiy-list">
+        <li>
+            <div class="tpd-txtnav-set">
+                <div class="tpd-txtnav-name tpd-cdiy-font28">文本标签 : <input id="txt_nav" onblur="change_text_title(this);" class="maxword-input-js" data-classid="13" data-maxlength="15" type="text" value="查看更多" /><span><i class="now-words">4</i>/15</span></div>
+                <div class="tpd-txtnav-addlink tpd-cdiy-font28">
+                    <label>链接设置 : </label>
+                    <div class="tpd-addlink-target" id="txt_url"><i></i>添加链接目标</div>
+                </div>
+            </div>
+        </li>
+    </ul>
+    <script type="text/javascript">
+    	
+        // txt_title
+        $(".tpd-txtnav-chenr,.tpd-select-chenr").find(".tpd-txtnav-list").eq(0).addClass("txtnav-list-color");
+//      
+//      $(".tpd-select-chenr").find(".tpd-txtnav-list").click(function  () {
+//      	 $(this).siblings().removeClass("txtnav-list-color");
+//           $(this).addClass("txtnav-list-color");
+//           $('.tpd-edits-hidden.tpd-editing').find('.js-code-wrap').html(diyHtml['tpd-text'][$(this).index()]);
+//      })
+//      
+        $(".tpd-txtnav-chenr").find(".tpd-txtnav-list").click(function  () {
+            set_text_align($(this).attr("data-texts"));
+        });
+        // 设置居中 text_align
+        function set_text_align(text_align){
+            $(".tpd-txtnav-chenr .tpd-txtnav-list").each(function(){
+                if($(this).attr("data-texts") == text_align){
+                    $(this).siblings().removeClass("txtnav-list-color");
+                    $(this).addClass("txtnav-list-color");
+                    $('.tpd-edits-hidden.tpd-editing').find(".tpd-text-cont").css("text-align",text_align);
+                    block[divid].text_align = text_align;
+                }
+            })
+        }
+//							选择背景颜色
+        function textsBg () {
+//							获取颜色值
+            var colordata = document.querySelector('#text_bg_color');
+            var colorFontdata = document.querySelector('#text_font_color');
+            //	点击确定选择颜色替换背景颜色
+            colordata.onchange = function() {
+                var text_bg_color= this.value;
+                $('.tpd-edits-hidden.tpd-editing').find(".tpd-text-cont").css("background-color",text_bg_color);
+                block[divid].text_bg_color = text_bg_color;
+                console.log("text_bg_color", text_bg_color)
+            }
+            //	点击确定选择颜色替换字体颜色
+            colorFontdata.onchange=function  () {
+                var text_font_color= this.value;
+                $('.tpd-edits-hidden.tpd-editing').find(".tpd-text-cont").css("color",text_font_color);
+                block[divid].text_font_color = text_font_color;
+                console.log("text_font_color", text_font_color)
+            }
+        };
+        textsBg();
+        //	                     	设置字体大小
+        $(function() {
+            $( "#slider-range-max" ).slider({
+                range: "max",
+                min: 0,
+                max: 100,
+                value: 14,
+                slide: function( event, ui ) {
+                    set_text_font(ui.value)
+                    /*$( "#amount" ).val( ui.value );
+                    $('.tpd-edits-hidden.tpd-editing').find(".tpd-text-cont").css("font-size",ui.value);
+                    $('.tpd-edits-hidden.tpd-editing').find(".tpd-text-cont").attr("txtNav_fonts",ui.value);
+                    block[divid].text_font = ui.value;*/
+                }
+            });
+            $( "#amount" ).val( $( "#slider-range-max" ).slider( "value" ) );
+        });
+        function set_text_font(text_font){
+            $( "#amount" ).val( text_font);
+            $( "#slider-range-max" ).slider({value:text_font});
+            block[divid].text_font = text_font;
+            $('.tpd-edits-hidden.tpd-editing').find(".tpd-text-cont").css("font-size",text_font);
+            $('.tpd-edits-hidden.tpd-editing').find(".tpd-text-cont").attr("txtNav_fonts",text_font);
+        }
+        function change_text_title(obj){
+            set_text_title($(obj).val())
+        }
+        function set_text_title(txt_title){
+            block[divid].txt_title = txt_title;
+            $('.tpd-edits-hidden.tpd-editing').find('a').html(txt_title)
+        }
+        function show_text(){
+            console.log(block[divid])
+            $('.tpd-edits-hidden.tpd-editing').find('a').html(block[divid].txt_title)
+            var text_font = block[divid].text_font?block[divid].text_font:14;
+            $('.tpd-edits-hidden.tpd-editing').find(".tpd-text-cont").css("font-size",text_font);
+            $('.tpd-edits-hidden.tpd-editing').find(".tpd-text-cont").attr("txtNav_fonts",text_font);
+            $( "#amount" ).val( text_font);
+            $( "#slider-range-max" ).slider({value:text_font});
+            $('.tpd-edits-hidden.tpd-editing').find(".tpd-text-cont").css("color",block[divid].text_font_color);
+            $('.tpd-edits-hidden.tpd-editing').find(".tpd-text-cont").css("background-color",block[divid].text_bg_color);
+            set_text_align(block[divid].text_align);
+
+            $(".tpd-text").find('.maxword-input-js').val(block[divid].txt_title);
+            if(block[divid].txt_title){
+                console.log(block[divid].txt_title,block[divid].txt_title.length)
+                $('#txt_nav').val(block[divid].txt_title);
+                $('.tpd-text').find('ul').find('.tpd-txtnav-name').find('i').html(block[divid].txt_title.length)
+            }
+            if(block[divid].url){
+                $('.tpd-edits-hidden.tpd-editing').find('a').attr('href',block[divid].url);
+                $(".tpd-text").find('.tpd-addlink-target').html(block[divid].url)
+            }
+            $("#text_bg_color").val(block[divid].text_bg_color)
+            $("#text_font_color").val(block[divid].text_font_color)
+        }
+    </script>
+</div>

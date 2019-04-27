@@ -1,0 +1,238 @@
+<include file="public/layout" />
+<body style="background-color: rgb(255, 255, 255); overflow: auto; cursor: default; -moz-user-select: inherit;">
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+	<div class="fixed-bar">
+		<div class="item-title">
+			<div class="subject">
+				<h3>拼团管理</h3>
+				<h5>网站系统拼团活动审核与管理</h5>
+			</div>
+		</div>
+	</div>
+	<!-- 操作说明 -->
+	<div id="explanation" class="explanation" style="color: rgb(44, 188, 163); background-color: rgb(237, 251, 248); width: 99%; height: 100%;">
+		<div id="checkZoom" class="title"><i class="fa fa-lightbulb-o"></i>
+			<h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+			<span title="收起提示" id="explanationZoom" style="display: block;"></span>
+		</div>
+		<ul>
+			<li>拼团管理, 由平台设置管理.</li>
+		</ul>
+	</div>
+	<div class="flexigrid">
+		<div class="mDiv">
+			<div class="ftitle">
+				<h3>拼团活动列表</h3>
+				<h5>(共{$page->totalRows}条记录)</h5>
+                <!--<div class="fbutton" style="margin-left: 30px;">-->
+                    <!--<a href="http://help.tp-shop.cn/Index/Help/info/cat_id/5/id/496.html" target="_blank">-->
+                        <!--<div class="" title="帮助">-->
+                            <!--<span>帮助</span>-->
+                        <!--</div>-->
+                    <!--</a>-->
+                <!--</div>-->
+			</div>
+			<a href=""><div title="刷新数据" class="pReload"><i class="fa fa-refresh"></i></div></a>
+		</div>
+		<div class="hDiv">
+			<div class="hDivBox">
+				<table cellspacing="0" cellpadding="0">
+					<thead>
+					<tr>
+						<th class="sign" axis="col0">
+							<div style="width: 24px;"><i class="ico-check"></i></div>
+						</th>
+						<th align="left" abbr="article_title" axis="col3" class="">
+							<div style="text-align: left; width: 50px;" class="">拼团ID</div>
+						</th>
+						<th align="left" abbr="ac_id" axis="col4" class="">
+							<div style="text-align: center; width: 100px;" class="">拼团标题</div>
+						</th>
+						<th align="left" abbr="ac_id" axis="col4" class="">
+							<div style="text-align: center; width: 240px;" class="">拼团商品</div>
+						</th>
+						<th align="center" abbr="article_time" axis="col6" class="">
+							<div style="text-align: center; width: 80px;" class="">拼团类型</div>
+						</th>
+						<th align="center" abbr="article_time" axis="col6" class="">
+							<div style="text-align: center; width: 80px;" class="">成团有效期</div>
+						</th>
+						<th align="center" abbr="article_time" axis="col6" class="">
+							<div style="text-align: center; width: 80px;" class="">需要成团人数</div>
+						</th>
+						<th align="center" abbr="article_time" axis="col6" class="">
+							<div style="text-align: center; width: 80px;" class="">购买限制数</div>
+						</th>
+						<th align="center" abbr="article_time" axis="col6" class="">
+							<div style="text-align: center; width: 80px;" class="">是否启动</div>
+						</th>
+						<th align="left" axis="col1" class="handle">
+							<div style="text-align: center; width: 240px;">操作</div>
+						</th>
+						<th style="width:100%" axis="col7">
+							<div></div>
+						</th>
+					</tr>
+					</thead>
+				</table>
+			</div>
+		</div>
+		<div class="tDiv">
+			<div class="tDiv2">
+				<a href="{:U('Team/info')}">
+					<div class="fbutton">
+						<div title="添加拼团" class="add">
+							<span><i class="fa fa-plus"></i>添加拼团</span>
+						</div>
+					</div>
+				</a>
+			</div>
+			<div style="clear:both"></div>
+		</div>
+		<div class="bDiv" style="height: auto;">
+			<div id="flexigrid" cellpadding="0" cellspacing="0" border="0">
+				<table>
+					<tbody>
+					<volist name="list" id="team">
+						<tr>
+							<td class="sign">
+								<div style="width: 24px;"><i class="ico-check"></i></div>
+							</td>
+							<td align="left" class="">
+								<div style="text-align: left; width: 50px;">{$team.team_id}</div>
+							</td>
+							<td align="left" class="">
+								<div style="text-align: left; width: 100px;"><a href="{:U('Mobile/Team/info',['team_id'=>$team.team_id, 'item_id'=>$team['team_goods_item'][0]['item_id']])}" target="_blank" >{$team.act_name|getSubstr=0,20}</a></div>
+							</td>
+							<td align="left" class="">
+								<div style="text-align: center; width: 240px;">
+									<a href="{:U('Mobile/Goods/goodsInfo',['id'=>$team.goods_id, 'item_id'=>$team['team_goods_item'][0]['item_id']])}" target="_blank">
+										{$team.goods_name|getSubstr=0,20}
+									</a>
+								</div>
+							</td>
+							<td align="left" class="">
+								<div style="text-align: center; width: 80px;">{$team.team_type_desc}</div>
+							</td>
+							<td align="left" class="">
+								<div style="text-align: center; width: 80px;">{$team.time_limit_hours}小时</div>
+							</td>
+							<td align="left" class="">
+								<div style="text-align: center; width: 80px;">{$team.needer}</div>
+							</td>
+							<td align="left" class="">
+								<div style="text-align: center; width: 80px;">{$team.buy_limit}</div>
+							</td>
+							<td align="left" class="">
+								<div style="text-align: center; width: 80px;">
+									<if condition='$team[status] eq 1'>
+										<span class="yes" onClick="changeTableVal('team_activity','team_id','{$team.team_id}','status',this,'是','否')" ><i class="fa fa-check-circle"></i>是</span>
+										<else />
+										<span class="no" onClick="changeTableVal('team_activity','team_id','{$team.team_id}','status',this,'是','否')" ><i class="fa fa-ban"></i>否</span>
+									</if>
+								</div>
+							</td>
+							<td align="left" class="handle">
+								<div style="text-align: left; width: 240px; max-width:240px;">
+									<if condition="$team[team_type] eq 2 AND $team[is_lottery] eq 0">
+										<a class="btn blue gift_button" data-team-id="{$team['team_id']}"><i class="fa fa-gift"></i>抽奖</a>
+									</if>
+									<if condition="$team[team_type] eq 2 AND $team[is_lottery] eq 1">
+										<a class="btn blue" href="{:U('Mobile/Team/lottery',['team_id'=>$team['team_id']])}" ><i class="fa fa-file-text-o"></i>中奖名单</a>
+									</if>
+									<a class="btn blue" href="{:U('Team/team_list',array('team_id'=>$team['team_id']))}" ><i class="fa fa-list"></i>订单</a>
+									<a class="btn blue" href="{:U('Team/info',array('team_id'=>$team['team_id']))}"><i class="fa fa-pencil-square-o"></i>编辑</a>
+									<a class="btn red" data-url="{:U('Team/delete')}" data-id="{$team.team_id}" onclick="delfun(this)"><i class="fa fa-trash-o"></i>删除</a>
+								</div>
+							</td>
+							<td align="" class="" style="width: 100%;">
+								<div>&nbsp;</div>
+							</td>
+						</tr>
+					</volist>
+					</tbody>
+				</table>
+			</div>
+			<div class="iDiv" style="display: none;"></div>
+		</div>
+		<!--分页位置-->
+		{$page->show()} </div>
+</div>
+<script>
+	$(document).ready(function(){
+		// 表格行点击选中切换
+		$('#flexigrid > table>tbody >tr').click(function(){
+			$(this).toggleClass('trSelected');
+		});
+
+		// 点击刷新数据
+		$('.fa-refresh').click(function(){
+			location.href = location.href;
+		});
+	});
+
+	function delfun(obj) {
+		layer.confirm('确认删除？', {
+					btn: ['确定', '取消'] //按钮
+				}, function () {
+					$.ajax({
+						type: 'post',
+						url: $(obj).attr('data-url'),
+						data: {team_id: $(obj).attr('data-id')},
+						dataType: 'json',
+						success: function (data) {
+							layer.closeAll();
+							if (data.status == 1) {
+								layer.msg(data.msg, {icon: 1});
+								$(obj).parent().parent().parent().remove();
+							} else {
+								layer.msg(data.msg, {icon: 2, time: 2000});
+							}
+						}
+					})
+				}, function (index) {
+					layer.close(index);
+				}
+		);
+	}
+
+	//抽奖
+	$(function () {
+		$(document).on("click", '.gift_button', function (e) {
+			var team_id = $(this).data('team-id');
+			layer.open({
+				content: '确认抽奖将从该拼团活动下拼团成功的订单里抽取，并把中奖的订单确认，未中奖的订单都执行退款操作,并且结束该活动。该操作不可逆，确定要执行吗？'
+				,btn: ['确定', '取消']
+				,yes: function(index, layero){
+					layer.close(index);
+					$.ajax({
+						type: "POST",
+						url: "{:U('Team/lottery')}",//+tab,
+						data: {team_id: team_id},
+						dataType: 'json',
+						success: function (data) {
+							if (data.status == 1) {
+								layer.msg(data.msg, {icon: 1, time: 2000}, function(){
+									window.location.reload();
+								});
+							} else {
+								layer.msg(data.msg, {icon: 2, time: 2000});
+							}
+						}
+					});
+				}
+				,btn2: function(index, layero){
+					layer.close(index);
+				}
+				,cancel: function(){
+					//右上角关闭回调
+					layer.close();
+				}
+			});
+		})
+	})
+</script>
+</body>
+</html>

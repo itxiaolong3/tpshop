@@ -1,0 +1,358 @@
+<include file="public/layout" />
+<script type="text/javascript" src="__PUBLIC__/static/js/layui/layui.js?v=2.3.0"></script>
+<script src="__PUBLIC__/static/js/layuifun.js"></script>
+<body style="background-color: rgb(255, 255, 255); overflow: auto; cursor: default; -moz-user-select: inherit;">
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>自定义页面管理</h3>
+                <h5></h5>
+            </div>
+            <ul class="tab-base nc-row">
+                <li><a onclick="template(0)" class="current"><span>我的模板</span></a></li>
+                <li><a onclick="template(1)"><span>模板库</span></a></li>
+            </ul>
+        </div>
+    </div>
+    <!-- 操作说明 -->
+    <div id="explanation" class="explanation" style="color: rgb(44, 188, 163); background-color: rgb(237, 251, 248); width: 99%; height: 100%;">
+        <div id="checkZoom" class="title"><i class="fa fa-lightbulb-o"></i>
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span title="收起提示" id="explanationZoom" style="display: block;"></span>
+        </div>
+        <ul>
+            <li>使用中的模板只能编辑、不可删除</li>
+            <li>未使用的模板可编辑、可删除</li>
+        </ul>
+    </div>
+	<div class="container-body" id="my-template">
+		<div class="tpl-body">
+			<div class="tpl-item">
+				<img src="../../../../public/static/images/checkedphone.png" alt="" style="width: 226px; height: 458px;"> 
+				<div class="tpl-img"><img src="../../../../public/static/images/c46f0235994fedf5.png" alt=""></div> 
+				<div class="tpl-hover mytpl-hover">
+					<div class="icon-opa">
+						<div class="icon-box icon-box1"><a href=""><i class="iconfont"></i></a></div> 
+						<div class="icon-box icon-box2"><i class="iconfont iconfont-noedit"></i></div>
+					</div> 
+					<div class="tpl-btn tpl-btn-active">使用中</div>
+				</div>
+			</div>
+            <div class="tpl-item">
+            	<img src="../../../../public/static/images/checkedphone.png" alt="" style="width: 226px; height: 458px;">
+                <div class="tpl-img"><img src="https://weapp-1253522117.image.myqcloud.com//image/20171207/6c79a4121d22bf90.png" alt=""></div>
+                <div class="tpl-hover mytpl-hover">
+                	<div class="icon-opa">
+                    	<div class="icon-box icon-box1"><a href=""><i class="iconfont"></i></a></div>
+                        <div class="icon-box icon-box2"><i class="iconfont"></i></div>
+                    </div>
+					<div class="tpl-btn">使用</div>
+                </div>
+            </div> 
+            <div class="tpl-item">
+                <img src="../../../../public/static/images/phone.png" alt=""> 
+                <div class="tpl-add">
+                    <div class="icon-add"><i class="iconfont"></i></div> 
+                    <div class="tpl-btn">添加模板</div>
+                </div>
+            </div>
+		</div>
+	</div>
+      
+    <div class="container-body" id="template-library" style="display:none;">
+		<div class="body-title">
+			<div class="title-item">
+          		<span class="title-left title-left1"><i class="iconfont"></i><i class="iconname"> 行业 </i></span> 
+				<span class="title-right" id="industry_select" data-id="0">
+                    <span data-val="" class="item-contant"> 电商 </span>
+                    <span data-val="" class="item-contant"> 美食 </span>
+                    <span data-val="" class="item-contant item-contant-checked"> 婚庆 </span>
+                    <span data-val="" class="item-contant"> 鲜花 </span>
+         		</span>
+         	</div> 
+			<div class="title-item">
+				<span class="title-left title-left2"><i class="iconfont"></i><i class="iconname"> 风格 </i></span> 
+				<span class="title-right" id="style_select" data-id="0">
+                    <span class="item-contant"> 现代 </span>
+                    <span class="item-contant"> 田园 </span>
+                    <span class="item-contant"> 后现代 </span>
+                    <span class="item-contant"> 中式简约 </span>
+                    <span class="item-contant"> 欧美古典 </span>
+                    <span class="item-contant"> 地中海 </span>
+                    <span class="item-contant"> 欧式 </span>
+                    <span class="item-contant"> 全部 </span>
+                    <span class="item-contant"> 现代 </span>
+                    <span class="item-contant"> 田园 </span>
+                    <span class="item-contant"> 后现代 </span>
+                    <span class="item-contant"> 中式简约 </span>
+                    <span class="item-contant"> 欧美古典 </span>
+                    <span class="item-contant"> 地中海 </span>
+                    <span class="item-contant"> 欧式 </span>
+                    <span class="item-contant"> 全部 </span>
+                    <span class="item-contant"> 现代 </span>
+                    <span class="item-contant"> 田园 </span>
+                    <span class="item-contant"> 后现代 </span>
+                    <span class="item-contant"> 中式简约 </span>
+                    <span class="item-contant"> 欧美古典 </span>
+                    <span class="item-contant"> 地中海 </span>
+                    <span class="item-contant"> 欧式 </span>
+				</span>
+			</div>
+		</div> 
+        <div class="tpl-body" id="template-lib-body">
+			<div class="tpl-item">
+				<img src="../../../../public/static/images/phone.png" alt=""> 
+				<div class="tpl-img"><img src="../../../../public/static/images/2051bc943c913f54.png" alt=""></div> 
+				<div class="tpl-hover">
+					<div id="QRCode0" class="tpl-QRcode"><img src="../../../../public/static/images/code.png"></div> 
+					<div class="tpl-btn tpl-btn-add">添加模板</div>
+					<div class="tpl-btn tpl-btn-preview">预览模板</div>
+				</div>
+			</div>
+            <div class="tpl-item">
+                <img src="../../../../public/static/images/phone.png" alt=""> 
+                <div class="tpl-img"><img src="../../../../public/static/images/5bd4751fcbf9b67d.png" alt=""></div> 
+                <div class="tpl-hover">
+                    <div id="QRCode1" class="tpl-QRcode"><img src="../../../../public/static/images/code.png" alt=""></div> 
+                    <div class="tpl-btn tpl-btn-add">添加模板</div>
+                    <div class="tpl-btn tpl-btn-preview">预览模板</div>
+                </div>
+            </div>
+		</div>
+        <div class="tpl-item" style="display: none">
+            <select id="industry_id" name="industry_id" onchange="select_next(this)" data-url="/index.php/Admin/Block/select_style" data-name="name" data-val="id" data-forid="style_selects">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+            </select>
+            <select name="style_id" id="style_selects">
+                <option value=""></option>
+            </select>
+        </div>
+	</div> 
+      
+    <!--<div class="flexigrid">
+        <div class="mDiv">
+            <div class="ftitle">
+                <h3>模板列表</h3>
+                <h5>(共{$template_config|count}条记录)</h5>
+            </div>
+            <div title="刷新数据" class="pReload"><i class="fa fa-refresh"></i></div>
+        </div>
+        <div class="hDiv">
+            <div class="hDivBox">
+                <table cellspacing="0" cellpadding="0">
+                    <thead>
+                    <tr>
+                        <th class="sign" axis="col0">
+                            <div style="width: 24px;"><i class="ico-check"></i></div>
+                        </th>
+                        <th align="left" abbr="article_title" axis="col3" class="">
+                            <div style="text-align: left; width: 120px;" class="">模板名称</div>
+                        </th>
+                        <th align="left" abbr="ac_id" axis="col4" class="">
+                            <div style="text-align: left; width: 250px;" class="">模板备注</div>
+                        </th>
+                        <th align="left" abbr="article_show" axis="col5" class="">
+                            <div style="text-align: center; width: 120px;" class="">模板图片</div>
+                        </th>
+                        <th align="center" axis="col1" class="handle">
+                            <div style="text-align: center; width: 150px;">操作</div>
+                        </th>
+                        <th style="width:100%" axis="col7">
+                            <div></div>
+                        </th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        <div class="bDiv" style="height: auto;">
+            <div id="flexigrid" cellpadding="0" cellspacing="0" border="0">
+                <table>
+                    <tbody>
+                    <foreach name="template_config" item="val"  key="k" >
+                        <tr>
+                            <td class="sign">
+                                <div style="width: 24px;"><i class="ico-check"></i></div>
+                            </td>
+                            <td align="left" class="">
+                                <div style="text-align: left; width: 120px;">{$val['name']}</div>
+                            </td>
+                            <td align="left" class="">
+                                <div style="text-align: left; width: 250px;">{$val['remark']}</div>
+                            </td>
+                            <td align="left" class="">
+                                <div style="text-align: center; width: 120px;">
+                                    <a href="/template/{$t}/{$k}/{$val['img']}" class="pic-thumb-tip" onMouseOver="layer.tips('<img src=/template/{$t}/{$k}/{$val[img]}>',this, {tips: [1, '#fff']});" onMouseOut="layer.closeAll();"><i class="fa fa-picture-o"></i></a>
+                                </div>
+                            </td>
+                            <td align="center" class="handle">
+                                <div style="text-align: center; width: 170px; max-width:170px;">
+                                    <if condition="$default_theme == $k">
+                                        <a href="{:U('Admin/template/changeTemplate',array('key'=>$k,'t'=>$t))}" class="btn blue" style="color: #FFF;background-color: #3598DC;border-color: #2A80B9;"><i class="fa fa-check"></i>启用</a>
+                                        <else />
+                                        <a href="{:U('Admin/template/changeTemplate',array('key'=>$k,'t'=>$t))}" class="btn blue"><i class="fa fa-check"></i>启用</a>
+                                    </if>
+                                </div>
+                            </td>
+                            <td align="" class="" style="width: 100%;">
+                                <div>&nbsp;</div>
+                            </td>
+                        </tr>
+                    </foreach>
+                    </tbody>
+                </table>
+            </div>
+            <div class="iDiv" style="display: none;"></div>
+        </div>
+    </div>-->
+</div>
+<script>
+    function select_next(obj){
+        var url = $(obj).attr('data-url');
+        var industry_id = $(obj).val();
+        var forid = $(obj).attr('data-forid');
+        var name = $(obj).attr('data-name');
+        var val = $(obj).attr('data-val');
+        $.post(url,
+        {'industry_id':industry_id,},
+        function(res){
+            var str =  '<option value="">请选择</option>';
+            if(res.status){
+                var data = res.result;
+                for (var i = 0; i < data.length; i++) {
+                    str += '<option value="'+data[i][val]+'">'+data[i][name]+'</option>'
+                }
+            }
+            $("#"+forid).html(str);
+        },'JSON');
+    }
+    // 点击行业或风格，返回模板
+    function getTpl(industry_id, style_id){
+        $.post("/index.php/Admin/Block/get_style",
+                {'industry_id':industry_id,
+                    'style_id':style_id
+                },
+                function(res){
+                    console.log(res)
+                    if(res.status==1){
+                        html_tpl('#template-lib-body-tpl','#template-lib-body',res.result);
+                        if(style_id==0){
+                            show_style_select(res.result);
+                        }
+                        if(industry_id==0){
+                            show_industry_select(res.result);
+                        }
+                    }else{
+                        layer.msg(res.msg, {icon: 2, time: 2000});
+                    }
+        },'JSON');
+    }
+    // 添加模板
+    function add_tpl(obj){
+        var id = $(obj).attr('data-id')
+        $(".tpl-lib"+id).hide();
+        $.post("/index.php/Admin/Block/get_style",
+                {'industry_id':industry_id,
+                    'style_id':style_id
+                },
+                function(res){
+                    html_tpl('#template-lib-body-tpl','#template-lib-body',res);
+                },'JSON');
+    }
+
+    // 显示风格
+    function show_style_select(res){
+        html_tpl('#style-select-tpl','#style_select',res);
+        $("#style_select .item-contant").unbind('click');
+        // 风格选择
+        $("#style_select .item-contant").click(function(){
+            $("#style_select .item-contant").removeClass('item-contant-checked')
+            $(this).addClass('item-contant-checked');
+            var style_id = $(this).attr('data-id');
+            getTpl($("#industry_select").attr('data-id'), style_id)
+        })
+
+    }
+    // 显示行业
+    function show_industry_select(res){
+        html_tpl('#industry-select-tpl','#industry_select',res);
+        $("#industry_select .item-contant").unbind('click')
+        // 行业选择
+        $("#industry_select .item-contant").click(function(){
+            var industry_id = $(this).attr('data-id');
+            $("#industry_select").attr('data-id', industry_id)
+            getTpl(industry_id, 0)
+            $("#industry_select .item-contant").removeClass('item-contant-checked')
+            $(this).addClass('item-contant-checked');
+        })
+    }
+    $(document).ready(function(){
+        getTpl(0,0)
+        $("#industry_id").val(2)
+
+
+        // 表格行点击选中切换
+        $('#flexigrid > table>tbody >tr').click(function(){
+            $(this).toggleClass('trSelected');
+        });
+
+        // 点击刷新数据
+        $('.fa-refresh').click(function(){
+            location.href = location.href;
+        });
+
+    });
+
+    function template(i){
+        if(i==0){
+           $('.tab-base').find('li').eq(0).find('a').addClass('current');
+           $('.tab-base').find('li').eq(1).find('a').removeClass('current');
+           $('#my-template').show();
+           $('#template-library').hide();
+        }
+        if(i==1){
+           $('.tab-base').find('li').eq(1).find('a').addClass('current');
+           $('.tab-base').find('li').eq(0).find('a').removeClass('current');
+           $('#my-template').hide();
+           $('#template-library').show();
+        }
+    }
+
+    // 有值返回
+    function isempty(v){
+        if(v) return v;
+        return '';
+    }
+</script>
+<script id="industry-select-tpl" type="text/html" txt="行业标题显示">
+    {{#  layui.each(d.industry_list, function(index, item){ }}
+    <span class="item-contant {{d.industry_id==item.industry_id?'item-contant-checked':''}}" data-id="{{item.industry_id}}"> {{item.name}} </span>
+    {{#  }); }}
+</script>
+<script id="style-select-tpl" type="text/html" txt="风格标题显示">
+    {{#  layui.each(d.style_list, function(index, item){ }}
+    <span class="item-contant {{d.style_id==item.style_id?'item-contant-checked':''}}" data-id="{{item.style_id}}"> {{item.name}} </span>
+    {{#  }); }}
+</script>
+<script id="template-lib-body-tpl" type="text/html" txt="显示该行业的风格，样式">
+    {{#  layui.each(d.template_list, function(index, item){ }}
+    <div class="tpl-item tpl-lib{{item.id}}">
+        <img src="../../../../public/static/images/phone.png" alt="">
+        <div class="tpl-img" txt="{{item.img_url}}"><img src="{{ isempty(item.img_url)}}" alt=""></div>
+        <div class="tpl-hover">
+            <div class="tpl-QRcode"><img src="../../../../public/static/images/code.png"></div>
+            <div class="tpl-btn tpl-btn-add" onclick="add_tpl(this)" data-id="{{item.id}}" data-industry="{{item.industry_id}}"  data-style="{{item.style_id}}">添加模板22</div>
+            <div class="tpl-btn tpl-btn-preview" data-id="{{item.id}}" data-industry="{{item.industry_id}}"  data-style="{{item.style_id}}"><a href="https://www.baidu.com/">预览模板</a></div>
+        </div>
+    </div>
+    {{#  }); }}
+</script>
+
+</body>
+</html>

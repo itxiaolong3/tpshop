@@ -1,0 +1,58 @@
+<include file="public/header" title="{$news.title}"/>
+<style>
+    html,body,div,p{
+        font-size: .7rem;
+    }
+    a{
+        color: steelblue;
+    }
+    img{
+        max-width: 100%;
+        margin: 0.1rem 0;
+    }
+    .title{
+        font-size: 1rem;
+        padding: 0.8rem 0.5rem 0.2rem;
+    }
+    .state{
+        color: #aaa;
+        font-size: .6rem;
+        margin: 0.4rem 0.8rem 0.6rem;
+    }
+    .content{
+        font-size: .65rem;
+        padding: 0.2rem;
+        line-height: 0.95rem;
+    }
+    .source{
+        font-size: .65rem;
+        margin: 1rem 0.5rem 1.5rem;
+    }
+
+</style>
+<!--<div class="title">{$news.title}</div>-->
+<div class="classreturn loginsignup ">
+    <div class="content">
+        <div class="ds-in-bl return">
+            <a href="javascript:history.back(-1);"><img src="__STATIC__/images/return.png" alt="返回"></a>
+        </div>
+        <div class="ds-in-bl search center">
+            <span>新闻</span>
+        </div>
+
+    </div>
+</div>
+<div class="title">{$news.title}</div>
+<div class="state">
+    <span>{:date('Y年m月d日', $news.publish_time)}</span>
+    <span>{$news.author}</span>
+</div>
+<div class="content">
+    <notempty name="news.show_cover_pic">
+        <img src="{$news.thumb}">
+    </notempty>
+    {$news.content|htmlspecialchars_decode}
+</div>
+
+</body>
+</html>

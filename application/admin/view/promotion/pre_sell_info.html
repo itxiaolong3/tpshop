@@ -1,0 +1,316 @@
+<include file="public/layout" />
+<script src="__ROOT__/public/static/js/layer/laydate/laydate.js"></script>
+<style>
+    .disabled{pointer-events: none;filter:alpha(opacity=40);-moz-opacity:0.4;-khtml-opacity: 0.4;opacity: 0.4;}
+</style>
+<body style="background-color: #FFF; overflow: auto;">
+<div id="toolTipLayer" style="position: absolute; z-index: 9999; display: none; visibility: visible; left: 95px; top: 573px;"></div>
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title"><a class="back" href="javascript:history.back();" title="返回列表"><i class="fa fa-arrow-circle-o-left"></i></a>
+            <div class="subject">
+                <h3>预售管理 - 编辑</h3>
+                <h5>网站系统预售详情页</h5>
+            </div>
+        </div>
+    </div>
+    <form class="form-horizontal" action="" id="handleposition" method="post">
+        <input type="hidden" name="shut_down" id="shut_down" value="0" >
+        <input type="hidden" id="goods_id" name="goods_id" value="{$info.goods_id}">
+        <input type="hidden" name="id" value="{$info.act_id}">
+        <div class="ncap-form-default">
+            <dl class="row">
+                <dt class="tit">
+                    <label><em>*</em>选择预售商品</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" id="goods_name" name="goods_name" value="{$info.goods_name}" class="input-txt">
+                    <div style="overflow: hidden" id="selected_group_goods">
+                        <if condition="$info['goods_id'] gt 0">
+                            <div style="float: left;margin-right: 10px" class="selected-group-goods">
+                                <div class="goods-thumb"><img style="width: 162px;height: 162px"  src="{$info['goods_id']|goods_thum_images=162,162}"/></div>
+                                <div class="goods-name">
+                                    <a target="_blank" href="{:U('Home/Goods/goodsInfo',array('id'=>$info['goods_id']))}">{$info.goods_name}</a>
+                                </div>
+                                <div class="goods-price">商城价：￥{$info['goods']['shop_price']}库存:{$info['goods']['store_count']}</div>
+                            </div>
+                        </if>
+                    </div>
+                    <span class="err"></span>
+                    <p class="notic">
+                        <a onclick="selectGoods()" class="ncap-btn <notempty name='info'><if condition="strtotime($info['start_time']) lt time()">disabled</if></notempty>"><i class="fa fa-search"></i>选择商品</a>
+                    </p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label><em>*</em>活动开始时间</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" <notempty name='info'><if condition="strtotime($info['start_time']) lt time()">disabled='disabled'</if></notempty> id="start_time" name="start_time" value="{$info.start_time|default=$default_time[start_time]}"  class="input-txt">
+                    <p class="notic">预售开始时间</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label><em>*</em>活动结束时间</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" <notempty name='info'><if condition="strtotime($info['start_time']) lt time()">disabled='disabled'</if></notempty> id="end_time" name="end_time" value="{$info.end_time|default=$default_time[end_time]}" class="input-txt">
+                    <p class="notic">预售结束时间</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label><em>*</em>定金</label>
+                </dt>
+                <dd class="opt">
+                    <input <notempty name='info'><if condition="strtotime($info['start_time']) lt time()">readonly='readonly'</if></notempty>  style="width: 100px;" type="text" class="input-txt" id="deposit" name="deposit" value="{$info.deposit}" onblur="deposit_limit(this);"  onpaste="this.value=this.value.replace(/[^\d.]/g,'')" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')"/>
+                    <p class="notic">单位：元。
+                                    <br/>定金为0时，表示用户直接支付当前的预售价格不需要支付尾款，此时尾款支付时间不可设置;
+                                    <br/>预售活动结束后，系统会根据最新的预售价格返还用户已支付的差额;
+                                    <br/>商品开始预售后，不能更改订金金额</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label><em>*</em>预售库存</label>
+                </dt>
+                <dd class="opt">
+                    <input style="width: 100px;" type="text" class="input-txt" name="restrict_amount" id="restrict_amount" value="{$info.restrict_amount}" onpaste="this.value=this.value.replace(/[^\d.]/g,'')" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')"/>
+                    <p class="notic">达到此数量，预售活动自动结束。不能为0！</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label><em>*</em>尾款支付开始时间</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" class="input-txt" id="retainage_start" name="retainage_start" value="{$info.retainage_start}" <notempty name="info"><if condition="($info['deposit'] eq 0) OR (strtotime($info['start_time']) lt time())">disabled='disabled'</if></notempty> >
+                    <p class="notic">尾款支付开始时间</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label><em>*</em>尾款支付结束时间</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" class="input-txt"  id="retainage_end" name="retainage_end" value="{$info.retainage_end}" <notempty name="info"><if condition="($info['deposit'] eq 0) OR (strtotime($info['start_time']) lt time())">disabled='disabled'</if></notempty>>
+                    <p class="notic">尾款支付结束时间</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label><em>*</em>开始发货时间描述</label>
+                </dt>
+                <dd class="opt">
+                    <textarea class="tarea" rows="4" placeholder="请输入开始发货时间描述" id="deliver_goods" name="deliver_goods">{$info.deliver_goods}</textarea>
+                    <p class="notic">格式建议：1.预计 yyyy-MM-dd HH 时前发货。2.付款后 N 天内发货。</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label><em>*</em>价格阶梯</label>
+                </dt>
+                <dd class="opt">
+                    <style>
+                        .addprine{
+                            display: inline;
+                        }
+                        .alisth{
+                            margin-top: 10px
+                        }
+                        .p_plus strong{
+                            cursor: pointer;
+                            margin-left: 4px;
+                        }
+                    </style>
+                    <div class="alisth" id="alisth_0">
+                        预定个数达到<input type="text" class="input-number addprine" name="ladder_amount[]" value="{$info['price_ladder'][0]['amount']}" onpaste="this.value=this.value.replace(/[^\d.]/g,'')" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" style="width: 100px;" >&nbsp;
+                        价格<input type="text" class="input-number addprine" name="ladder_price[]" value="{$info['price_ladder'][0]['price']}" onpaste="this.value=this.value.replace(/[^\d.]/g,'')" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" style="width: 100px;" >
+                        <a class="p_plus" href="javascript:;"><strong>[+]</strong></a>
+                    </div>
+                    <volist name="info['price_ladder']" id="vo" offset="1">
+                        <div class="alisth">
+                            预定个数达到<input type="text" class="input-number addprine" name="ladder_amount[]" value="{$vo['amount']}" onpaste="this.value=this.value.replace(/[^\d.]/g,'')" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" style="width: 100px;" >&nbsp;
+                            价格<input type="text" class="input-number addprine" name="ladder_price[]" value="{$vo['price']}" onpaste="this.value=this.value.replace(/[^\d.]/g,'')" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" style="width: 100px;" >
+                            <a class="p_plus" onclick='$(this).parent().remove();'><strong>[-]</strong></a>
+                        </div>
+                    </volist>
+                </dd>
+                <script>
+                    $(function(){
+                        $('.p_plus').click(function() {
+                            var html = "<div class='alisth'>"
+                                    + "预定个数达到"
+                                    + "<input type='text' class='input-number addprine' name='ladder_amount[]' style='width: 100px;' value=''/>"
+                                    + "&nbsp;&nbsp;价格"
+                                    + "<input type='text' class='form-control addprine' name='ladder_price[]' style='width: 100px;' value=''>"
+                                    + "<a class='p_plus' onclick='$(this).parent().remove();'>&nbsp;<strong>[-]</strong></a>"
+                                    + "</div>";
+                            $('#alisth_0').after(html);
+                        });
+                    })
+                </script>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label>活动说明</label>
+                </dt>
+                <dd class="opt">
+                    <textarea placeholder="请输入活动介绍" name="act_desc" rows="6" class="tarea">{$info.act_desc}</textarea>
+                    <p class="notic">预售描述介绍</p>
+                </dd>
+            </dl>
+            <div class="bot">
+                <if condition="($info['is_finished'] eq 0) AND ((strtotime($info['start_time']) elt time() AND strtotime($info['end_time']) gt time()) AND $pre_count_info['total_goods'] lt $info['restrict_amount'])">
+                <else/>
+                    <a onclick="adsubmit()" class="ncap-btn-big ncap-btn-green">保存</a>
+                </if>
+                <if condition="$info['act_id'] gt 0">
+                    <if condition="($info['is_finished'] eq 0) AND ((strtotime($info['start_time']) elt time() AND strtotime($info['end_time']) gt time()) AND $pre_count_info['total_goods'] lt $info['restrict_amount'])">
+                        <a onclick="shut_submit()" class="ncap-btn-big ncap-btn-green">结束活动</a>
+                    </if>
+                    <if condition="$info['is_finished'] eq 0 AND (strtotime($info['end_time']) lt time() OR $pre_count_info['total_goods'] egt $info['restrict_amount'])">
+                        <a onclick="pre_sell_success()" class="ncap-btn-big ncap-btn-green">活动成功</a>
+                        <a onclick="pre_sell_fail()" class="ncap-btn-big ncap-btn-green">活动失败</a>
+                    </if>
+                </if>
+            </div>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+    /***/
+    function adsubmit() {
+        if ($('#goods_name').val() == '') {
+            layer.msg('请选择一个预售商品',{icon:2});
+            return;
+        }
+        if ($('#restrict_amount').val() == '') {
+            layer.msg('预售库存不能为空',{icon:2});
+            return;
+        }
+        if ($('#deliver_goods').val() == '') {
+            layer.msg('开始发货时间描述不能为空',{icon:2});
+            return;
+        }
+        $('#handleposition').submit();
+    }
+
+    $(document).ready(function () {
+        laydate.render({
+            elem: '#start_time',//绑定元素
+            theme: 'molv', //主题
+            type:'datetime', //控件选择类型
+            format: 'yyyy-MM-dd HH:mm:ss', //自定义格式
+            calendar: true, //显示公历节日
+            min: '1970-01-01 00:00:00', //最小日期
+            max: '2099-12-31 00:00:00', //最大日期
+            // value: new Date(),//默认当前时间
+            isInitValue: true,
+            position : 'fixed', //定位方式
+            zIndex: 99999999, //css z-index
+        });
+        laydate.render({
+            elem: '#end_time',//绑定元素
+            theme: 'molv', //主题
+            type:'datetime', //控件选择类型
+            format: 'yyyy-MM-dd HH:mm:ss', //自定义格式
+            calendar: true, //显示公历节日
+            min: '1970-01-01 00:00:00', //最小日期
+            max: '2099-12-31 00:00:00', //最大日期
+            // value: new Date(),//默认当前时间
+            isInitValue: true,
+            position : 'fixed', //定位方式
+            zIndex: 99999999, //css z-index
+        });
+        laydate.render({
+            elem: '#retainage_start',//绑定元素
+            theme: 'molv', //主题
+            type:'datetime', //控件选择类型
+            format: 'yyyy-MM-dd HH:mm:ss', //自定义格式
+            calendar: true, //显示公历节日
+            min: '1970-01-01 00:00:00', //最小日期
+            max: '2099-12-31 00:00:00', //最大日期
+            // value: new Date(),//默认当前时间
+            isInitValue: true,
+            position : 'fixed', //定位方式
+            zIndex: 99999999, //css z-index
+        });
+        laydate.render({
+            elem: '#retainage_end',//绑定元素
+            theme: 'molv', //主题
+            type:'datetime', //控件选择类型
+            format: 'yyyy-MM-dd HH:mm:ss', //自定义格式
+            calendar: true, //显示公历节日
+            min: '1970-01-01 00:00:00', //最小日期
+            max: '2099-12-31 00:00:00', //最大日期
+            // value: new Date(),//默认当前时间
+            isInitValue: true,
+            position : 'fixed', //定位方式
+            zIndex: 99999999, //css z-index
+        });
+    });
+
+    function selectGoods() {
+        var url = "{:U('Promotion/search_goods',array('tpl'=>'pre_sell_search_goods','prom_type'=>4))}";
+        layer.open({
+            type: 2,
+            title: '选择商品',
+            shadeClose: true,
+            shade: 0.2,
+            area: ['75%', '75%'],
+            content: url,
+        });
+    }
+    function call_back(goodsItem){
+        $('#goods_id').val(goodsItem.goods_id);
+        $('input[name=goods_name]').val(goodsItem.goods_name);
+        $('#group_num').val(goodsItem.store_count);
+        var html = '<div style="float: left;margin: 10px auto;" class="selected-group-goods"><div class="goods-thumb">' +
+                '<img style="width: 162px;height: 162px" src="'+goodsItem.goods_image+'"/></div> <div class="goods-name"> ' +
+                '<a target="_blank" href="javascript:;">'+goodsItem.goods_name+'</a> </div>' +
+                ' <div class="goods-price">商城价：￥'+goodsItem.goods_price+'库存:'+goodsItem.store_count+'</div> </div>';
+
+        $('#select_goods_button').attr('data-goods-id',goodsItem.goods_id);
+        $('#selected_group_goods').empty().html(html);
+        $('.selected-group-goods').show();
+        layer.closeAll('iframe');
+    }
+
+    function deposit_limit(obj)
+    {
+        if($(obj).val() == 0){
+            $('#retainage_start').attr('disabled','disabled');
+            $('#retainage_end').attr('disabled','disabled');
+        }else{
+            $('#retainage_start').removeAttr('disabled');
+            $('#retainage_end').removeAttr('disabled');
+        }
+    }
+    function shut_submit()
+    {
+        layer.confirm('（修改活动结束时间为当前时间）', function(){
+            $('#shut_down').val(1);
+            $('#handleposition').submit();
+        });
+    }
+    //此操作不可逆，您确定要设置该预售活动失败吗？
+    function pre_sell_success()
+    {
+        layer.confirm('此操作不可逆，您确定要设置该预售活动成功吗？', function(){
+            location.href = "{:U('Admin/Promotion/pre_sell_success',array('id'=>$info['act_id']))}";
+        });
+    }
+    function pre_sell_fail()
+    {
+        layer.confirm('此操作不可逆，您确定要设置该预售活动失败吗？', function(){
+            location.href = "{:U('Admin/Promotion/pre_sell_fail',array('id'=>$info['act_id']))}";
+        });
+    }
+</script>
+</body>
+</html>

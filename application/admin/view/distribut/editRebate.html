@@ -1,0 +1,147 @@
+<include file="public/min-header"/>
+<div class="wrapper">
+    <include file="public/breadcrumb"/>
+    <section class="content">
+        <!-- Main content -->
+        <div class="container-fluid">
+            <div class="pull-right">
+
+                <a href="javascript:history.go(-1)" data-toggle="tooltip" title="" class="btn btn-default" data-original-title="返回"><i class="fa fa-reply"></i></a>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><i class="fa fa-list"></i> 获佣记录</h3>
+                </div>
+                <div class="panel-body">
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a href="#tab_tongyong" data-toggle="tab">获佣用户</a></li>
+                    </ul>
+                    <!--表单数据-->
+                    <form method="post" id="editForm">
+                        <!--通用信息-->
+                    <div class="tab-content">                 	  
+                        <div class="tab-pane active" id="tab_tongyong">
+                           
+                            <table class="table table-bordered">
+                                <tbody>
+                                <tr>
+                                    <td>获佣用户id</td>
+                                    <td>
+                                        <a href="{:U('Admin/user/detail',array('id'=>$rebate_log[user_id]))}">{$rebate_log[user_id]}</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>获佣用户名</td>
+                                    <td>
+                                        {$rebate_log.user_name}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>获佣订单</td>
+                                    <td>
+                                        <a href="{:U('Admin/order/detail',array('order_id'=>$rebate_log[order_id]))}">{$rebate_log.order_sn}</a>                                       
+                                    </td>
+                                </tr>                                
+                                <tr>
+                                    <td>获佣金额</td>
+                                    <td>
+                                        {$rebate_log.money}
+                                    </td>
+                                </tr>        
+                                <tr>
+                                    <td>获佣用户级别</td>
+                                    <td>
+                                        {$rebate_log.level}
+                                    </td>
+                                </tr>        
+                                <tr>
+                                    <td>分成记录生成时间</td>
+                                    <td>
+                                        {$rebate_log.create_time|date="Y-m-d H:i",###}
+                                    </td>
+                                </tr>  
+                                <tr>
+                                    <td>状态</td>
+                                    <td>                                        
+                                        <if condition="$rebate_log[status] eq 0">未付款</if>
+                                        <if condition="$rebate_log[status] eq 1">已付款</if>
+                                        <if condition="$rebate_log[status] eq 2">等待分成</if>
+                                        <if condition="$rebate_log[status] eq 3">已分成</if>
+                                        <if condition="$rebate_log[status] eq 4">已取消</if>                                                    
+                                    </td>
+                                </tr>  
+                                <tr>
+                                    <td>确定分成或者取消时间</td>
+                                    <td>
+                                        {$rebate_log.create_time|date="Y-m-d H:i",###}
+                                    </td>
+                                </tr>                                                          
+                                <tr>
+                                    <td>备注</td>
+                                    <td>
+                                        <textarea rows="4" cols="60" id="remark" name="remark">{$rebate_log.remark}</textarea>
+                                        <span id="err_remark" style="color:#F00; display:none;"></span>                                        
+                                    </td>
+                                </tr>                                  
+                                </tbody>                                
+                                </table>
+                        </div>                           
+                    </div>              
+                    <div class="pull-right">
+                        <input type="hidden" name="id" value="{$rebate_log.id}">
+                        <input type="hidden" name="user_id" value="{$rebate_log.user_id}">                        
+                        <input type="hidden" id="status" name="status" value="{$rebate_log[status]}">
+                        <if condition="$rebate_log[status] eq 2">
+                            <button class="btn btn-primary" data-toggle="tooltip" type="button" onclick="confirm_rebate();">确定分成</button>                        
+                            <button class="btn btn-primary" data-toggle="tooltip" type="button" onclick="cancel_rebate();">取消分成</button>
+                         <else />
+                            <button class="btn btn-primary" data-toggle="tooltip" type='submit'>修改备注</button>
+                        </if>
+                        
+                    </div>
+                 </form><!--表单数据-->
+                </div>
+            </div>
+        </div>    <!-- /.content -->
+    </section>
+</div>
+<script>
+// 确定分成    
+function confirm_rebate() {
+    if ($.trim($('#remark').val()).length == 0) {
+        layer.alert('请填写分成备注', {icon: 2});
+        return false;
+    }
+    layer.confirm('金额将直接转入用户余额,确定要分成吗？', {
+                btn: ['确定', '取消'] //按钮
+            }, function () {
+                // 确定
+                $('#status').val('3');
+                $('#editForm').submit();
+            }, function (index) {
+                layer.close(index);
+            }
+    );
+}
+// 取消分成    
+function cancel_rebate()
+{
+    if($.trim($('#remark').val()).length == 0)
+    {
+        layer.alert('请填写取消备注',{icon:2});
+        return false;
+    }
+    layer.confirm('确定要取消分成吗？', {
+                btn: ['确定', '取消'] //按钮
+            }, function () {
+                // 确定
+                $('#status').val('4');
+                $('#editForm').submit();
+            }, function (index) {
+                layer.close(index);
+            }
+    );
+}
+</script>
+</body>
+</html>

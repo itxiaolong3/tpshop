@@ -1,0 +1,27 @@
+<foreach name="lists" item="v" key="k">
+    <div class="rank_alone p">
+        <div class="flo rank_data1">
+            <if condition="$k lt 3 and $firsRrow eq 0">
+                <i class="fla-top{$k+1}"></i>
+            <else/>
+                <span>{$k+$firsRrow+1}</span>
+            </if>
+        </div>
+        <div class="flo rank_data2">
+            <div class="my_team_alon p">
+                <div class="team_head">
+                    <img src="{$v[head_pic]|default="__STATIC__/distribut/images/user68.jpg"}"/>
+                </div>
+                <div class="team_name_time">
+                    <span class="t_n">{$v[nickname]}</span>
+                    <if condition="$Request.param.sort eq  'distribut_money'">
+                        <span class="t_t">获得佣金：<em>￥{$v[distribut_money]}</em></span>
+                    <else/>
+                        <span class="t_t">下线人数：<em>{$v[underling_number]}</em>人</span>
+                    </if>
+                </div>
+            </div>
+        </div>
+        <!--<div class="flo rank_data3"><a href=""><i class="icon-big_arrow_r"></i></a></div>-->
+    </div>
+</foreach>

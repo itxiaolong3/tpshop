@@ -1,0 +1,370 @@
+<include file="public/header" title="搭配套餐详情" body=""/>
+<include file="public/header_nav" title="搭配套餐详情" href="javascript:history.back(-1);"/>
+<style>
+    .plusshopcar-buy .dis {
+        background: #ebebeb;
+        color: #999;
+        cursor: not-allowed;
+        pointer-events: none;
+    }
+</style>
+
+
+<!--顶部隐藏菜单-s-->
+<include file="public/top_nav" top-header="top-header-m"/>
+<!--顶部隐藏菜单-e-->
+
+<!--商品s-->
+<div class="xq_details">
+    <div class="banner ban1 detailban">
+        <div class="mslide" id="slideTpshop">
+            <ul>
+                <!--图片-s-->
+                <foreach name="goods['goods_images']" item="pic">
+                    <li><a href="javascript:void(0)"><img src="{$pic[image_url]}" alt=""></a></li>
+                </foreach>
+                <!--图片-e-->
+            </ul>
+        </div>
+    </div>
+    <!--搭配套餐 s-->
+    <div class="Set-meal-wrap" style="border-top: 0;">
+        <div class="Combination-head-title p">
+            <p class="fl">{$combination[0]['title']}</p>
+            <p class="Combination-head-prices"><em>最多可省</em>￥
+                <span>{$combination[0]['count_price']}</span>
+            </p>
+        </div>
+        <div class="Combination-heads">
+            <h3>搭配商品</h3>
+        </div>
+
+        <foreach name="combination[0]['combination_goods']" item="cart">
+            <div class="orderlistshpop p" id="cart_list_{$cart.goods_id}">
+                <div class="maleri30">
+                    <!--商品列表-s-->
+                    <div class="sc_list">
+                        <div class="radio fl ">
+                            <!--商品勾选按钮-->
+                            <span class="<if condition='$key==0 || ($cart[goods_id]==$goods_id && $cart[item_id]==$item_id )'> check_t </if>"
+                            <if condition='$key != 0'> onclick="setChecked(this)"</if>
+                            data-goods-id="{$cart[goods_id]}" data-item-id="{$cart[item_id]}" data-combination-id="{$cart[combination_id]}"
+                            >
+                            <i class="{$key==0?'check_op5':''}">
+                            </i>
+                            </span>
+                        </div>
+                        <div class="shopimg fl">
+                            <a href="{:U('Mobile/Goods/goodsInfo',array('id'=>$cart[goods_id]))}">
+                                <!--商品图片-->
+                                <!--<img src="{$cart.goods_id|goods_thum_images=400,400,$cart.item_id}">-->
+                                <img src="{$cart.original_img}">
+                            </a>
+                        </div>
+                        <div class="deleshow fr">
+                            <div class="deletes">
+                                <!--商品名-->
+                                <span class="similar-product-text fl">
+                                    <a href="{:U('Mobile/Goods/goodsInfo',array('id'=>$cart[goods_id]))}">{$cart.goods_name}</a>
+                                </span>
+                            </div>
+                            <!--商品属性，规格-->
+                            <p class="Combination-prices prices-two">￥<span>{$cart['price']}</span></p>
+                            <div class="prices">
+                                <p class="sc_pri fl">
+                                    <!--商品单价-->
+                                    <span class="Combination-dev">省￥
+                                        <i>{$cart['original_price'] - $cart['price']}</i>
+                                    </span>
+                                </p>
+
+                                <if condition='$key eq 0'>   <!--加减数量-->
+                                    <div class="plus fr get_mp Combination-plus">
+                                        <span class="mp_minous">-</span>
+                                        <span class="mp_mp">
+                                            <input name="" type="text" value="1" onkeyup="" class="input-num"
+                                                   id="input-num"/>
+                                        </span>
+                                        <span class="mp_plus">+</span>
+                                    </div>
+                                    <else/>
+                                    <!--加减数量-->
+                                    <div class="plus fr get_mp mun-two" style="margin-right: .6rem;">
+                                    	<i class="fl mp_price_i">x</i>
+                                        <span class="mp_mp">
+                                            <input name="" type="text" id="" value="1" onkeyup="" class="mp_price_input input-num"/>
+                                        </span>
+                                    </div>
+                                </if>
+
+
+                                <p class="sc_pri fr" style="display: none">库存不足
+                                    <input type="hidden" name="goods_num[{$v.id}]" value="0" class="input-num"/>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <!--商品列表-e-->
+                </div>
+            </div>
+        </foreach>
+
+    </div>
+    <!--搭配套餐e-->
+    <!--结算价钱 s-->
+    <div class="price-foot-wrap">
+        <div class="maleri30">
+            <p>套餐价： <i>￥</i><em id="count_p">0.00</em></p>
+            <p class="price-foot-two">共省：<i>￥</i> <em id="count_d">0.00</em></p>
+        </div>
+    </div>
+    <!--结算价钱 e-->
+    <!--添加购物车JS-->
+    <script src="__PUBLIC__/js/mobile_common.js" type="text/javascript" charset="utf-8"></script>
+</div>
+<!--底部按钮-s-->
+<div class="podee">
+    <div class="cart-concert-btm p">
+        <div class="fl">
+            <ul>
+                <li>
+                    <!--<a href="tencent://message/?uin={$tpshop_config['shop_info_qq']}&Site=时代万网&Menu=yes">-->
+                    <a href="" class="contact">
+                        <i></i>
+                        <p>客服</p>
+                    </a>
+                </li>
+                <li>
+                    <a href="{:U('Mobile/Cart/index')}">
+                        <span id="tp_cart_info"></span>
+                        <i class="gwc"></i>
+                        <p>购物车</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="fr">
+            <ul>
+                <if condition="$goods[is_virtual] eq 1">
+                    <li class="r" style="width: 100%;">
+                        <a style="display:block;" href="javascript:void(0);" onclick="virtual_buy();">立即购买</a>
+                    </li>
+                    <elseif condition="$goods['exchange_integral'] gt 0"/>
+                    <li class="r" style="width: 100%;">
+                        <a class="choise_num" style="display:block;" href="javascript:void(0);">立即兑换</a>
+                    </li>
+                    <else/>
+                    <li class="o">
+                        <a class="pb_plusshopcar button active_button choise_num" href="javascript:void(0);" onClick="addCombinationShop();"> 加入购物车</a>
+                    </li>
+                    <li class="r">
+                        <a class="choise_num" style="display:block;" href="javascript:void(0);"  onClick="addCombinationShop(1);">立即购买</a>
+                    </li>
+
+                </if>
+            </ul>
+        </div>
+    </div>
+</div>
+<!--底部按钮-e-->
+<script type="text/javascript" src="__STATIC__/js/mobile-location.js"></script>
+<script type="text/javascript">
+    $(function () {
+        priceShow()
+
+    })
+    //初始化金额
+    function priceShow(){
+        var data = $('.Combination-dev').find('i');
+        $.each(data,function (i,o) {
+            var price = Number($(this).text()).toFixed(2);
+            $(this).text(price);
+        })
+    }
+    //商品数量加减
+        //加数量
+        $('.mp_minous').click(function () {
+            if (!$(this).hasClass('disable')) {
+                var inputs = $(this).siblings('.mp_mp').find('input');
+                var val = inputs.val();
+                if (val > 1) {
+                    val--;
+                }
+                $('.mp_mp').find('input').val(val);
+                inputs.val(val);
+                inputs.attr('value', val);
+                getChecked();
+                //     initDecrement();
+                //     changeNum(this);
+
+            }
+        })
+        //减数量
+        $('.mp_plus').click(function () {
+            var inputs = $(this).siblings('.mp_mp').find('input');
+            var val = inputs.val();
+            val++;
+            if (val > 200) {
+                val = 200;
+                layer.open({content: "购买商品数量不能大于200", time: 2});
+            }
+
+            $('.mp_mp').find('input').val(val);
+            inputs.val(val);
+            inputs.attr('value', val);
+            getChecked();
+            // initDecrement();
+            // changeNum(this);
+        })
+        $(document).on("blur", '.get_mp input', function (e) {
+            var changeQuantityNum = parseInt($(this).val());
+            if (changeQuantityNum <= 0) {
+                layer.open({
+                    content: '商品数量必须大于0'
+                    , btn: ['确定']
+                });
+                $(this).val($(this).attr('value'));
+                // $('.mp_mp').find('input').val(1);
+            } else {
+                $(this).attr('value', changeQuantityNum);
+                $('.mp_mp').find('input').val(changeQuantityNum);
+            }
+
+            // initDecrement();
+            // changeNum(this);
+        })
+
+
+
+    getChecked()
+
+    //获取选中的
+    function getChecked() {
+        var a = $('.check_t');
+        var prive = 0;
+        var combinationPrices = 0;
+        var combinationDev = 0;
+        a.each(function (i, o) {
+            var p = $(this).parents('.sc_list').find('.Combination-prices span').text();
+            var d = $(this).parents('.sc_list').find('.Combination-dev i').text();
+            var n = $('#input-num').val();
+            combinationPrices += p * n;
+            combinationDev += d * n;
+        });
+        $('#count_p').text(combinationPrices.toFixed(2));
+        $('#count_d').text(combinationDev.toFixed(2));
+
+    }
+
+    //选中
+    function setChecked(e) {
+        var s = $(e).hasClass('check_t');
+        if (!s) {
+            $(e).addClass('check_t');
+        } else {
+            $(e).removeClass('check_t');
+        }
+        getChecked();
+    }
+    //获取路径参数
+    function GetQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]);
+        return null;
+    }
+
+    function addCombinationShop(type) {
+        var a = $('.check_t');
+        var n = 0;
+        var num = $('#input-num').val();
+        var arr = new Array();
+        var region_id = GetQueryString('district_id');
+         combination_id=0;
+        // var combination = {goods_id:$(e).parents('.set-meal-cont').find('.combination_goods_ids').val(),item_id:$(e).parents('.set-meal-cont').find('.combination_item_id').val()};
+        a.each(function (i,o) {
+             combination_id = $(this).attr('data-combination-id');
+            var combination_goods_ids = {goods_id:$(this).attr('data-goods-id'),item_id:$(this).attr('data-item-id'),region_id:region_id};
+                arr.push(combination_goods_ids) ;
+                n++;
+        });
+
+        if(n<=1){
+            layer.open({content:'请至少勾选一个商品',time: 2});
+            return false;
+        }else{
+
+            $.ajax({
+                type: "Post",
+                url: "{:U('Mobile/Cart/addCombination')}",
+                data: {combination_id: combination_id, combination_goods: arr,num:num},
+                dataType: "json",
+                success: function (data) {
+
+                    if (data.status == 1) {
+                        ajax_header_cart()
+                        if (data.status == '-101') {
+                            layer.open({
+                                content: data.msg,
+                                btn: ['去登录', '取消'],
+                                shadeClose: false,
+                                yes: function () {
+                                    location.href = "/index.php?m=Mobile&c=User&a=Login";
+                                }, no: function () {
+                                    layer.closeAll();
+                                }
+                            });
+                            return false;
+                        }
+                        if (data.status < 0) {
+                            layer.open({content: data.msg, time: 2});
+                            return false;
+                        }
+
+                        if(type ==1){
+                            layer.open({content: '正在跳转购物车...', time: 2});
+                            location.href = "/index.php?m=Mobile&c=Cart&a=index";
+                            return false;
+                        }
+                        layer.open({
+                            content: '添加成功！',
+                            btn: ['再逛逛', '去购物车'],
+                            shadeClose: false,
+                            yes: function () {
+
+                                layer.closeAll();
+                            }, no: function () {
+                                location.href = "/index.php?m=Mobile&c=Cart&a=index";
+                            }
+                        });
+                    }else{
+                        layer.open({content: data.msg, time: 2});
+                    }
+
+                }
+            });
+        }
+
+    }
+
+    ajax_header_cart()
+    //ajax请求购物车列表
+    function ajax_header_cart(){
+        var cart_cn = getCookie('cn');
+        if (cart_cn == '') {
+            $.ajax({
+                type: "GET",
+                url: "/index.php?m=Home&c=Cart&a=header_cart_list",//+tab,
+                success: function (data) {
+                    console.log(data)
+                    cart_cn = getCookie('cn');
+                }
+            });
+        }
+        $('#tp_cart_info').html(cart_cn);
+    }
+
+</script>
+
+</body>
+</html>

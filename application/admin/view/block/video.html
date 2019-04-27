@@ -1,0 +1,72 @@
+<div class="tpd-diy-js tpd-video"  data-eidtid="14">
+    <div class="tpd-diy-title">视频</div>
+    <div class="tpd-txtnav-set" style="float: none;padding-left: 0;">
+        <div class="tpd-title-z">组件数据 </div>
+        <label class="tpd-diy-bb tpd-cdiy-font28">下间距 :<input type="text"  value="0" id="text_margin_bottom" name="text_margin_bottom"/>px</label>
+        <div class="tpd-txtnav-addlink tpd-cdiy-font28">
+            <label>视频地址 : </label>
+            <div style="float: left;">
+                <input type="text" value="" placeholder="视频全链接地址" style="width: 234px;padding: 0 9px;margin: 0px 8px 0 -1px;border: 1px solid #ccc;height: 32px;" id="video_edit" >
+            </div>
+             <a class="tpd-video-btn" href="javascript:;" onclick="GetUploadify(1,'','goods','video_call_back','Flash');">上传视频</a>
+        </div>
+        
+    </div>
+     
+    <div class="tpd-wstyle-wrap tpd-video-wrap">
+        <ul class="tpd-wstyle-list wstyle-ac tpd-cdiy-list">
+            <li style="box-shadow: 0 0 0px #FFFFFF;" >
+                <div class="tpd-wstyle-lefts" style="font-size: 13px;padding-left: 0;">
+                    视频封面：
+                </div>
+                <div class="tpd-wstyle-uploadimg">
+                    <img src="">
+                    <span></span>
+                    <label>建议宽度750zpx，高度312px<br />
+                        如尺寸不达标，图片将自适应显示</label>
+                </div>
+               
+            </li>
+        </ul>
+    </div>
+    <script>
+        // 失去焦点,只设置视频
+        $("#video_edit").blur(function(){
+            var video_url = $(this).val();
+            if(video_url != ''){
+                var video_img = '';
+                if(block[divid].video_img){
+                    video_img = block[divid].video_img
+                }
+                set_video(video_url,video_img)
+            }
+        })
+        // 上传视频成功后，设置视频,视频自动截图
+        function video_call_back(video_url){
+            console.log(video_url)
+            if(video_url != ''){
+                var arr = video_url.split('.')
+                var video_img = arr[0] + '.jpg';
+                set_video(video_url,video_img)
+            }
+        }
+        // 设置视频数据并展示
+        function set_video(video_url,video_img){
+            // 存数据
+            block[divid].video_url = video_url;
+            block[divid].video_img = video_img;
+            // 浏览处展示
+            var tpd_video='<video class="video_show" poster="'+video_img+'" style="background-color: rgb(0, 0, 0);width: 100%; height: 100%;" src="'+video_url+'" controls="controls">your browser does not support the video tag</video>';
+            $(".tpd-editing").find('.js-code-wrap').html(tpd_video);
+            edit_show_video(video_url,video_img)
+            $(".tpd-video").find(".tpd-wstyle-wrap.tpd-wstyle-list").show();
+            console.log(block[divid])
+        }
+        function edit_show_video(video_url,video_img){
+            // 修改处展示
+            $(".tpd-video-wrap").find('img').attr('src', video_img);
+            $("#video_edit").val(video_url)
+        }
+
+    </script>
+</div>
