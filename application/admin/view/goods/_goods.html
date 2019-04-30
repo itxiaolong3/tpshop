@@ -266,23 +266,23 @@
                     <!--</select>-->
                 <!--</dd>-->
             <!--</dl>-->
-            <!--<dl class="row">-->
-                <!--<dt class="tit">-->
-                    <!--<label>供应商</label>-->
-                <!--</dt>-->
-                <!--<dd class="opt">-->
-                    <!--<select name="suppliers_id" id="suppliers_id" class="small form-control">-->
-                        <!--<option value="0">不指定供应商属于本店商品</option>-->
-                        <!--<foreach name="suppliersList" item="v" key="k">-->
-                            <!--<option value="{$v['suppliers_id']}"-->
-                            <!--<if condition="$v['suppliers_id'] eq $goods['suppliers_id'] ">selected="selected"</if>-->
-                            <!--&gt;-->
-                            <!--{$v['suppliers_name']}-->
-                            <!--</option>-->
-                        <!--</foreach>-->
-                    <!--</select>-->
-                <!--</dd>-->
-            <!--</dl>-->
+            <dl class="row">
+                <dt class="tit">
+                    <label>供应商</label>
+                </dt>
+                <dd class="opt">
+                    <select name="suppliers_id" id="suppliers_id" class="small form-control">
+                        <option value="0">不指定供应商属于本店商品</option>
+                        <foreach name="suppliersList" item="v" key="k">
+                            <option value="{$v['suppliers_id']}"
+                            <if condition="$v['suppliers_id'] eq $goods['suppliers_id'] ">selected="selected"</if>
+                            >
+                            {$v['suppliers_name']}
+                            </option>
+                        </foreach>
+                    </select>
+                </dd>
+            </dl>
             <dl class="row">
                 <dt class="tit"><em>*</em>
                     <label>本店售价</label>

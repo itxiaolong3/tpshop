@@ -1054,15 +1054,26 @@ class UsersLogic extends Model
        if(empty($code)){
            return array('status' => -1, 'msg' => '验证码不能为空', 'result' => '');
        }
-        //       $validate_code= session('validate_code'); //接收手机验证码
-//               if($validate_code！=$code){
-//                return returnBad('验证码不正确！', 308);
-//               }
+       //校验验证码
+        $getphonecode=M('sms_log')->where(['mobile'=>$mobile,'status'=>1,'code'=>$code])->order("add_time desc")->find();
+       if ($getphonecode){
+           if ((time()-$getphonecode['add_time'])>1800){
+               //M('sms_log')->where(['mobile'=>$mobile,'status'=>1,'code'=>$code])->delete();
+               M('sms_log')->where(['mobile'=>$mobile,'status'=>1,'code'=>$code])->save(['status'=>2]);
+               return array('status' => -1, 'msg' => '验证码已失效，30分钟之内有效', 'code' => 308);
+           }
+
+       }else{
+           return array('status' => -1, 'msg' => '验证码不正确', 'code' => 308);
+       }
         $res =M('users')->where(['user_id'=>$user_id])->save(['mobile'=>$mobile]);
        if(!$res){
            return array('status' => -1, 'msg' => '绑定失败', 'result' => '');
+       }else{
+           //M('sms_log')->where(['mobile'=>$mobile,'status'=>1,'code'=>$code])->delete();
+           M('sms_log')->where(['mobile'=>$mobile,'status'=>1,'code'=>$code])->save(['status'=>2]);
        }
-        return array( 'msg' => '绑定成功');
+        return array('status' => true, 'code' => 200, 'data' => '绑定成功');
     }
     /**
      *  针对 APP 修改支付密码的方法

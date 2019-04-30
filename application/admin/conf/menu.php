@@ -153,8 +153,8 @@ return	array(
           //  array('name'=>'代理商申请表','act'=>'agent_apply','op'=>'User'),
 			array('name'=>'会员等级','act'=>'levelList','op'=>'User'),
             array('name'=>'会员提成','act'=>'benfitsList','op'=>'User'),
-            array('name'=>'会员星级','act'=>'Memberstar','op'=>'User'),
-            array('name'=>'机构管理','act'=>'Mechanism','op'=>'User'),
+            array('name'=>'会员星级','act'=>'memberstar','op'=>'User'),
+            array('name'=>'店铺入驻','act'=>'mechanism','op'=>'User'),
 		)),
 		array('name' => '充值提现','child'=>array(
 			array('name'=>'充值记录','act'=>'recharge','op'=>'User'),

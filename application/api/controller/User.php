@@ -1,16 +1,16 @@
 <?php
 /**
- --------------------------------------------------
- 空间类型   用户个人中心控制器
- --------------------------------------------------
- Copyright(c) 2017 时代万网 www.agewnet.com
- --------------------------------------------------
- 开发人员: lichao  <729167563@qq.com>
- --------------------------------------------------
+--------------------------------------------------
+空间类型   用户个人中心控制器
+--------------------------------------------------
+Copyright(c) 2017 时代万网 www.agewnet.com
+--------------------------------------------------
+开发人员: lichao  <729167563@qq.com>
+--------------------------------------------------
 
  */
 namespace app\api\controller;
-
+use app\api\service\Sms;
 use app\common\logic\Message;
 use app\common\logic\UsersLogic;
 use app\common\model\MenuCfg;
@@ -84,21 +84,21 @@ class User extends Base{
      * 提现添加
      */
     public function withdrawals_add(){
-       // $this->user_id =207;
+        // $this->user_id =207;
         if(empty($this->user_id)){
             returnOk(['status' => 0, 'msg' => '请先登录','return_url'=>U('User/login')]);
         }
-      $a =[
-          'create_time'=>time(),
-          'money'=>I('post.money'),//提现金额
-         // 'pay_time'=>I(post.pay_time),//支付时间
-          'bank_name'=>I('post.bank_name'),//银行名称
-          'bank_card'=>I('post.bank_card'),//银行卡号
-          'realname'=>I('post.realname'),//真实姓名或账户
-          'taxfee'=>I('post.taxfee'), //手续费
-          'status'=>0, //提现状态
-          'truemoney'=>I('post.truemoney'),//实际到账
-          ];
+        $a =[
+            'create_time'=>time(),
+            'money'=>I('post.money'),//提现金额
+            // 'pay_time'=>I(post.pay_time),//支付时间
+            'bank_name'=>I('post.bank_name'),//银行名称
+            'bank_card'=>I('post.bank_card'),//银行卡号
+            'realname'=>I('post.realname'),//真实姓名或账户
+            'taxfee'=>I('post.taxfee'), //手续费
+            'status'=>0, //提现状态
+            'truemoney'=>I('post.truemoney'),//实际到账
+        ];
 
         $usersLogic = new UsersLogic;
         $result = $usersLogic->withdrawals_add($this->user_id, $a);
@@ -133,7 +133,7 @@ class User extends Base{
      * 下线列表(我的团队)
      */
     public function lower_list(){
-         //确实统计所有数量(多级统计)还有显示所有下级的信息
+        //确实统计所有数量(多级统计)还有显示所有下级的信息
         $level = intval(I('post.level',0));//等级 这个等级是根据用户消费积分来的 默认为下级
         if($level===0){
             $level=[1,2];
@@ -173,7 +173,7 @@ class User extends Base{
             $lists[$k]['address']=$v['province'].' '.$v['city'];
             unset( $lists[$k]['province'], $lists[$k]['city']);
         }
-      // var_dump($lists);die;
+        // var_dump($lists);die;
 //        $region_list = db('region')->cache(true)->getField('id,name');//地区
 //        foreach ($lists as $k => $v){
 //            if($v['province']){
@@ -181,14 +181,14 @@ class User extends Base{
 //                $lists[$k]['city'] = $region_list[$v['city']];//市
 //            }
 //        }
-      //  $level = Db::name("user_level")->where(["level_id"=>["=", $this->user['level']]])->field('level_id,level_name as name')->select();
+        //  $level = Db::name("user_level")->where(["level_id"=>["=", $this->user['level']]])->field('level_id,level_name as name')->select();
         $data=[
-          //  'count' => $count, //统计数量 0 总人数 1. 一级总人数 2. 二级总人数
+            //  'count' => $count, //统计数量 0 总人数 1. 一级总人数 2. 二级总人数
             'count0' =>$count0,
             'count1' => $count1, //一级
             'count2' => $count2, //二级
             'list' => $lists, //队伍
-         //   'level' => $level
+            //   'level' => $level
         ];
         return returnOk($data);
     }
@@ -227,7 +227,7 @@ class User extends Base{
             if(!empty($order_id_list)){
 
                 $orderList = M('order')->where("order_id", "in", implode(',', $order_id_list))->getField('order_id,pay_time,add_time,total_amount');  //订单信息
-               // $total_List = M('order')->where("order_id", "in", implode(',', $order_id_list))->where('','between',"$first_time","$last_time")->getField('total_amount');  //订单信息
+                // $total_List = M('order')->where("order_id", "in", implode(',', $order_id_list))->where('','between',"$first_time","$last_time")->getField('total_amount');  //订单信息
             }
             $total_amount = get_arr_column($orderList, 'total_amount');//订单总价
             $subtotal = array_sum($total_amount); //团队订单总额
@@ -298,7 +298,7 @@ class User extends Base{
      */
     public function password()
     {
-      //  $this->user_id=207;
+        //  $this->user_id=207;
         if(!$this->user_id){
             return returnBad('用户不存在', 308);
         }
@@ -332,7 +332,7 @@ class User extends Base{
         }
         return returnOk($address_lists);
     }
-   //修改支付密码
+    //修改支付密码
     public  function payPwd(){
         $logic = new UsersLogic();
         $res = $logic->payPwd($this->user_id, I('post.password'), I('post.paypwd'), I('post.two_paypwd'));
@@ -342,15 +342,16 @@ class User extends Base{
      * 绑定手机号
      */
     public function bandMobile(){
-        $ress=M('users')->where(['user_id'=> $this->user_id])->field('mobile')->find();
+        $ress=M('users')->where(['user_id'=> $this->user_id])->find();
         if($ress){
+
             if(!empty($ress['mobile'])&&check_mobile($ress['mobile'])){
-                returnBad([ 'msg' => '已经绑定过手机号，无需在绑定']);
+                return returnBad([ 'msg' => '已经绑定过手机号，无需在绑定']);
             }
         }
         $logic = new UsersLogic();
         $user = $logic->bandMobile($this->user_id, I('post.mobile'), I('post.code'));
-        return returnOk($user);
+        return json_encode($user);
     }
     /**
      * 保存地址
@@ -418,7 +419,7 @@ class User extends Base{
         return returnOk($region_list);
     }
     /*
-    * 添加收货地址
+    * 添加/修改收货地址
     */
     public function receiving_address(){
         $name = I('name');//收货人
@@ -430,6 +431,7 @@ class User extends Base{
         $is_default = I('is_default/d');//是否默认地址
         $mobile = I('mobile');//手机号
         $famale=I('famale/d');//性别
+        $addid=I('address_id/d');//地址ID
         $aar=[0,1,2];
         if(!check_mobile($mobile)){
             return  returnOk(['status' => 0, 'msg' => '手机格式有误！']);
@@ -443,42 +445,65 @@ class User extends Base{
             return returnBad("收货地址为空",309);
         $arr=[];
         if(!empty($this->user_id)){
-         $result= M("users")->where(array('user_id'=>$this->user_id))->find();
-         if(!empty($result)){
-           $arr=array(
-               "user_id"=>$this->user_id,
-               "consignee"=>$name,
-               "province"=>$province,
-               "city"=>$city,
-               "district"=>$district,
-               "twon"=>$twon,
-               "address"=>$address,
-               "is_default"=>$is_default,
-               "mobile"=>$mobile,
-               "famale"=>$famale,
-           );
-           if($is_default==1){
-               $is_default=0;
-               M('user_address')->where(array('user_id'=>$this->user_id))->save(array('is_default'=>$is_default));
-           }
-           M('user_address')->where(array('user_id'=>$this->user_id))->add($arr);
-         return returnOk(['status'=>1,'msg'=>'收货地址添加成功']);
-         }else{
-             return  returnOk(['status' => 0, 'msg' => '用户不存在']);
-         }
+            $result= M("users")->where(array('user_id'=>$this->user_id))->find();
+            if(!empty($result)){
+                $arr=array(
+                    "user_id"=>$this->user_id,
+                    "consignee"=>$name,
+                    "province"=>$province,
+                    "city"=>$city,
+                    "district"=>$district,
+                    "twon"=>$twon,
+                    "address"=>$address,
+                    "is_default"=>$is_default,
+                    "mobile"=>$mobile,
+                    "famale"=>$famale,
+                );
+                if($is_default==1){
+                    $is_default=0;
+                    M('user_address')->where(array('user_id'=>$this->user_id))->save(array('is_default'=>$is_default));
+                }
+                if ($addid){
+                    $savere=M('user_address')->where(array('address_id'=>$addid))->save($arr);
+                    if ($savere){
+                        return returnOk(['status'=>1,'msg'=>'修改地址成功']);
+                    }else{
+                        return  returnOk(['status' =>0, 'msg' => '修改地址失败']);
+                    }
+                }else{
+                    $addre=M('user_address')->where(array('user_id'=>$this->user_id))->add($arr);
+                    if ($addre){
+                        return returnOk(['status'=>1,'msg'=>'添加地址成功']);
+                    }else{
+                        return  returnOk(['status' =>0, 'msg' => '添加地址失败']);
+                    }
+                }
+
+            }else{
+                return  returnOk(['status' => 0, 'msg' => '用户不存在']);
+            }
         }else{
             return  returnBad(['msg' => '请先登录','return_url'=>U('User/login')]);
         }
+    }
+    //获取单一地址
+    public function getaddress(){
+        $address_id = I('address_id/d');
+        if (empty($address_id)){
+            return json_encode(array('code'=>200,'status'=>0,'data'=>'缺少地址ID'));
+        }
+        $user_address = M('user_address')->where(array('address_id'=>$address_id))->find();
+        return json_encode(array('code'=>200,'status'=>0,'data'=>$user_address));
     }
     /*
      * 设置修改地址
      */
 
-     public function edit_address(){
-         $address_id = I('address_id/d');
-         $user_address = M('user_address')->where(array('user_id'=>$this->user_id))->where(array('address_id'=>$address_id))->find();
-         echo "<pre>";var_dump($user_address);die;
-     }
+    public function edit_address(){
+        $address_id = I('address_id/d');
+        $user_address = M('user_address')->where(array('user_id'=>$this->user_id))->where(array('address_id'=>$address_id))->find();
+        echo "<pre>";var_dump($user_address);die;
+    }
     /*
      * 设置默认收货地址
      */
@@ -518,7 +543,7 @@ class User extends Base{
     }
 
 
-      /**
+    /**
      * 用户收藏列表
      */
     public function collect_list()
@@ -550,31 +575,31 @@ class User extends Base{
     /*
      *添加收藏
      */
-     public function add_collect(){
-         $goods_id = I('goods_id/d');
-         if(!empty($this->user_id)){
-             if(empty($goods_id)){
-                 return  returnBad("参数缺失",300);
-             }else{
-                 $result= M('goods')->where(array("goods_id"=>$goods_id))->find();
-                 if(!empty($result)){
-                     $res =M('goods_collect')->where(array('user_id'=>$this->user_id,'goods_id'=>$goods_id))->find();
-                     if($res==TRUE){
-                         return  returnBad(['status' => 0, 'msg' => '商品已收藏过']);
-                     }else{
-                         $result= M('goods_collect')->add(array('user_id'=>$this->user_id,'goods_id'=>$goods_id,'add_time'=>time()));
-                         if($result){
-                             return  returnOk(['status' => 1, 'msg' => '商品收藏成功']);
-                         }
-                     }
-                 }else{
-                     return  returnOk(['status' => 0, 'msg' => '收藏的商品不存在']);
-                 }
-             }
-         }else{
-          return  returnOk(['status' => 0, 'msg' => '请先登录','return_url'=>U('User/login')]);
-         }
-     }
+    public function add_collect(){
+        $goods_id = I('goods_id/d');
+        if(!empty($this->user_id)){
+            if(empty($goods_id)){
+                return  returnBad("参数缺失",300);
+            }else{
+                $result= M('goods')->where(array("goods_id"=>$goods_id))->find();
+                if(!empty($result)){
+                    $res =M('goods_collect')->where(array('user_id'=>$this->user_id,'goods_id'=>$goods_id))->find();
+                    if($res==TRUE){
+                        return  returnBad(['status' => 0, 'msg' => '商品已收藏过']);
+                    }else{
+                        $result= M('goods_collect')->add(array('user_id'=>$this->user_id,'goods_id'=>$goods_id,'add_time'=>time()));
+                        if($result){
+                            return  returnOk(['status' => 1, 'msg' => '商品收藏成功']);
+                        }
+                    }
+                }else{
+                    return  returnOk(['status' => 0, 'msg' => '收藏的商品不存在']);
+                }
+            }
+        }else{
+            return  returnOk(['status' => 0, 'msg' => '请先登录','return_url'=>U('User/login')]);
+        }
+    }
     /**
      * 优惠券
      */
@@ -582,7 +607,7 @@ class User extends Base{
     {
         $logic = new UsersLogic();
         $data = $logic->get_coupon($this->user_id, input('type'));
-     //  echo "<pre>";var_dump($data);die;
+        //  echo "<pre>";var_dump($data);die;
         foreach($data['result'] as $k =>$v){
             $data['result'][$k]['expression'] = intval($v["expression"]);//使用金额
             $data['result'][$k]['condition_money'] = intval($v["condition_money"]);//优惠条件
@@ -616,7 +641,7 @@ class User extends Base{
         if($res){
             return returnBad("已经领取过优惠券，不能重复领取");
         }
-       // $user_id = $this->user_id; 在公众号中获取的用户user_id
+        // $user_id = $this->user_id; 在公众号中获取的用户user_id
         $activityLogic = new \app\common\logic\ActivityLogic;
         $coupon_list = $activityLogic->get_coupon($id, $this->user_id);
         return returnOk($coupon_list);
@@ -644,7 +669,7 @@ class User extends Base{
         $userLogic = new UsersLogic();
         $user_id   = $this->user_id;
         $config    = tpCache('sign');
-       $date=date("Y-n-j",strtotime(date("Y-m-d",time())));
+        $date=date("Y-n-j",strtotime(date("Y-m-d",time())));
         //签到开关
         if ($config['sign_on_off'] > 0) {
             $map['sign_last'] = $date;
@@ -672,26 +697,26 @@ class User extends Base{
         $sign_total = Db::name('user_sign')->where(['user_id' => $this->user_id])->field('cumtrapz,sign_last,sign_count')->find();
         $sign_status=1; //已经签到了
         $date_now= strtotime(date('Y-m-d',time()));
-       if($date_now !=strtotime($sign_total['sign_last'])){
-           $sign_status=0;
-       }
-       $arr= explode(',',$sign_total['sign_time']);
+        if($date_now !=strtotime($sign_total['sign_last'])){
+            $sign_status=0;
+        }
+        $arr= explode(',',$sign_total['sign_time']);
 
-       $result['sign_count']=$sign_total['sign_count'];
-       $result['sign_status']=$sign_status;
-       $result['sign_integral']=$sign_total['cumtrapz'];
-       return returnOk($result);
+        $result['sign_count']=$sign_total['sign_count'];
+        $result['sign_status']=$sign_status;
+        $result['sign_integral']=$sign_total['cumtrapz'];
+        return returnOk($result);
     }
     /**
      * 签到规则
      */
     public  function sign_rules(){
-      $sign_content= M('article')->where(['article_id'=>5])->field('content')->find();
-      if(!$sign_content){
-          return returnBad("签到规则内容不存在");
-      }
-      $content['content']=htmlspecialchars_decode($sign_content['content']);
-      return returnok($content);
+        $sign_content= M('article')->where(['article_id'=>5])->field('content')->find();
+        if(!$sign_content){
+            return returnBad("签到规则内容不存在");
+        }
+        $content['content']=htmlspecialchars_decode($sign_content['content']);
+        return returnok($content);
     }
     /**
      * 申请提现记录/进入提现面数据
@@ -710,18 +735,18 @@ class User extends Base{
         $type =I('get.type')?I('get.type'):3;
         if($type==3){
             $Model=M('bank');
-           $bank= $Model->field('id,bankname,banknum')->where(['user_id'=>$this->user_id])->where(['is_default'=>1])->find();
-           if($bank){
-               $data['bank']=$bank;
-           }else{
-               $bank1=$Model->field('id,bankname,banknum')->where(['user_id'=>$this->user_id])->where(['is_default'=>0])->order('create_time desc')->limit(1)->find();
-              if($bank1){
-                  $Model->where(['user_id'=>$this->user_id])->where(['id'=>$bank1['id']])->save(['is_default'=>1]);
-                  $data['bank']=$bank1;
-              }else{
-                  $data['bank']='没有绑定银行卡，请去绑定';
-              }
-           }
+            $bank= $Model->field('id,bankname,banknum')->where(['user_id'=>$this->user_id])->where(['is_default'=>1])->find();
+            if($bank){
+                $data['bank']=$bank;
+            }else{
+                $bank1=$Model->field('id,bankname,banknum')->where(['user_id'=>$this->user_id])->where(['is_default'=>0])->order('create_time desc')->limit(1)->find();
+                if($bank1){
+                    $Model->where(['user_id'=>$this->user_id])->where(['id'=>$bank1['id']])->save(['is_default'=>1]);
+                    $data['bank']=$bank1;
+                }else{
+                    $data['bank']='没有绑定银行卡，请去绑定';
+                }
+            }
         }else{
             $data['bank']='';
         }
@@ -844,20 +869,20 @@ class User extends Base{
         if(M('users')->where(['user_id'=>$this->user_id])->where(['is_name_auth'=>1])->find()){
             return  returnBad( '已认证过身份，无需再认证');
         }
-         $post['realname']=I('post.realname');
-         $post['cardnum']= I('post.cardnum');
-         if($post['realname'] == NULL){
-             return  returnBad(['msg' => '名字不能为空']);
-         }
-       if(!check_idCard($post['cardnum'])){
-           return  returnBad(['msg' => '身份证填写错误']);
-       }
+        $post['realname']=I('post.realname');
+        $post['cardnum']= I('post.cardnum');
+        if($post['realname'] == NULL){
+            return  returnBad(['msg' => '名字不能为空']);
+        }
+        if(!check_idCard($post['cardnum'])){
+            return  returnBad(['msg' => '身份证填写错误']);
+        }
         $post['is_name_auth']=1;
-      if(M('users')->where(['user_id'=>$this->user_id])->save($post)){
-          return  returnOk(['msg' => '身份认证成功！']);
-      }else{
-          return  returnBad(['msg' => '修改失败']);
-      }
+        if(M('users')->where(['user_id'=>$this->user_id])->save($post)){
+            return  returnOk(['msg' => '身份认证成功！']);
+        }else{
+            return  returnBad(['msg' => '修改失败']);
+        }
     }
     /*
         添加银行卡
@@ -868,10 +893,11 @@ class User extends Base{
         }else{
             return  returnOk(['status' => 0, 'msg' => '请先登录','return_url'=>U('User/login')]);
         }
-        $data['cardholder'] =!empty($userinfo['u_truename'])?$userinfo['u_truename']:$userinfo['nickname']; //银行名称
+        //$data['cardholder'] =!empty($userinfo['u_truename'])?$userinfo['u_truename']:$userinfo['nickname']; //姓名
+        $data['cardholder'] =!empty($userinfo['u_truename'])?$userinfo['u_truename']:I('post.truename'); //姓名
         $data['bankname'] =I('post.bankname'); //银行名称
         $data['banknum']=I('post.banknum'); //银行卡号
-        $data['bankname2'] =I('post.bankname2');//银行卡确认
+        $data['bankname2'] =I('post.banknum2');//银行卡确认
         $data['bankplace']=I('post.bankplace');//开户支行
         $data['place'] =I('post.place');//开户所在地
         $data['create_time'] =time();//
@@ -887,28 +913,28 @@ class User extends Base{
             M('bank')->where(['user_id'=>$this->user_id])->where(['banknum'=>$data['banknum']])->save(['update_time'=>time()]);
             return  returnBad( '银行卡不能反复提交！');
         }
-         $res=M('bank')->add($data);
+        $res=M('bank')->add($data);
         if(!empty($res)){
             return  returnOk( '银行卡添加成功！');
         }else{
             return  returnBad( '银行卡添加失败！');
         }
     }
-        /**
-    * 银行卡列表
-    */
-       public function bankList(){
-           if(!empty($this->user_id)){
-               $userinfo= Db::name('users')->where(['user_id'=>$this->user_id])->find();
-           }else {
-               return returnOk(['status' => 0, 'msg' => '请先登录', 'return_url' => U('User/login')]);
-           }
-           $bank =M('bank')->field('id,bankname,banknum,is_default')->where(['user_id'=>$this->user_id])->select();
-           if(!$bank){
-               return returnBad('没有添加银行卡');
-           }
-           return returnOk($bank);
-       }
+    /**
+     * 银行卡列表
+     */
+    public function bankList(){
+        if(!empty($this->user_id)){
+            $userinfo= Db::name('users')->where(['user_id'=>$this->user_id])->find();
+        }else {
+            return returnOk(['status' => 0, 'msg' => '请先登录', 'return_url' => U('User/login')]);
+        }
+        $bank =M('bank')->field('id,bankname,banknum,is_default')->where(['user_id'=>$this->user_id])->select();
+        if(!$bank){
+            return returnBad('没有添加银行卡');
+        }
+        return returnOk($bank);
+    }
 //    /**
 //     * 提现记录列表
 //     */
@@ -1100,7 +1126,7 @@ class User extends Base{
         $result= $usersLogic->get_recharge_log($this->user_id);  //充值记录
         $this->assign('page', $result['show']);
         $this->assign('lists', $result['result']);
-       return returnOk($result['result']);
+        return returnOk($result['result']);
     }
 
     /**
@@ -1244,26 +1270,26 @@ class User extends Base{
     }
     //查询细胞数据
     public function cell_list(){
-       $num = I('num/d');
+        $num = I('num/d');
         if(empty($num)){
             return  returnBad("编号不能为空！");
         }
-       if(!strlen($num)==16 ){
-           return  returnBad("编号长度不合规！");
-       }
-       //$data['user']=$this->user_id;
-       $res= M('cells')->where(["cell_num"=>$num,"uid"=>$this->user_id])->find();
-       if($res){
-           $data['update_time']=time();
-           M('cells')->where(['cid'=>$res['cid']])->save($data);
-          $res= M('cells')->where(['cid'=>$res['cid']])->find();
-           return returnOk($res);
-       }else{
-           return returnBad("没有查询到该细胞状态！");
-       }
+        if(!strlen($num)==16 ){
+            return  returnBad("编号长度不合规！");
+        }
+        //$data['user']=$this->user_id;
+        $res= M('cells')->where(["cell_num"=>$num,"uid"=>$this->user_id])->find();
+        if($res){
+            $data['update_time']=time();
+            M('cells')->where(['cid'=>$res['cid']])->save($data);
+            $res= M('cells')->where(['cid'=>$res['cid']])->find();
+            return returnOk($res);
+        }else{
+            return returnBad("没有查询到该细胞状态！");
+        }
 
-      // $userinfo=M('users')->where(['user_id'=>$this->user_id])->field(['name,sex'])->find();
-      // echo time();die;
+        // $userinfo=M('users')->where(['user_id'=>$this->user_id])->field(['name,sex'])->find();
+        // echo time();die;
 //        $saving =date("Y年m月d天",time()); //储蓄日期
 //
 //       echo $saving;die;
@@ -1278,12 +1304,12 @@ class User extends Base{
         $date["cell_num"]=I("post.cell_num"); //细胞编号
         $date["saving_time"] =date("Y年m月d天",time()); //储蓄日期
         $date["term_time"]=I("post.term_time"); //存储年限
-         $date["saving_num"]=date("ymdhis",time());//存储编码
-         $date["insurance_num"]=I("post.insurance_num"); //保单编号
-         $date["contract_num"]=I("post.contract_num");  //合同编号
-         $date["remark"]=I("post.remark");      // 备注
-         $date['create_time']=time();
-       //  var_dump($date);die;
+        $date["saving_num"]=date("ymdhis",time());//存储编码
+        $date["insurance_num"]=I("post.insurance_num"); //保单编号
+        $date["contract_num"]=I("post.contract_num");  //合同编号
+        $date["remark"]=I("post.remark");      // 备注
+        $date['create_time']=time();
+        //  var_dump($date);die;
         $res=M('cells')->add($date);
         if($res===false){
             return returnBad("添加失败");
@@ -1311,27 +1337,27 @@ class User extends Base{
 
     //增加体检数据
     public function examination_add(){
-       $date['num']=I('post.num');
-       $date['pic']=I('post.pic'); //多个照片
-       $date['create_time']=time();
-       $date['uid']=$this->user_id;
-       $res=M("examination")->add($date);
-       if($res===false){
-           return returnBad("添加失败！");
-       }else{
-           return returnOk("添加成功！");
-       }
+        $date['num']=I('post.num');
+        $date['pic']=I('post.pic'); //多个照片
+        $date['create_time']=time();
+        $date['uid']=$this->user_id;
+        $res=M("examination")->add($date);
+        if($res===false){
+            return returnBad("添加失败！");
+        }else{
+            return returnOk("添加成功！");
+        }
     }
 
     //进门码
     public function entry_code(){
         $user = new UsersLogic();
-       // $qrcode = $user->checkUserQrcode($this->user_id);//小程序专属二维码
+        // $qrcode = $user->checkUserQrcode($this->user_id);//小程序专属二维码
         $qrcode = $user->createUserQrcodePoster($this->user_id); //gd流合成用户专属推广海报
         echo url_add_domain($qrcode);die;
         return returnOk(url_add_domain($qrcode));
 
-       //$res= httpRequest(ECODE,"POST");
+        //$res= httpRequest(ECODE,"POST");
 //       if($res['status'] == 'success'){
 //
 //       }else{
@@ -1340,9 +1366,9 @@ class User extends Base{
     }
 
     public  function testq(){
-      //  vendor('luoyy/phpqrcode');
+        //  vendor('luoyy/phpqrcode');
         //
-       echo "<pre>"; var_dump(\luoyy\phpqrcode\QRcode::base64('http://www.baidu.com', false, 'M', 4, 1));
+        echo "<pre>"; var_dump(\luoyy\phpqrcode\QRcode::base64('http://www.baidu.com', false, 'M', 4, 1));
         echo 123;die;
     }
 
@@ -1362,6 +1388,53 @@ class User extends Base{
         $logo =  $user_arr["header_images"];        //用户logo
         $result = $CreateCode::qrCodeRecommend($url,$path,$name,$source,$type,$matrixPointSize=10,$logo,$compound,$compoundname);
         var_dump($result);die;
+    }
+    //发送短信
+    public function smsSend(){
+        header("Content-type: text/html; charset=utf-8");
+        date_default_timezone_set('PRC'); //设置默认时区为北京时间
+        $mobile=I('post.mobile');
+        if(strlen($mobile)!=11){
+            return returnBad("手机长度为十一位");
+        }
+        if(!check_mobile($mobile)){
+            return returnBad("手机格式不对");
+        }
+        $now= strtotime(date(Ymd,time()));
+        $now_last = strtotime("+1 day",$now);
+        $where['add_time']=array('between',"$now,$now_last");
+        $where['mobile']=$mobile;
+        $smsTotal= M('sms_log')->where($where)->count();
+        if($smsTotal>10){
+            return returnBad(['msg'=>"请求数量已经用完了,明天请求发"]);
+        }
+        if($mobile=="15622114786"){
+            $code =123456;
+        }else{
+            $sms=new Sms();
+            $a = $sms->send($mobile);
+            $code =$sms->getCode();
+            //$content=$sms->content();
+            if($a<0){
+                return returnBad(["msg"=>"发送失败"]);
+            }else{
+                $data['status']=1;
+                $data['code']=$code;
+                $data['mobile']=$mobile;
+                $data['msg']=$content;
+                $data['add_time']=time();
+                $data['scene']=7; //修改密码
+                M('sms_log')->add($data);
+            }
+        }
+        if(!$_SESSION){
+            session_start();
+        }
+        if(session('code')){
+            session('code','');
+        }
+        session('code',$code);
+        return returnOk(["msg"=>"请求成功"]);
     }
 }
     

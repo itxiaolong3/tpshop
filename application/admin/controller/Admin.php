@@ -29,18 +29,29 @@ class Admin extends Base {
     	$list = array();
     	$keywords = I('keywords/s');
     	if(empty($keywords)){
-    		$res = D('admin')->where('admin_id','not in','2,3')->select();
+    		//$res = D('admin')->where('admin_id','not in','2,3')->select();
+    		$res = D('admin')->select();
     	}else{
-			$res = DB::name('admin')->where('user_name','like','%'.$keywords.'%')->where('admin_id','not in','2,3')->order('admin_id')->select();
+			//$res = DB::name('admin')->where('user_name','like','%'.$keywords.'%')->where('admin_id','not in','2,3')->order('admin_id')->select();
+			$res = DB::name('admin')->where('user_name','like','%'.$keywords.'%')->order('admin_id')->select();
     	}
     	$role = D('admin_role')->getField('role_id,role_name');
     	if($res && $role){
     		foreach ($res as $val){
     			$val['role'] =  $role[$val['role_id']];
     			$val['add_time'] = date('Y-m-d H:i:s',$val['add_time']);
+    			//查询店铺名称
+                $getshopname=D('user_mechanism')->where('mechanism_id',$val['shop_id'])->getField('company_name');
+                if ($getshopname){
+                    $val['shopname']=$getshopname['company_name'];
+                }else{
+                    $val['shopname']='全部店铺';
+                }
+
     			$list[] = $val;
     		}
     	}
+
     	$this->assign('list',$list);
         return $this->fetch();
     }
@@ -81,19 +92,35 @@ class Admin extends Base {
         }
         return $this->fetch();
     }
-    
+
     public function admin_info(){
-    	$admin_id = I('get.admin_id/d',0);
-    	if($admin_id){
-    		$info = Db::name('admin')->where("admin_id", $admin_id)->find();
-			$info['password'] =  "";
-    		$this->assign('info',$info);
-    	}
-    	$act = empty($admin_id) ? 'add' : 'edit';
-    	$this->assign('act',$act);
-    	$role = D('admin_role')->select();
-    	$this->assign('role',$role);
-    	return $this->fetch();
+        $admin_id = I('get.admin_id/d',0);
+        if($admin_id){
+            $info = Db::name('admin')->where("admin_id", $admin_id)->find();
+            $info['password'] =  "";
+            $this->assign('info',$info);
+            if($info['shop_id']){
+                //所有审核通过的店铺
+                $shop = D('user_mechanism')->where('auditing',1)->select();
+                $adddefaultshop=array('mechanism_id'=>0,'company_name'=>'不绑定','uid'=>0);
+            }else{
+                $shop = D('user_mechanism')->where('auditing',1)->select();
+                $adddefaultshop=array('mechanism_id'=>0,'company_name'=>'不绑定','uid'=>0);
+                array_push($shop,$adddefaultshop);
+            }
+        }else{
+            //所有审核通过的店铺
+            $shop = D('user_mechanism')->where('auditing',1)->select();
+            $adddefaultshop=array('mechanism_id'=>0,'company_name'=>'不绑定','uid'=>0);
+            array_push($shop,$adddefaultshop);
+        }
+        $act = empty($admin_id) ? 'add' : 'edit';
+        $this->assign('act',$act);
+        $role = D('admin_role')->select();
+        $this->assign('role',$role);
+
+        $this->assign('shop',$shop);
+        return $this->fetch();
     }
     
     public function adminHandle(){
@@ -102,6 +129,18 @@ class Admin extends Base {
 		if(!$adminValidate->scene($data['act'])->batch()->check($data)){
 			$this->ajaxReturn(['status'=>-1,'msg'=>'操作失败','result'=>$adminValidate->getError()]);
 		}
+        //店铺ID
+        $shopid=I('post.shop_id/d');
+        if ($shopid){
+            //查询用户id
+            $uid = D('user_mechanism')->where('mechanism_id',$shopid)->find();
+            //判断是否已存在绑定店铺
+            $admin = D('admin')->where('u_id',$uid['uid'])->find();
+            if ($admin){
+                $this->ajaxReturn(['status'=>-1,'msg'=>'绑定错误！已存在该店铺账号']);
+            }
+            $data['u_id']=$uid['uid'];
+        }
 		if(empty($data['password'])){
 			unset($data['password']);
 		}else{

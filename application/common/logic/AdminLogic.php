@@ -48,8 +48,8 @@ class AdminLogic
         ]);
 
         $this->sessionRoleRights($admin, $actList);
-
         session('admin_id', $admin['admin_id']);
+        session('u_id', $admin['u_id']);
         session('last_login_time', $admin['last_login']);
         session('last_login_ip', $admin['last_ip']);
 

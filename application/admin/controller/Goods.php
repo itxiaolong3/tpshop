@@ -178,9 +178,13 @@ class Goods extends Base {
     /**
      *  商品列表
      */
-    public function ajaxGoodsList(){            
-        
-        $where = ' 1 = 1 '; // 搜索条件                
+    public function ajaxGoodsList(){
+        $where = ' 1 = 1 '; // 搜索条件
+        //多商家版：根据登录用户的ID进行获取商品
+        $uid=session('u_id');
+        if ($uid){
+            $where.=' and uid='.$uid;
+        }
         I('intro')    && $where = "$where and ".I('intro')." = 1" ;        
         I('brand_id') && $where = "$where and brand_id = ".I('brand_id') ;
         (I('is_on_sale') !== '') && $where = "$where and is_on_sale = ".I('is_on_sale') ;                
@@ -362,6 +366,11 @@ class Goods extends Base {
         $goods->data($data, true);
         $goods->last_update = time();
         $goods->price_ladder = true;
+        //添加商品归属店铺
+        $uid=session('u_id');
+        if ($uid){
+            $goods->uid = $uid;
+        }
         $goods->save();
         if(empty($spec_item)){
             update_stock_log(session('admin_id'), $store_count_change_num, ['goods_id' => $goods['goods_id'], 'goods_name' => $goods['goods_name']]);//库存日志

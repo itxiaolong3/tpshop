@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:44:"./application/admin/view/shipping\index.html";i:1540260088;s:48:"E:\web\application\admin\view\public\layout.html";i:1540260088;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:43:"./application/admin/view/comment\index.html";i:1540260088;s:51:"E:\tpshop\application\admin\view\public\layout.html";i:1540260088;}*/ ?>
 <!doctype html>
 <html>
 <head>
@@ -179,172 +179,151 @@
 </script>  
 
 </head>
-<script src="/public/static/js/layer/laydate/laydate.js"></script>
-<script type="text/javascript" src="/public/static/js/perfect-scrollbar.min.js"></script>
+
 <body style="background-color: rgb(255, 255, 255); overflow: auto; cursor: default; -moz-user-select: inherit;">
 <div id="append_parent"></div>
 <div id="ajaxwaitid"></div>
 <div class="page">
-	<div class="fixed-bar">
-		<div class="item-title">
-			<div class="subject">
-				<h3>快递公司管理</h3>
-				<h5>快递公司列表与管理</h5>
-			</div>
-		</div>
-	</div>
-	<!-- 操作说明 -->
-	<div id="explanation" class="explanation" style="color: rgb(44, 188, 163); background-color: rgb(237, 251, 248); width: 99%; height: 100%;">
-		<div id="checkZoom" class="title"><i class="fa fa-lightbulb-o"></i>
-			<h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
-			<span title="收起提示" id="explanationZoom" style="display: block;"></span>
-		</div>
-		<ul>
-			<li>快递公司管理, 由总平台设置管理.</li>
-			<li>快递打印模板编辑快递公司可进行设置, 设置必须上传快递单据背景图.</li>
-			<li>如果物流配置启用的是快递鸟，物流公司编码也要改为快递鸟官方物流公司编码.</li>
-		</ul>
-	</div>
-	<div class="flexigrid">
-		<div class="mDiv">
-			<div class="ftitle">
-				<h3>快递公司列表</h3>
-				<h5>(共<?php echo $page->totalRows; ?>条记录)</h5>
-			</div>
-			<div title="刷新数据" class="pReload"><i class="fa fa-refresh"></i></div>
-			<form class="navbar-form form-inline" action="<?php echo U('Admin/Shipping/index'); ?>" method="get">
-				<div class="sDiv">
-					<div class="sDiv2">
-						<input size="30" name="shipping_name" value="<?php echo \think\Request::instance()->param('shipping_name'); ?>" class="qsbox" placeholder="快递公司名称" type="text">
-					</div>
-					<div class="sDiv2">
-						<input type="text" size="30" name="shipping_code" value="<?php echo \think\Request::instance()->param('shipping_code'); ?>" class="qsbox" placeholder="物流编号">
-						<input type="submit" class="btn" value="搜索" >
-					</div>
-				</div>
-			</form>
-		</div>
-		<div class="hDiv">
-			<div class="hDivBox">
-				<table cellspacing="0" cellpadding="0">
-					<thead>
-					<tr>
-						<th class="sign" axis="col0">
-							<div style="width: 24px;"><i class="ico-check"></i></div>
-						</th>
-						<th align="left"  axis="col3" class="">
-							<div style="text-align: left; width: 150px;" class="">物流公司名称</div>
-						</th>
-						<th align="left" axis="col4" class="">
-							<div style="text-align: left; width: 100px;" class="">快递公司编码</div>
-						</th>
-						<th align="center" axis="col5" class="">
-							<div style="text-align: center; width: 80px;" class="">开启状态</div>
-						</th>
-						<th align="left" axis="col1" class="handle">
-							<div style="text-align: center; width: 250px;">操作</div>
-						</th>
-						<th style="width:100%" axis="col7">
-							<div></div>
-						</th>
-					</tr>
-					</thead>
-				</table>
-			</div>
-		</div>
-		<div class="tDiv">
-			<div class="tDiv2">
-				<div class="fbutton"> <a href="<?php echo U('Shipping/info'); ?>">
-					<div class="add" title="新增快递公司">
-						<span><i class="fa fa-plus"></i>新增快递公司</span>
-					</div>
-				</a> </div>
-			</div>
-			<div style="clear:both"></div>
-		</div>
-		<div class="bDiv" style="height: auto;">
-			<div id="flexigrid">
-				<table>
-					<tbody>
-					<?php if(is_array($list) || $list instanceof \think\Collection || $list instanceof \think\Paginator): $i = 0; $__LIST__ = $list;if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$shipping): $mod = ($i % 2 );++$i;?>
-						<tr>
-							<td class="sign">
-								<div style="width: 24px;"><i class="ico-check"></i></div>
-							</td>
-							<td align="left" class="">
-								<div style="text-align: left; width: 150px;"><?php echo $shipping['shipping_name']; ?></div>
-							</td>
-							<td align="left" class="">
-								<div style="text-align: center; width: 100px;"><?php echo $shipping['shipping_code']; ?></div>
-							</td>
-							<td align="left" class="">
-								<div style="text-align: center; width: 80px;">					
-									<?php if($shipping[is_open] == 1): ?>
-										<span class="yes" onClick="changeTableVal('shipping','shipping_id','<?php echo $shipping['shipping_id']; ?>','is_open',this)" ><i class="fa fa-check-circle"></i>是</span>
-										<?php else: ?>
-										<span class="no" onClick="changeTableVal('shipping','shipping_id','<?php echo $shipping['shipping_id']; ?>','is_open',this)" ><i class="fa fa-ban"></i>否</span>
-									<?php endif; ?>
-								</div>
-							</td>
-							<td align="center" class="handle">
-								<div style="text-align: center; width: 250px; max-width:170px;">
-									<a class="btn blue" href="<?php echo U('Shipping/info',array('shipping_id'=>$shipping['shipping_id'])); ?>"><i class="fa fa-search"></i>编辑</a>
-									<a class="btn red deleteShipping" data-shipping-id="<?php echo $shipping['shipping_id']; ?>"><i class="fa fa-trash-o"></i>删除</a>
-								</div>
-							</td>
-							<td align="" class="" style="width: 100%;">
-								<div>&nbsp;</div>
-							</td>
-						</tr>
-					<?php endforeach; endif; else: echo "" ;endif; ?>
-					</tbody>
-				</table>
-			</div>
-			<div class="iDiv" style="display: none;"></div>
-		</div>
-		<!--分页位置-->
-		<?php echo $page->show(); ?> </div>
+  <div class="fixed-bar">
+    <div class="item-title">
+      <div class="subject">
+        <h3>评价管理</h3>
+        <h5>商品交易评价管理</h5>
+      </div>
+    </div>
+  </div>
+  <!-- 操作说明 -->
+  <div id="explanation" class="explanation" style="color: rgb(44, 188, 163); background-color: rgb(237, 251, 248); width: 99%; height: 100%;">
+    <div id="checkZoom" class="title"><i class="fa fa-lightbulb-o"></i>
+      <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+      <span title="收起提示" id="explanationZoom" style="display: block;"></span>
+    </div>
+     <ul>
+      <li>用户对购买的商品进行评价</li>
+      <li>"显示"栏可控制某条评论是否显示或隐藏</li>
+      <li>评论排序：按照升序排序，数字越小，越靠前</li>
+    </ul>
+  </div>
+  <div class="flexigrid">
+    <div class="mDiv">
+      <div class="ftitle">
+        <h3>商品评价列表</h3>
+        <h5></h5>
+      </div>
+      <a href=""><div title="刷新数据" class="pReload"><i class="fa fa-refresh"></i></div></a>
+	  <form class="navbar-form form-inline"  method="post" name="search-form2" id="search-form2">
+      <div class="sDiv">
+          <div class="sDiv2">
+          <input type="text" size="30" name="content" class="qsbox" placeholder="评论内容...">
+      </div>
+         <div class="sDiv2">
+          <input type="text" size="30" name="nickname" class="qsbox" placeholder="搜索用户">
+         </div>
+         <div class="sDiv2">
+          <input type="button" onClick="ajax_get_table('search-form2',1)"  class="btn" value="搜索">
+        </div>
+      </div>
+     </form>
+    </div>
+    <div class="hDiv">
+      <div class="hDivBox">
+        <table cellspacing="0" cellpadding="0">
+          <thead>
+	        	<tr>
+	              <th class="sign" axis="col0" onclick="checkAllSign(this)">
+	                <div style="width: 24px;"><i class="ico-check"></i></div>
+	              </th>
+	              <th align="left" abbr="order_sn" axis="col3" class="">
+	                <div style="text-align: left; width: 100px;" class="">用户</div>
+	              </th> 
+	              <th align="left" abbr="consignee" axis="col4" class="">
+	                <div style="text-align: left; width: 200px;" class="">评论内容</div>
+	              </th>	              
+	              <th align="left" abbr="article_show" axis="col5" class="">
+	                <div style="text-align: left; width: 200px;" class="">商品</div>
+	              </th>
+	              <th align="center" abbr="article_time" axis="col6" class="">
+	                <div style="text-align: center; width: 50px;" class=""> 显示</div>
+	              </th>
+	              <th align="center" abbr="article_time" axis="col6" class="">
+	                <div style="text-align: center; width: 120px;" class="">评论时间</div>
+	              </th>
+	              <th align="center" abbr="article_time" axis="col6" class="">
+	                <div style="text-align: center; width: 120px;" class=""> ip地址</div>
+	              </th>
+                   <th align="center" abbr="article_time" axis="col3" class="">
+                        <div style="text-align: center; width: 120px;" class=""> 排序</div>
+                   </th>
+	              <th align="center" abbr="article_time" axis="col6" class="">
+	                <div style="text-align: center; width: 160px;" class=""> 操作</div>
+	              </th>
+	              <th style="width:100%" axis="col7">
+	                <div></div>
+	              </th>
+	            </tr>
+	          </thead>
+        </table>
+      </div>
+    </div>
+      <div class="tDiv">
+          <div class="tDiv2">
+              <div class="fbutton">
+                  <a href="javascript:;" onclick="publicHandleAll('del')">
+                      <div class="add" title="新增品牌">
+                          <span>批量删除</span>
+                      </div>
+                  </a>
+              </div>
+              <div class="fbutton">
+                  <a href="javascript:;" onclick="publicHandleAll('show')">
+                      <div class="add" title="新增品牌">
+                          <span>显示</span>
+                      </div>
+                  </a>
+              </div>
+              <div class="fbutton">
+                  <a href="javascript:;" onclick="publicHandleAll('hide')">
+                      <div class="add" title="新增品牌">
+                          <span>隐藏</span>
+                      </div>
+                  </a>
+              </div>
+          </div>
+          <div style="clear:both"></div>
+      </div>
+    <div class="bDiv" style="height: auto;">
+      <div id="flexigrid" cellpadding="0" cellspacing="0" border="0" data-url="<?php echo U('Admin/comment/commentHandle'); ?>">
+      </div>
+      <div class="iDiv" style="display: none;"></div>
+    </div>
+    <!--分页位置--> 
+   	</div>
 </div>
-<script>
+<script type="text/javascript">
 	$(document).ready(function(){
-		// 表格行点击选中切换
-		$('#flexigrid > table>tbody >tr').click(function(){
-			$(this).toggleClass('trSelected');
-		});
-
-		// 点击刷新数据
-		$('.fa-refresh').click(function(){
-			location.href = location.href;
-		});
+	    ajax_get_table('search-form2',1);
 	});
+	
+	// ajax 抓取页面
+	function ajax_get_table(tab,page){
+	    cur_page = page; //当前页面 保存为全局变量
+        $.ajax({
+            type : "POST",
+            url:"/index.php/Admin/Comment/ajaxindex/p/"+page,//+tab,
+            data : $('#'+tab).serialize(),// 你的formid
+            success: function(data){
+                $("#flexigrid").html('');
+                $("#flexigrid").append(data);
 
-	//删除
-	$(function(){
-		$(document).on('click','.deleteShipping',function(){
-			var shipping_id = $(this).data('shipping-id');
-			var alertMsg = '确认删除吗？';
-			layer.confirm(alertMsg, {icon: 3, title:'提示',btn: ['确定','取消']}, function(){
-				$.ajax({
-					type : 'POST',
-					url : "<?php echo U('Admin/Shipping/delete'); ?>",
-					data: {shipping_id: shipping_id},
-					dataType :'JSON',
-					success : function(data){
-						layer.closeAll();
-						if(data.status == 1){
-							layer.msg(data.msg, {icon: 1},function(){
-								window.location.reload();
-							});
-						}else{
-							layer.msg(data.msg, {icon: 2,time: 2000});
-						}
-					}
-				});
-			}, function(index){
-				layer.close(index);
-			});
-		})
-	})
+                 // 表格行点击选中切换
+                $('#flexigrid > table>tbody >tr').click(function(){
+                    $(this).toggleClass('trSelected');
+                });
+
+
+            }
+        });
+	}
 
 </script>
 </body>

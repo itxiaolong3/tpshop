@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:42:"./application/admin/view/goods\_goods.html";i:1556354847;s:48:"E:\web\application\admin\view\public\layout.html";i:1540260088;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:42:"./application/admin/view/goods\_goods.html";i:1556418646;s:51:"E:\tpshop\application\admin\view\public\layout.html";i:1540260088;}*/ ?>
 <!doctype html>
 <html>
 <head>
@@ -446,23 +446,23 @@
                     <!--</select>-->
                 <!--</dd>-->
             <!--</dl>-->
-            <!--<dl class="row">-->
-                <!--<dt class="tit">-->
-                    <!--<label>供应商</label>-->
-                <!--</dt>-->
-                <!--<dd class="opt">-->
-                    <!--<select name="suppliers_id" id="suppliers_id" class="small form-control">-->
-                        <!--<option value="0">不指定供应商属于本店商品</option>-->
-                        <!--<?php if(is_array($suppliersList) || $suppliersList instanceof \think\Collection || $suppliersList instanceof \think\Paginator): if( count($suppliersList)==0 ) : echo "" ;else: foreach($suppliersList as $k=>$v): ?>-->
-                            <!--<option value="<?php echo $v['suppliers_id']; ?>"-->
-                            <!--<?php if($v['suppliers_id'] == $goods['suppliers_id']): ?>selected="selected"<?php endif; ?>-->
-                            <!--&gt;-->
-                            <!--<?php echo $v['suppliers_name']; ?>-->
-                            <!--</option>-->
-                        <!--<?php endforeach; endif; else: echo "" ;endif; ?>-->
-                    <!--</select>-->
-                <!--</dd>-->
-            <!--</dl>-->
+            <dl class="row">
+                <dt class="tit">
+                    <label>供应商</label>
+                </dt>
+                <dd class="opt">
+                    <select name="suppliers_id" id="suppliers_id" class="small form-control">
+                        <option value="0">不指定供应商属于本店商品</option>
+                        <?php if(is_array($suppliersList) || $suppliersList instanceof \think\Collection || $suppliersList instanceof \think\Paginator): if( count($suppliersList)==0 ) : echo "" ;else: foreach($suppliersList as $k=>$v): ?>
+                            <option value="<?php echo $v['suppliers_id']; ?>"
+                            <?php if($v['suppliers_id'] == $goods['suppliers_id']): ?>selected="selected"<?php endif; ?>
+                            >
+                            <?php echo $v['suppliers_name']; ?>
+                            </option>
+                        <?php endforeach; endif; else: echo "" ;endif; ?>
+                    </select>
+                </dd>
+            </dl>
             <dl class="row">
                 <dt class="tit"><em>*</em>
                     <label>本店售价</label>
@@ -677,7 +677,7 @@
                     <!--<input type="text" value="<?php echo $goods['keywords']; ?>" name="keywords" class="input-txt"/>-->
                     <textarea type="text"  name="keywords" class="input-txt"><?php echo $goods['keywords']; ?></textarea>
                     <span class="err" id="err_keywords"></span>
-                    <p class="notic">多个标签，用空格隔开，虚拟商品中讲师的三条介绍</p>
+                    <p class="notic">多个标签，用|号隔开，虚拟商品中讲师的三条介绍</p>
                 </dd>
             </dl>
 

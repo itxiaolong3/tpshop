@@ -62,6 +62,21 @@
                         <p class="notic">所属角色</p>
                     </dd>
                 </dl>
+                <dl class="row">
+                    <dt class="tit">
+                        <label><em>*</em>绑定店铺</label>
+                    </dt>
+                    <dd class="opt">
+                        <select name="shop_id">
+                            <option value="0" >不绑定</option>
+                            <volist name="shop" id="item">
+                                <option value="{$item.mechanism_id}" <if condition="$item[mechanism_id] eq $info[mechanism_id]"> selected="selected"</if> >{$item.company_name}</option>
+                            </volist>
+                        </select>
+                        <span class="err" id="err_shop_id"></span>
+                        <p class="notic">绑定店铺</p>
+                    </dd>
+                </dl>
             </if>
             <div class="bot"><a href="JavaScript:void(0);" onclick="adsubmit();" class="ncap-btn-big ncap-btn-green" id="submitBtn">确认提交</a></div>
         </div>

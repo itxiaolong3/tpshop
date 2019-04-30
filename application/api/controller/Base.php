@@ -57,7 +57,7 @@ class Base extends Controller
             $userinfo = M('users')->where(['token'=>$this->token])->find();
 
             if(empty($userinfo)){
-              return returnBad('请求token有误！',303);
+                return returnBad('请求token有误！',303);
             }else{
                 $this->user=$userinfo;
                 $this->user_id = $userinfo['user_id'];
@@ -68,10 +68,12 @@ class Base extends Controller
     public static function checkUserToken($token){
         $res = Db::name('users')->where(array('token'=>$token))->find();
         if(!$res || !$token){
-            returnBad('请求token不存在！',303);
+            //return returnBad('请求token不存在！',303);
+            exit(json_encode(['code' => 303, 'status' => 0, 'msg' => '请求token不存在']));
         }
         if(self::checkTokenExpress($token)===false){
-            returnBad('请求token已过期！',303);
+            //return returnBad('请求token已过期！',303);
+            exit(json_encode(['code' => 303, 'status' => 0, 'msg' => '请求token已过期']));
         };
         return true;
     }
