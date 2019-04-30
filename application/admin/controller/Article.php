@@ -15,6 +15,7 @@
  */
 namespace app\admin\controller;
 
+use http\QueryString;
 use think\Page;
 use think\Db;
 use app\admin\logic\ArticleCatLogic;
@@ -321,5 +322,120 @@ class Article extends Base {
     	$this->assign('info',$info);
     	return $this->fetch();
     }
-    
+    /**
+     * 答题列表
+     */
+    public function questionlist()
+    {
+        $name = input('name/s');
+        $where = [];
+        if ($name) {
+            $where['name'] = ['like','%'.$name.'%'];
+        }
+        $questions =Db::name('questions_type');
+        $count = $questions->where($where)->count();
+        $page = new Page($count, 14);
+        $goods_type_list = $questions->where($where)->order("id desc")->limit($page->firstRow . ',' . $page->listRows)->select();
+        $this->assign('page', $page);
+        $this->assign('questions_list', $goods_type_list);
+        return $this->fetch();
+    }
+    //删除题目
+    public function deleteType()
+    {
+        $id = input('id/d');
+        if(empty($id)){
+            $this->ajaxReturn(['status' => 0, 'msg' => '参数错误']);
+        }
+        $GoodsType = Db::name('questions_type');
+        try {
+            $GoodsType->where(['id'=>$id])->delete();
+            $this->ajaxReturn(['status' => 1, 'msg' => '删除成功']);
+        } catch (TpshopException $t) {
+            $error = $t->getErrorArr();
+            $this->ajaxReturn($error);
+        }
+        $this->ajaxReturn(['status' => 1, 'msg' => '删除成功']);
+    }
+    //题目编辑页
+    public function question()
+    {
+        $id = input('id/d');
+        if($id){
+            $questions=Db::name('questions_type')->where('id',$id)->find();
+            $questionattribute=Db::name('questions_attribute')->where('q_id',$id)->select();
+            $questions['goods_attribute']=$questionattribute;
+            $this->assign('goods_type', $questions);
+        }
+        return $this->fetch();
+    }
+    //删除备选答案
+    public function deleteAttribute()
+    {
+        $attr_id = input('attr_id/d');
+        if (empty($attr_id)) {
+            $this->ajaxReturn(['status' => 0, 'msg' => '参数错误']);
+        }
+        $GoodsAttribute = Db::name('questions_attribute');
+        //$goods_attribute = $GoodsAttribute->where('attr_id', $attr_id)->find();
+        try {
+            $GoodsAttribute->where('attr_id', $attr_id)->delete();
+            $this->ajaxReturn(['status' => 1, 'msg' => '删除成功']);
+        } catch (TpshopException $t) {
+            $error = $t->getErrorArr();
+            $this->ajaxReturn($error);
+        }
+    }
+    //保存题目和答案
+    public function saveType()
+    {
+        $data = input('post.');
+        //var_dump($data);die();
+        $name=$data['name'];
+        if (empty($name)){
+            $this->ajaxReturn(['status' => 0, 'msg' => '题目不可为空', 'result' =>'请填题目']);
+        }else{
+            $getquestionattrlist=$data['attribute'];
+            if (empty($getquestionattrlist)){
+                $this->ajaxReturn(['status' => 0, 'msg' => '答案不可为空', 'result' =>'请填备选答案']);
+            }else{
+                $isemptyarr=[];
+                foreach ($getquestionattrlist as $k=>$v){
+                    if (!$v['is_answer']){
+                        //为空
+                        array_push($isemptyarr,$v['attr_name']);
+                    }
+                }
+                if (count($isemptyarr)==count($getquestionattrlist)){
+                    $this->ajaxReturn(['status' => 0, 'msg' => '最少一个正确答案', 'result' =>'没正确答案']);
+                }
+            }
+        }
+
+        if (!empty($data['id'])) {
+            //修改
+            $savare=Db::name('questions_type')->where('id',$data['id'])->save(array('name'=>$name));
+            foreach ($getquestionattrlist as $k=>$v){
+                $issava=Db::name('questions_attribute')->where('attr_id',$v['attr_id'])->find();
+                if ($issava){
+                    Db::name('questions_attribute')->where('attr_id',$v['attr_id'])->save(array('attr_name'=>$v['attr_name'],'q_id'=>$data['id'],'is_answer'=>$v['is_answer']));
+                }else{
+                    Db::name('questions_attribute')->insert(array('attr_name'=>$v['attr_name'],'q_id'=>$data['id'],'is_answer'=>$v['is_answer']));
+                }
+            }
+            $this->ajaxReturn(['status' => 1, 'msg' => '操作成功','type_id'=>'']);
+        }else{
+            //添加
+            //添加题目
+            Db::name('questions_type')->insert(array('name'=>$name));
+            $isertid=Db::name('questions_type')->getLastInsID();
+            //添加答案
+            if ($isertid){
+                foreach ($getquestionattrlist as $k=>$v){
+                    Db::name('questions_attribute')->insert(array('attr_name'=>$v['attr_name'],'q_id'=>$isertid,'is_answer'=>$v['is_answer']));
+                }
+            }
+            $this->ajaxReturn(['status' => 1, 'msg' => '添加成功','type_id'=>$isertid]);
+        }
+    }
 }

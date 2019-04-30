@@ -102,6 +102,7 @@ return	array(
 //					array('name' => '会员协议', 'act'=>'agreement', 'op'=>'Article'),
 					//array('name' => '公告管理', 'act'=>'notice_list', 'op'=>'Article'),
 //					array('name' => '专题列表', 'act'=>'topicList', 'op'=>'Topic'),
+					array('name' => '答题列表', 'act'=>'questionlist', 'op'=>'Article'),
 			)),
 
 //			array('name' => '新闻','child'=>array(

@@ -652,7 +652,7 @@ class User extends Base{
     public function coupon_list(){
         if(!empty($this->user_id)){
             $activityLogic = new \app\common\logic\ActivityLogic;
-            $coupon_list = $activityLogic->getCouponListInfo($this->user_id);
+            $coupon_list = $activityLogic->getallCouponList($this->user_id);
             return returnOk($coupon_list);
         }else{
             $res = ['status' => 0, 'msg' => '请先登录','return_url'=>U('User/login')];

@@ -1,0 +1,164 @@
+<include file="public/layout"/>
+<body style="background-color: rgb(255, 255, 255); overflow: auto; cursor: default; -moz-user-select: inherit;">
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>答题模块</h3>
+                <h5>题目列表</h5>
+            </div>
+        </div>
+    </div>
+    <!-- 操作说明 -->
+    <div id="explanation" class="explanation" style="color: rgb(44, 188, 163); background-color: rgb(237, 251, 248); width: 99%; height: 100%;">
+        <div id="checkZoom" class="title"><i class="fa fa-lightbulb-o"></i>
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span title="收起提示" id="explanationZoom" style="display: block;"></span>
+        </div>
+        <ul>
+            <li>答题题目只能是选择题</li>
+        </ul>
+    </div>
+    <div class="flexigrid">
+        <div class="mDiv">
+            <div class="ftitle">
+                <h3>题目列表</h3>
+                <h5>(共{$page->totalRows}条记录)</h5>
+            </div>
+            <form action="{:U('Article/questionlist')}" class="navbar-form form-inline" method="get">
+                <div class="sDiv">
+                    <div class="sDiv2">
+                        <input size="30" name="name" class="qsbox" placeholder="题目名称" type="text" value="{$Request.param.name}">
+                        <input class="btn" value="搜索" type="submit">
+                    </div>
+                </div>
+            </form>
+            <a href="javascript:location.reload();">
+                <div title="刷新数据" class="pReload"><i class="fa fa-refresh"></i></div>
+            </a>
+        </div>
+        <div class="hDiv">
+            <div class="hDivBox">
+                <table cellspacing="0" cellpadding="0">
+                    <thead>
+                    <tr>
+                        <th align="left" abbr="article_title" axis="col3" class="">
+                            <div style="text-align: left; width: 100px;" class="">ID</div>
+                        </th>
+                        <th align="left" abbr="ac_id" axis="col4" class="">
+                            <div style="text-align: left; width: 150px;" class="">题目名称</div>
+                        </th>
+                        <th align="center" axis="col1" class="handle">
+                            <div style="text-align: center; width: 350px;">操作</div>
+                        </th>
+                        <th style="width:100%" axis="col7">
+                            <div></div>
+                        </th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        <div class="tDiv">
+            <div class="tDiv2">
+                <div class="fbutton">
+                    <a class="type_info">
+                        <div class="add" title="新增题目">
+                            <span><i class="fa fa-plus"></i>新增题目</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div style="clear:both"></div>
+        </div>
+        <div class="bDiv" style="height: auto;">
+            <div id="flexigrid">
+                <table>
+                    <tbody>
+                    <volist name="questions_list" id="goods_type">
+                        <tr>
+                            <td align="left" class="">
+                                <div style="text-align: left; width: 100px;">{$goods_type.id}</div>
+                            </td>
+                            <td align="left" class="">
+                                <div style="text-align: left; width: 150px;">{$goods_type.name}</div>
+                            </td>
+                            <td align="center" class="handle">
+                                <div style="text-align: center; width: 270px; max-width:350px;">
+                                    <a href="javascript:void(0)" data-id="{$goods_type['id']}" class="btn blue type_info"><i class="fa fa-pencil-square-o"></i>编辑</a>
+                                    <a href="javascript:void(0)" data-id="{$goods_type['id']}" class="btn red delete_type" ><i class="fa fa-trash-o"></i>删除</a>
+                                </div>
+                            </td>
+                            <td align="" class="" style="width: 100%;">
+                                <div>&nbsp;</div>
+                            </td>
+                        </tr>
+                    </volist>
+                    </tbody>
+                </table>
+            </div>
+            <div class="iDiv" style="display: none;"></div>
+        </div>
+        <!--分页位置-->
+        {$page->show()}
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        // 点击刷新数据
+        $('.fa-refresh').click(function () {
+            location.href = location.href;
+        });
+    });
+    $(document).on('click', '.delete_type', function () {
+        var type_id = $(this).data('id');
+        delete_type(type_id);
+    });
+    $(document).on('click', '.type_info', function () {
+        var type_id = $(this).data('id');
+        add_edit_type(type_id);
+    });
+
+    function delete_type(type_id) {
+        $.ajax({
+            type: "POST",
+            url: '/index.php?m=Admin&c=Article&a=deleteType',
+            data: {id: type_id},
+            dataType: "json",
+            success: function (data) {
+                if(data.status == 1){
+                    layer.open({icon: 1, content: data.msg, time: 1000,end:function(){
+                        location.reload();
+                    }});
+                }else{
+                    layer.open({icon: 2, content: data.msg, time: 1000});
+                }
+            }
+        });
+    }
+
+    function add_edit_type(type_id) {
+        var url = '/index.php?m=Admin&c=Article&a=question';
+        if(type_id){
+            url += '&id='+type_id;
+        }
+        layer.open({
+            type: 2,
+            title: '添加/编辑题目',
+            shadeClose: true,
+            shade: 0.2,
+            area: ['1065px', '664px'],
+            content: url,
+        });
+    }
+
+    function save_type_call_back()
+    {
+        layer.closeAll();
+        location.reload();
+    }
+</script>
+</body>
+</html>

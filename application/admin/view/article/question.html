@@ -1,0 +1,218 @@
+<include file="public/layout"/>
+<style>
+
+    .btn {
+        display: inline-block;
+        padding: 3px 12px;
+        margin-bottom: 0;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 1.42857143;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: middle;
+        -ms-touch-action: manipulation;
+        touch-action: manipulation;
+        cursor: pointer;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        background-image: none;
+        border: 1px solid transparent;
+        border-radius: 4px;
+    }
+
+    .ys-btn-close {
+        position: relative !important;
+        top: -12px;
+        left: -16px;
+        width: 18px;
+        height: 18px;
+        border: 1px solid #ccc;
+        line-height: 18px;
+        text-align: center;
+        display: inline-block;
+        border-radius: 50%;
+        z-index: 1;
+        background-color: #fff;
+        cursor: pointer;
+    }
+</style>
+<body style="background-color: #FFF; overflow: auto;">
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page" style="padding-top: 0px">
+    <form method="post" id="form">
+        <input type="hidden" name="id" value="{$goods_type.id}">
+        <div class="ncap-form-default tab_div_1">
+            <!--题目-->
+            <dl class="row">
+                <dt class="tit">
+                    <label><em>*</em>题目标题:</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" value="{$goods_type.name}" name="name" class="input-txt" style="width:200px;"/>
+                    <span class="err" id="err_name">题目标题不能为空!!</span>
+                </dd>
+            </dl>
+
+            <!-- 答案列表s-->
+            <div class="flexigrid">
+                <div class="hDiv">
+                    <div class="hDivBox">
+                        <table cellpadding="0" cellspacing="0">
+                            <thead>
+                            <tr>
+                                <th>
+                                    <div style="text-align: center; width: 100px;">备选答案</div>
+                                </th>
+                                <th>
+                                    <div style="text-align: center; width: 100px;">是否设为答案</div>
+                                </th>
+                                <th>
+                                    <div style="text-align: center; width: 60px;">操作</div>
+                                </th>
+                                <th axis="col6">
+                                    <div></div>
+                                </th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+                <div class="tDiv">
+                    <div class="tDiv2">
+                        <div class="fbutton">
+                            <div class="add" title="新增备选答案" id="add_attribute"><span><i class="fa fa-plus"></i>新增答案</span></div>
+                        </div>
+                    </div>
+                    <div style="clear:both"></div>
+                </div>
+                <div class="bDiv" style="height: auto;margin-bottom:20px;min-height:100px;">
+                    <table class="table-bordered" cellpadding="0" cellspacing="0">
+                        <tbody id="attribute_list">
+                        <volist name="goods_type.goods_attribute" id="attribute" key="attribute_key">
+                            <tr>
+                                <input name="attribute[{$attribute_key-1}][attr_id]" type="hidden" value="{$attribute.attr_id}">
+                                <td>
+                                    <div style="text-align: center; width: 100px;">
+                                        <input type="text" class="w80" name="attribute[{$attribute_key-1}][attr_name]" value="{$attribute.attr_name}">
+                                    </div>
+                                </td>
+                                <td>
+                                    <div style="text-align: center; width: 100px;">
+                                        <input type="hidden" name="attribute[{$attribute_key-1}][is_answer]" value="{$attribute.is_answer}">
+                                        <if condition="$attribute['is_answer'] eq 1">
+                                            <span class="yes is_attr_index"><i class="fa fa-check-circle"></i>是</span>
+                                            <else/>
+                                            <span class="no is_attr_index"><i class="fa fa-ban"></i>否</span>
+                                        </if>
+                                    </div>
+                                </td>
+                                <td class="handle-s">
+                                    <div style="text-align: center; width: 60px;"><a href="javascript:void(0);" data-id="{$attribute.attr_id}" class="btn red delete_attribute"><i class="fa fa-trash-o"></i>删除</a></div>
+                                </td>
+                                <td style="width: 100%;">
+                                    <div>&nbsp;</div>
+                                </td>
+                            </tr>
+                        </volist>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- 答案列表s-->
+        </div>
+
+        <div class="ncap-form-default">
+            <div class="bot"><a id="submit" class="ncap-btn-big ncap-btn-green" href="JavaScript:void(0);">确认提交</a></div>
+        </div>
+    </form>
+</div>
+
+<!--添加答案模板-->
+<table id="spec_attribute_div" style="display: none">
+    <tbody>
+
+    </tbody>
+</table>
+<!--添加题目模板end -->
+<script>
+    //添加答案
+    $(document).on('click', '#add_attribute', function () {
+        var attribute_list = $('#attribute_list');
+        var attribute_length = attribute_list.find('tr').length;
+        var attribute_item_div = '<tr data-index='+attribute_length+'> <td> <div style="text-align: center; width: 100px;">' +
+                '<input type="text" class="w80" name="attribute['+attribute_length+'][attr_name]" value=""></div> </td> ' +
+                '<td> <div style="text-align: center; width: 100px;"><input type="hidden" name="attribute['+attribute_length+'][is_answer]" value="0">' +
+                '<span class="no is_attr_index"><i class="fa fa-check-circle"></i>否</span></div> </td><td class="handle-s"> ' +
+                '<div style="text-align: center; width: 60px;"><a href="javascript:void(0);" class="btn red delete_attribute">' +
+                '<i class="fa fa-trash-o"></i>删除</a></div> </td> <td style="width: 100%;"> <div>&nbsp;</div> </td> </tr>';
+        attribute_list.append(attribute_item_div);
+    });
+    //删除答案
+    $(document).on('click', '.delete_attribute', function () {
+        var obj = $(this);
+        if (obj.data('id') > 0) {
+            layer.open({
+                content: '确认删除已存在的答案吗？'
+                ,btn: ['确定', '取消']
+                ,yes: function(index, layero){
+                    layer.close(index);
+                    $.ajax({
+                        type: "POST",
+                        url: '/index.php?m=Admin&c=Article&a=deleteAttribute',
+                        data: {attr_id: obj.data('id')},
+                        dataType: "json",
+                        success: function (data) {
+                            if (data.status == 1) {
+                                obj.parent().parent().parent().remove();
+                            } else {
+                                layer.open({icon: 2, content: data.msg});
+                            }
+                        }
+                    });
+                }
+                ,btn2: function(index, layero){
+                    layer.close(index);
+                }
+                ,cancel: function(){
+                    //右上角关闭回调
+                    layer.close();
+                }
+            });
+
+        } else {
+            obj.parent().parent().parent().remove();
+        }
+    });
+    $(document).on('click', '#submit', function () {
+        $.ajax({
+            type: "POST",
+            url: '/index.php?m=Admin&c=Article&a=saveType',
+            data: $('#form').serialize(),
+            dataType: "json",
+            success: function (data) {
+                if(data.status == 1){
+                    window.parent.save_type_call_back(data.type_id);
+                }else{
+                    layer.open({icon: 2, content: data.msg});
+                }
+            }
+        });
+    });
+    //答案是否显示
+    $(document).on('click', '.is_attr_index', function () {
+        if($(this).hasClass('no')){
+            $(this).removeClass('no').addClass('yes').html("<i class='fa fa-check-circle'></i>是");
+            $(this).parent().find('input').val(1);
+        }else{
+            $(this).removeClass('yes').addClass('no').html("<i class='fa fa-ban'></i>否");
+            $(this).parent().find('input').val(0);
+        }
+    });
+
+</script>
+</body>
+</html>

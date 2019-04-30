@@ -349,7 +349,7 @@ class ActivityLogic extends Model
                     //未领
                     $data = array('uid' => $user_id, 'poid' => $id,'add_time'=>time());
                     M('prom_coupon')->add($data);
-                    $return = ['status' => 1, 'msg' => '恭喜您，抢到消费满'.$coupon_info['money'].'元,送' . $coupon_info['expression'] . '元优惠券!有效时间'.date("Y-m-d H:i:s",$coupon['end_time']),'return_url'=>$_SERVER['HTTP_REFERER']];
+                    $return = ['status' => 1, 'msg' => '恭喜您，抢到消费满'.$coupon_info['money'].'元,送' . $coupon_info['expression'] . '元优惠券!有效时间'.date("Y-m-d H:i:s",$coupon_info['end_time']),'return_url'=>$_SERVER['HTTP_REFERER']];
                }
             }
         } else {
@@ -478,6 +478,22 @@ class ActivityLogic extends Model
                 } else{
                     $data[] = ['title' => '其他活动', 'content' => "无赠送"];
                 }
+            }
+        }
+        return $data;
+    }
+
+    //获取所有优惠卷列表，这里感觉是活动列表
+    public function getallCouponList(){
+        $list=Db::name("prom_order")->select();
+        $data = [];
+        foreach ($list as $k=>$v){
+            if ($v['type'] == 0) {
+                $data[] = ['title' => '折扣123', 'content' => "满{$v['money']}元打".round($v['expression']/10, 1)."折"];
+            } elseif ($v['type'] == 1) {
+                $data[] = ['title' => '优惠券','id'=>"{$v['id']}",'content' => "满{$v['money']}元优惠{$v['expression']}元",'name'=>"{$v['name']}",'end_time'=>date('Y-m-d H:i:s',"{$v['end_time']}"),'condition'=>"{$v['condition_money']}",'expression'=>"{$v['expression']}"];
+            } else{
+                $data[] = ['title' => '其他活动', 'content' => "无赠送"];
             }
         }
         return $data;
