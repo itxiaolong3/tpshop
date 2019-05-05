@@ -292,7 +292,17 @@ class User extends Base{
             return returnOk($user_info);
         }
     }
-
+    /**
+     * 获取手机号
+     */
+    public function getbandphone()
+    {
+        $user =  db('users')->where('user_id', $this->user_id)->field(['mobile'])->find();
+        if ($user['mobile'] == '' ){
+            return json(['code' => 308, 'msg'=>'请绑定手机号', 'data'=> '']);
+        }
+        return returnOk($user['mobile']);
+    }
     /*
      * 密码修改
      */
@@ -549,10 +559,16 @@ class User extends Base{
     public function collect_list()
     {
         $userLogic = new UsersLogic();
-        $data = $userLogic->get_goods_collect($this->user_id);
+        $type=I('type/d');//0商品收藏列表，1店铺收藏列表
+        $data = $userLogic->get_goods_collect($this->user_id,$type);
         $list = $data['result'];
+        if (!$type){
+            foreach ($list as $k => $v){
+                $list[$k]['original_img'] = url_add_domain(goods_thum_images($v['goods_id'],100,100));
+            }
+        }
         foreach ($list as $k => $v){
-            $list[$k]['original_img'] = url_add_domain(goods_thum_images($v['goods_id'],100,100));
+            $list[$k]['add_time'] = date('Y-m-d H:i:s',$v['add_time']);
         }
         return returnOk($list);
     }
@@ -563,11 +579,11 @@ class User extends Base{
     public function cancel_collect()
     {
         $collect_id = I('collect_id/d');
-        if(empty($user_id)){
+        if(empty($this->user_id)){
             return returnBad('登录超时请重新登录',302);
         }
         if (M('goods_collect')->where(['collect_id' => $collect_id, 'user_id' => $this->user_id])->delete()) {
-            return returnOk();
+            return returnOk('取消成功');
         } else {
             return returnBad("取消收藏失败");
         }
@@ -577,24 +593,44 @@ class User extends Base{
      */
     public function add_collect(){
         $goods_id = I('goods_id/d');
+        $shop_id = I('shop_id/d');
+        $type = I('type/d');//0收藏商品，1收藏店铺
         if(!empty($this->user_id)){
-            if(empty($goods_id)){
+            if(empty($goods_id)&&empty($shop_id)){
                 return  returnBad("参数缺失",300);
             }else{
-                $result= M('goods')->where(array("goods_id"=>$goods_id))->find();
-                if(!empty($result)){
-                    $res =M('goods_collect')->where(array('user_id'=>$this->user_id,'goods_id'=>$goods_id))->find();
-                    if($res==TRUE){
-                        return  returnBad(['status' => 0, 'msg' => '商品已收藏过']);
-                    }else{
-                        $result= M('goods_collect')->add(array('user_id'=>$this->user_id,'goods_id'=>$goods_id,'add_time'=>time()));
-                        if($result){
-                            return  returnOk(['status' => 1, 'msg' => '商品收藏成功']);
+                if ($type){
+                    $shopinfo= M('users')->where(array("user_id"=>$shop_id))->find();
+                    if(!empty($shopinfo)){
+                        $res =M('goods_collect')->where(array('user_id'=>$this->user_id,'shop_id'=>$shop_id))->find();
+                        if($res==TRUE){
+                            return  returnBad(['status' => 0, 'msg' => '店铺已收藏过']);
+                        }else{
+                            $result= M('goods_collect')->add(array('user_id'=>$this->user_id,'shop_id'=>$shop_id,'add_time'=>time()));
+                            if($result){
+                                return  returnOk(['status' => 1, 'msg' => '商品收藏成功']);
+                            }
                         }
+                    }else{
+                        return  returnOk(['status' => 0, 'msg' => '收藏的店铺不存在']);
                     }
                 }else{
-                    return  returnOk(['status' => 0, 'msg' => '收藏的商品不存在']);
+                    $result= M('goods')->where(array("goods_id"=>$goods_id))->find();
+                    if(!empty($result)){
+                        $res =M('goods_collect')->where(array('user_id'=>$this->user_id,'goods_id'=>$goods_id))->find();
+                        if($res==TRUE){
+                            return  returnBad(['status' => 0, 'msg' => '商品已收藏过']);
+                        }else{
+                            $result= M('goods_collect')->add(array('user_id'=>$this->user_id,'goods_id'=>$goods_id,'add_time'=>time()));
+                            if($result){
+                                return  returnOk(['status' => 1, 'msg' => '商品收藏成功']);
+                            }
+                        }
+                    }else{
+                        return  returnOk(['status' => 0, 'msg' => '收藏的商品不存在']);
+                    }
                 }
+
             }
         }else{
             return  returnOk(['status' => 0, 'msg' => '请先登录','return_url'=>U('User/login')]);

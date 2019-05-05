@@ -699,18 +699,29 @@ class UsersLogic extends Model
      * @param $user_id
      * @return mixed
      */
-    public function get_goods_collect($user_id){
+    public function get_goods_collect($user_id,$type){
         $count = Db::name('goods_collect')->where('user_id', $user_id)->count();
         $page = new Page($count,10);
         $show = $page->show();
-        //获取我的收藏列表
+        if ($type){
+            //店铺列表
             $result = M('goods_collect')->alias('c')
-            ->field('c.collect_id,c.add_time,g.goods_id,g.goods_name,g.shop_price,g.is_on_sale,g.store_count,g.cat_id,g.is_virtual')
-            ->join('goods g','g.goods_id = c.goods_id','INNER')
-            ->where("c.user_id = $user_id")
-            ->limit($page->firstRow,$page->listRows)
-            ->select();
-        //dump( Db::getLastSql());die;
+                ->field('c.collect_id,c.add_time,c.shop_id,u.head_pic,u.nickname')
+                ->join('users u','u.user_id = c.shop_id','INNER')
+                ->where("c.user_id = $user_id")
+                ->limit($page->firstRow,$page->listRows)
+                ->select();
+        }else{
+            //获取我的收藏列表
+            $result = M('goods_collect')->alias('c')
+                ->field('c.collect_id,c.add_time,g.goods_id,g.goods_name,g.shop_price,g.is_on_sale,g.store_count,g.cat_id,g.is_virtual')
+                ->join('goods g','g.goods_id = c.goods_id','INNER')
+                ->where("c.user_id = $user_id")
+                ->limit($page->firstRow,$page->listRows)
+                ->select();
+            //dump( Db::getLastSql());die;
+        }
+
         $return['status'] = 1;
         $return['msg'] = '获取成功';
         $return['result'] = $result;
@@ -932,7 +943,7 @@ class UsersLogic extends Model
     public function password($user_id,$new_password,$confirm_password,$code,$mobile,$is_update=true){
         $user = M('users')->where('user_id', $user_id)->find();
         if(empty($mobile)|| !check_mobile($mobile) ){
-            return ['status'=>-1,'msg'=>'手机号不能为空或不合规则'];
+            //return ['status'=>-1,'msg'=>'手机号不能为空或不合规则'];
         }
         if ($new_password != $confirm_password)
             return ['status'=>-1,'msg'=>'请输入相同的新密码'];
@@ -1040,7 +1051,7 @@ class UsersLogic extends Model
     	return array('status'=>1,'msg'=>'修改成功','url'=>$url);
     }
     /**
-     * 设置支付密码
+     * 绑定手机号
      * @param $user_id
      * @param $mobile  手机号
      * @param $code 验证码
