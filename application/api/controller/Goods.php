@@ -28,6 +28,7 @@ class Goods extends Base{
     public function index(){
         $filter_param = array(); // 帅选数组
         $id = I('post.id/d',30); // 当前分类id 基因工程
+        $isgive = I('post.is_give/d',0);
         $keyword = I('keyword'); // 搜索关键字
         $sort = I('post.sort') ? I('post.sort') : 'sort'; // 排序
         $sort_asc = I('post.sort_asc') ? I('post.sort_asc') : 'desc'; // 排序
@@ -50,8 +51,8 @@ class Goods extends Base{
         if(!$cateArr){
             $cateArr = M('goods_category')->where(['is_show'=>1,'level'=>1])->cache(true)->field('id,name,parent_id,level')->select(); // 键值分类数组
         }
-        // 帅选 品牌 规格 属性 价格
-        $goods_where = ['is_on_sale' => 1, 'exchange_integral' => 0, 'cat_id' => ['in', $cat_id_arr]];
+        // 帅选 品牌 规格 属性 价格,是否赠品
+        $goods_where = ['is_on_sale' => 1,'is_give' => $isgive, 'exchange_integral' => 0, 'cat_id' => ['in', $cat_id_arr]];
         if ($keyword)// 搜索关键字
         {
             $goods_where["goods_name"] = ["like", "%$keyword%"];

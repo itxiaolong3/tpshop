@@ -214,6 +214,23 @@
             </dl>
             <dl class="row">
                 <dt class="tit">
+                    <label>是否为赠送商品</label>
+                </dt>
+                <dd class="opt">
+                    <div class="onoff">
+                        <label for="is_give" class="cb-enable <if condition='$goods.is_give eq 1'>selected</if>">是</label>
+                        <label for="is_give1" class="cb-disable <if condition='$goods.is_give eq 0'>selected</if>">否</label>
+                        <input class="is_give" id="is_give" name="is_give" value="1" type="radio"
+                        <if condition="$goods[is_give] eq 1"> checked="checked"</if>
+                        >
+                        <input class="is_give" id="is_give1" name="is_give" value="0" type="radio"
+                        <if condition="$goods[is_give] eq 0"> checked="checked"</if>
+                        >
+                    </div>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
                     <label>商品简介</label>
                 </dt>
                 <dd class="opt">
@@ -530,6 +547,7 @@
             <p class="notic"></p>
             </dd>
             </dl>
+
             <!--<dl class="row virtual" style="display: none;">-->
                 <!--<dt class="tit">-->
                     <!--<label>虚拟商品有效期至</label>-->

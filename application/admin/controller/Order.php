@@ -658,6 +658,7 @@ exit("请联系客服查看是否支持此功能");
         $orderModel = new OrderModel();
         $orderObj = $orderModel::get(['order_id'=>$order_id]);
         $order =$orderObj->append(['full_address','orderGoods','delivery_method'])->toArray();
+
 //        halt($order['orderGoods']);
         $order['province'] = getRegionName($order['province']);
         $order['city'] = getRegionName($order['city']);

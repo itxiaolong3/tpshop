@@ -256,7 +256,7 @@ class Cart extends Base
         $pay_pwd = input("pay_pwd/s", ''); // 支付密码
         $action = input("action"); // 立即购买
         $data = input('request.');
-        $pay_type =input("pay_type",''); //支付方式 1 微信支付 2. 支付宝支付 3. 线下支付
+        $pay_type =input("pay_type",1); //支付方式 1 微信支付 2. 支付宝支付 3. 线下支付
         $cart_ids =input("cart_ids"); //多个购物id 如果不是立即购买就需要加cart_id 多个购物id用逗号隔开
         $cart_validate = Loader::validate('Cart');
         if (!$cart_validate->check($data)) {
@@ -273,14 +273,17 @@ class Cart extends Base
             $cartLogic->setUserId($this->user_id);
             if ($action == 'buy_now') {
                 $goods_id = input("goods_id/d"); // 商品id
-                $item_id = input("item_id/d"); // 商品规格id
+                $item_id = input("item_id/d"); // 商品规格id,这里的id对应spec_goods_price表中的key
                 $goods_num = input("goods_num/d",1);// 商品数量
-               $specgoods= M('spec_goods_price')->where(["item_id"=>$item_id])->field(['item_id'])->find();
+               //$specgoods= M('spec_goods_price')->where(["item_id"=>$item_id])->field(['item_id'])->find();
+                //查找真正的item_id
+                $finditemid= M('spec_goods_price')->where(["key"=>$item_id])->field(['item_id'])->find();
               if(empty($specgoods)){
-                  return returnBad("没有找到商品规格价格");
+                  //return returnBad("没有找到商品规格价格");
               }
                 $cartLogic->setGoodsModel($goods_id);//242
-                $cartLogic->setSpecGoodsPriceById($item_id); //383
+                //$cartLogic->setSpecGoodsPriceById($item_id); //383
+                $cartLogic->setSpecGoodsPriceById($finditemid['item_id']); //383
                 $cartLogic->setGoodsBuyNum($goods_num); //2
                 $buyGoods = $cartLogic->buyNow();
                 $cartList[0] = $buyGoods;

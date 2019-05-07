@@ -114,6 +114,7 @@ class Pay
 
             }
         }
+        
         $this->payList = $goods_list;
         $this->Calculation();
         return $this;

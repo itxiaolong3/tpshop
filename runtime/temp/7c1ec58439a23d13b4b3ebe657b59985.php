@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:49:"./application/admin/view/goods\ajaxGoodsList.html";i:1546678899;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:49:"./application/admin/view/goods\ajaxGoodsList.html";i:1557125925;}*/ ?>
 <table>
     <tbody>
     <?php if(is_array($goodsList) || $goodsList instanceof \think\Collection || $goodsList instanceof \think\Paginator): $i = 0; $__LIST__ = $goodsList;if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$list): $mod = ($i % 2 );++$i;?>
@@ -24,7 +24,7 @@
             </td>
             <td align="center" axis="col0">
                 <div style="text-align: left; width: 300px;">
-                    <?php if($list[is_virtual] == 1): ?><span class="type-virtual" title="虚拟兑换商品">虚拟</span><?php endif; ?>
+                    <?php if($list[is_virtual] == 1): ?><span class="type-virtual" title="虚拟兑换商品">虚拟</span><?php endif; if($list[is_give] == 1): ?><span class="type-virtual" title="赠送商品">赠送</span><?php endif; ?>
                     <?php echo getSubstr($list['goods_name'],0,33); ?>
                 </div>
             </td>

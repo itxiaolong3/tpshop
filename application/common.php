@@ -230,7 +230,7 @@ function minus_stock($order){
     $orderGoodsArr = M('OrderGoods')->master()->where("order_id", $order['order_id'])->select();
     foreach($orderGoodsArr as $key => $val)
     {
-        // 有选择规格的商品
+        //有选择规格的商品
         if(!empty($val['spec_key']))
         {   // 先到规格表里面扣除数量 再重新刷新一个 这件商品的总数量
             $SpecGoodsPrice = new \app\common\model\SpecGoodsPrice();

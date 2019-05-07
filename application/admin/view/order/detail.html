@@ -146,7 +146,8 @@ a.green:hover { color: #FFF; background-color: #1BBC9D; border-color: #16A086; }
                     <dd>{$order.shop.shop_name}</dd>
                     </if>
                     <dt>收货地址：</dt>
-                    <dd>{$order.full_address}</dd>
+                    <!--<dd>{$order.full_address}</dd>-->
+                    <dd>{$order.province}{$order.city}{$order.district}{$order.address}</dd>
                 </dl>
                 <dl>
                     <dt>邮编：</dt>
@@ -195,8 +196,10 @@ a.green:hover { color: #FFF; background-color: #1BBC9D; border-color: #16A086; }
             <volist name="$order.orderGoods" id="good">
            	<tr>
                 <td class="w60">{$good.goods_sn}</td>
-                <td class="w30"><div class="goods-thumb"><a href="{:U('Home/Goods/goodsInfo',array('id'=>$good['goods_id']))}" target="_blank"><img alt="" src="{$good['goods_id']|goods_thum_images=200,200}" /> </a></div></td>
-                <td style="text-align: left;"><a href="{:U('Home/Goods/goodsInfo',array('id'=>$good['goods_id']))}" target="_blank">{$good.goods_name}</a><br/></td>
+                <!--<td class="w30"><div class="goods-thumb"><a href="{:U('Home/Goods/goodsInfo',array('id'=>$good['goods_id']))}" target="_blank"><img alt="" src="{$good['goods_id']|goods_thum_images=200,200}" /> </a></div></td>-->
+                <!--<td style="text-align: left;"><a href="{:U('Home/Goods/goodsInfo',array('id'=>$good['goods_id']))}" target="_blank">{$good.goods_name}</a><br/></td>-->
+                <td class="w30"><div class="goods-thumb"><a href="{$good['goods_id']|goods_thum_images=200,200}" target="_blank"><img alt="" src="{$good['goods_id']|goods_thum_images=200,200}" /></a> </div></td>
+                <td style="text-align: left;">{$good.goods_name}<br/></td>
                 <td class="w80">{$good.spec_key_name}</td>
                 <td class="w60">{$good.goods_num}</td>
                 <td class="w100">{$good.goods_price}</td>

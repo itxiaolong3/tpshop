@@ -24,6 +24,7 @@
             <td align="center" axis="col0">
                 <div style="text-align: left; width: 300px;">
                     <if condition="$list[is_virtual] eq 1"><span class="type-virtual" title="虚拟兑换商品">虚拟</span></if>
+                    <if condition="$list[is_give] eq 1"><span class="type-virtual" title="赠送商品">赠送</span></if>
                     {$list.goods_name|getSubstr=0,33}
                 </div>
             </td>

@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:42:"./application/admin/view/goods\_goods.html";i:1556418646;s:51:"E:\tpshop\application\admin\view\public\layout.html";i:1540260088;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:42:"./application/admin/view/goods\_goods.html";i:1557124873;s:51:"E:\tpshop\application\admin\view\public\layout.html";i:1540260088;}*/ ?>
 <!doctype html>
 <html>
 <head>
@@ -394,6 +394,23 @@
             </dl>
             <dl class="row">
                 <dt class="tit">
+                    <label>是否为赠送商品</label>
+                </dt>
+                <dd class="opt">
+                    <div class="onoff">
+                        <label for="is_give" class="cb-enable <?php if($goods['is_give'] == 1): ?>selected<?php endif; ?>">是</label>
+                        <label for="is_give1" class="cb-disable <?php if($goods['is_give'] == 0): ?>selected<?php endif; ?>">否</label>
+                        <input class="is_give" id="is_give" name="is_give" value="1" type="radio"
+                        <?php if($goods[is_give] == 1): ?> checked="checked"<?php endif; ?>
+                        >
+                        <input class="is_give" id="is_give1" name="is_give" value="0" type="radio"
+                        <?php if($goods[is_give] == 0): ?> checked="checked"<?php endif; ?>
+                        >
+                    </div>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
                     <label>商品简介</label>
                 </dt>
                 <dd class="opt">
@@ -710,6 +727,7 @@
             <p class="notic"></p>
             </dd>
             </dl>
+
             <!--<dl class="row virtual" style="display: none;">-->
                 <!--<dt class="tit">-->
                     <!--<label>虚拟商品有效期至</label>-->

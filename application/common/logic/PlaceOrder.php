@@ -380,6 +380,7 @@ class PlaceOrder
             }
             array_push($orderGoodsAllData, $orderGoodsData);
         }
+
         Db::name('order_goods')->insertAll($orderGoodsAllData);
     }
 
