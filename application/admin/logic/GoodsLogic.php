@@ -547,16 +547,30 @@ class GoodsLogic extends Model
             Db::name('spec_goods_price')->where(['goods_id' => $goods_id])->delete();
         }
 
-        // 商品规格图片处理
-        if(I('item_img/a'))
+        // 商品规格图片,视频，音频处理
+        if(I('item_img/a')||I('item_video/a')||I('item_aduio/a'))
         {
             M('SpecImage')->where("goods_id = $goods_id")->delete(); // 把原来是删除再重新插入
             foreach (I('item_img/a') as $key => $val)
             {
-                if($val != ''){
+               // if($val != ''){
                     M('SpecImage')->insert(array('goods_id'=>$goods_id ,'spec_image_id'=>$key,'src'=>$val));
+                //}
+            }
+            foreach (I('item_video/a') as $key => $val)
+            {
+                if($val != '') {
+                    M('SpecImage')->where(array('goods_id' => $goods_id, 'spec_image_id' => $key))->save(array('goods_id' => $goods_id, 'spec_image_id' => $key, 'videosrc' => $val));
                 }
             }
+            foreach (I('item_audio/a') as $key => $val)
+            {
+                if($val != '') {
+                    M('SpecImage')->where(array('goods_id' => $goods_id, 'spec_image_id' => $key))->save(array('goods_id'=>$goods_id ,'spec_image_id'=>$key,'audiosrc'=>$val));
+                }
+            }
+        }else{
+            M('SpecImage')->where("goods_id = $goods_id")->delete();
         }
         refresh_stock($goods_id); // 刷新商品库存
     }

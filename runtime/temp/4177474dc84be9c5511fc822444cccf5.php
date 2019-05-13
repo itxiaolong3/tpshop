@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:43:"./application/admin/view/comment\index.html";i:1540260088;s:51:"E:\tpshop\application\admin\view\public\layout.html";i:1540260088;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:46:"./application/admin/view/my_system\system.html";i:1557476528;s:51:"E:\tpshop\application\admin\view\public\layout.html";i:1540260088;}*/ ?>
 <!doctype html>
 <html>
 <head>
@@ -179,152 +179,98 @@
 </script>  
 
 </head>
-
-<body style="background-color: rgb(255, 255, 255); overflow: auto; cursor: default; -moz-user-select: inherit;">
+<body style="background-color: #FFF; overflow: auto;">
 <div id="append_parent"></div>
 <div id="ajaxwaitid"></div>
 <div class="page">
-  <div class="fixed-bar">
-    <div class="item-title">
-      <div class="subject">
-        <h3>评价管理</h3>
-        <h5>商品交易评价管理</h5>
-      </div>
-    </div>
-  </div>
-  <!-- 操作说明 -->
-  <div id="explanation" class="explanation" style="color: rgb(44, 188, 163); background-color: rgb(237, 251, 248); width: 99%; height: 100%;">
-    <div id="checkZoom" class="title"><i class="fa fa-lightbulb-o"></i>
-      <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
-      <span title="收起提示" id="explanationZoom" style="display: block;"></span>
-    </div>
-     <ul>
-      <li>用户对购买的商品进行评价</li>
-      <li>"显示"栏可控制某条评论是否显示或隐藏</li>
-      <li>评论排序：按照升序排序，数字越小，越靠前</li>
-    </ul>
-  </div>
-  <div class="flexigrid">
-    <div class="mDiv">
-      <div class="ftitle">
-        <h3>商品评价列表</h3>
-        <h5></h5>
-      </div>
-      <a href=""><div title="刷新数据" class="pReload"><i class="fa fa-refresh"></i></div></a>
-	  <form class="navbar-form form-inline"  method="post" name="search-form2" id="search-form2">
-      <div class="sDiv">
-          <div class="sDiv2">
-          <input type="text" size="30" name="content" class="qsbox" placeholder="评论内容...">
-      </div>
-         <div class="sDiv2">
-          <input type="text" size="30" name="nickname" class="qsbox" placeholder="搜索用户">
-         </div>
-         <div class="sDiv2">
-          <input type="button" onClick="ajax_get_table('search-form2',1)"  class="btn" value="搜索">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>新分销设置</h3>
+                <h5>分销基本配置</h5>
+            </div>
         </div>
-      </div>
-     </form>
     </div>
-    <div class="hDiv">
-      <div class="hDivBox">
-        <table cellspacing="0" cellpadding="0">
-          <thead>
-	        	<tr>
-	              <th class="sign" axis="col0" onclick="checkAllSign(this)">
-	                <div style="width: 24px;"><i class="ico-check"></i></div>
-	              </th>
-	              <th align="left" abbr="order_sn" axis="col3" class="">
-	                <div style="text-align: left; width: 100px;" class="">用户</div>
-	              </th> 
-	              <th align="left" abbr="consignee" axis="col4" class="">
-	                <div style="text-align: left; width: 200px;" class="">评论内容</div>
-	              </th>	              
-	              <th align="left" abbr="article_show" axis="col5" class="">
-	                <div style="text-align: left; width: 200px;" class="">商品</div>
-	              </th>
-	              <th align="center" abbr="article_time" axis="col6" class="">
-	                <div style="text-align: center; width: 50px;" class=""> 显示</div>
-	              </th>
-	              <th align="center" abbr="article_time" axis="col6" class="">
-	                <div style="text-align: center; width: 120px;" class="">评论时间</div>
-	              </th>
-	              <th align="center" abbr="article_time" axis="col6" class="">
-	                <div style="text-align: center; width: 120px;" class=""> ip地址</div>
-	              </th>
-                   <th align="center" abbr="article_time" axis="col3" class="">
-                        <div style="text-align: center; width: 120px;" class=""> 排序</div>
-                   </th>
-	              <th align="center" abbr="article_time" axis="col6" class="">
-	                <div style="text-align: center; width: 160px;" class=""> 操作</div>
-	              </th>
-	              <th style="width:100%" axis="col7">
-	                <div></div>
-	              </th>
-	            </tr>
-	          </thead>
-        </table>
-      </div>
+    <!-- 操作说明 -->
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom"><i class="fa fa-lightbulb-o"></i>
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示"></span> </div>
+        <ul>
+            <li>这里的设置会影响到所有分销比例分佣，请勿随便修改</li>
+        </ul>
     </div>
-      <div class="tDiv">
-          <div class="tDiv2">
-              <div class="fbutton">
-                  <a href="javascript:;" onclick="publicHandleAll('del')">
-                      <div class="add" title="新增品牌">
-                          <span>批量删除</span>
-                      </div>
-                  </a>
-              </div>
-              <div class="fbutton">
-                  <a href="javascript:;" onclick="publicHandleAll('show')">
-                      <div class="add" title="新增品牌">
-                          <span>显示</span>
-                      </div>
-                  </a>
-              </div>
-              <div class="fbutton">
-                  <a href="javascript:;" onclick="publicHandleAll('hide')">
-                      <div class="add" title="新增品牌">
-                          <span>隐藏</span>
-                      </div>
-                  </a>
-              </div>
-          </div>
-          <div style="clear:both"></div>
-      </div>
-    <div class="bDiv" style="height: auto;">
-      <div id="flexigrid" cellpadding="0" cellspacing="0" border="0" data-url="<?php echo U('Admin/comment/commentHandle'); ?>">
-      </div>
-      <div class="iDiv" style="display: none;"></div>
-    </div>
-    <!--分页位置--> 
-   	</div>
+    <form method="post" id="handlepost" >
+        <input type="hidden" name="form_submit" value="ok" />
+        <input type="hidden" name="inc_type" value="cash">
+        <div class="ncap-form-default">
+            <div id="switch_on_off">
+            <dl class="row"><dt class="tit"><label><b>默认返佣规则</b></label></dt></dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label>VIP价格</label>
+                </dt>
+                <dd class="opt">
+                    <input name="vip_price" id="distribut_first_rate" value="<?php echo $config['vip_price']; ?>"onpaste="this.value=this.value.replace(/[^\d]/g,'')" onkeyup="this.value=this.value.replace(/[^\d]/g,'')" class="input-txt" type="text">
+                    <p class="notic">升级为vip的价格</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label>推广人</label>
+                </dt>
+                <dd class="opt">
+                    <input name="tg_price" id="distribut_second_rate" value="<?php echo $config['tg_price']; ?>"onpaste="this.value=this.value.replace(/[^\d]/g,'')" onkeyup="this.value=this.value.replace(/[^\d]/g,'')" class="input-txt" type="text">
+                    <p class="notic">升级为推广人的价格</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label>代言人</label>
+                </dt>
+                <dd class="opt">
+                    <input name="dy_price" id="distribut_third_rate" value="<?php echo $config['dy_price']; ?>"onpaste="this.value=this.value.replace(/[^\d]/g,'')" onkeyup="this.value=this.value.replace(/[^\d]/g,'')" class="input-txt" type="text">
+                    <p class="notic">升级为代言人的价格</p>
+                </dd>
+            </dl>
+            </div>
+            <div class="bot">
+                <a href="JavaScript:void(0);" class="ncap-btn-big ncap-btn-green" onclick="adsubmit()">确认提交</a>
+            </div>
+        </div>
+    </form>
 </div>
-<script type="text/javascript">
-	$(document).ready(function(){
-	    ajax_get_table('search-form2',1);
-	});
-	
-	// ajax 抓取页面
-	function ajax_get_table(tab,page){
-	    cur_page = page; //当前页面 保存为全局变量
-        $.ajax({
-            type : "POST",
-            url:"/index.php/Admin/Comment/ajaxindex/p/"+page,//+tab,
-            data : $('#'+tab).serialize(),// 你的formid
-            success: function(data){
-                $("#flexigrid").html('');
-                $("#flexigrid").append(data);
+<div id="goTop"> <a href="JavaScript:void(0);" id="btntop"><i class="fa fa-angle-up"></i></a><a href="JavaScript:void(0);" id="btnbottom"><i class="fa fa-angle-down"></i></a></div>
+<script>
+    function adsubmit(){
+        var distribut_first_rate  = $.trim($('#distribut_first_rate').val());
+        var distribut_second_rate = $.trim($('#distribut_second_rate').val());
+        var distribut_third_rate  = $.trim($('#distribut_third_rate').val());
 
-                 // 表格行点击选中切换
-                $('#flexigrid > table>tbody >tr').click(function(){
-                    $(this).toggleClass('trSelected');
-                });
-
+        var rate = parseInt(distribut_first_rate) + parseInt(distribut_second_rate) + parseInt(distribut_third_rate);
+        if(distribut_first_rate==''||distribut_second_rate==''||distribut_third_rate=='')
+        {
+            layer.msg('价格不可为空', {icon: 2,time: 2000});//alert('少年，邮箱不能为空！');
+            // alert('三个分销商比例总和不得超过100%');
+            return false;
+        }
+        $.post("<?php echo U('mySystem/dealFenxiao'); ?>",{
+            vip_price:distribut_first_rate,
+            tg_price:distribut_second_rate,
+            dy_price:distribut_third_rate
+        },function (e) {
+            console.log(e)
+            var e=JSON.parse(e);
+            if (e.code==200){
+                layer.msg('提交成功');
+                setTimeout(function () {
+                    window.location.reload();
+                },1000)
 
             }
-        });
-	}
-
+        })
+       // $('#handlepost').submit();
+    }
 </script>
 </body>
 </html>

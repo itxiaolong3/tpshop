@@ -1012,14 +1012,15 @@ function confirm_order($id,$user_id = 0){
         $where['user_id'] = $user_id;
     }
     $order = M('order')->where($where)->find();
-    echo $order['order_status'];die;
-    if($order['order_status'] != 1)
+    //echo $order['order_status'];die;
+    if($order['order_status'] != 1){
         return array('status'=>-1,'msg'=>'该订单不能收货确认');
-    echo $order['pay_status'];die;
+    }
+    //echo $order['pay_status'];die;
     if(empty($order['pay_time']) || $order['pay_status'] != 1){
         return array('status'=>-1,'msg'=>'商家未确定付款，该订单暂不能确定收货');
     }
-    echo 111;die;
+   // echo 111;die;
     $data['order_status'] = 2; // 已收货
     $data['pay_status'] = 1; // 已付款
     $data['confirm_time'] = time(); // 收货确认时间

@@ -76,7 +76,6 @@ class Distribut extends Base {
         header("Location:".U('Admin/System/index',array('inc_type'=>'distribut')));
         exit;
     }
-    
     public function goods_list(){
     	$GoodsLogic = new GoodsLogic();
     	$brandList = $GoodsLogic->getSortBrands();

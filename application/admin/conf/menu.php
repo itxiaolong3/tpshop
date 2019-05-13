@@ -133,7 +133,8 @@ return	array(
 					array('name' => '分销商列表', 'act'=>'distributor_list', 'op'=>'Distribut'),
 				//	array('name' => '分销关系', 'act'=>'tree', 'op'=>'Distribut'),
 				//	array('name' => '分销商等级', 'act'=>'grade_list', 'op'=>'Distribut'),
-				    array('name' => '分销设置', 'act'=>'distribut', 'op'=>'System'),
+				    //array('name' => '分销设置', 'act'=>'distribut', 'op'=>'System'),
+				    array('name' => '分销设置', 'act'=>'system', 'op'=>'MySystem'),//我新增的分销设置
 					array('name' => '分成日志', 'act'=>'rebate_log', 'op'=>'Distribut'),
 			)),
 	     

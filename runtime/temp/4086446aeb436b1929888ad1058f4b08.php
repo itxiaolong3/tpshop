@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:40:"./application/admin/view/goods\type.html";i:1540260088;s:51:"E:\tpshop\application\admin\view\public\layout.html";i:1540260088;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:40:"./application/admin/view/goods\type.html";i:1557537643;s:51:"E:\tpshop\application\admin\view\public\layout.html";i:1540260088;}*/ ?>
 <!doctype html>
 <html>
 <head>
@@ -249,8 +249,14 @@
                                 <th align="center" axis="col2">
                                     <div style="text-align: center; width: 60px;">排序</div>
                                 </th>
-                                <th align="center" axis="col5">
-                                    <div style="text-align: center; width: 100px;">是否可上传规格图</div>
+                                <th align="center" axis="col2">
+                                    <div style="text-align: center; width: 100px;">是否可传规格图</div>
+                                </th>
+                                <th align="center" axis="col2">
+                                    <div style="text-align: center; width: 100px;">是否可传视频</div>
+                                </th>
+                                <th align="center" axis="col2">
+                                    <div style="text-align: center; width: 100px;">是否可传音频</div>
                                 </th>
                                 <th axis="col4">
                                     <div style="text-align: center; width: 600px;">规格值</div>
@@ -298,7 +304,26 @@
                                         <?php endif; ?>
                                     </div>
                                 </td>
-
+                                <td>
+                                    <div style="text-align: center; width: 100px;">
+                                        <input type="hidden" name="spec[<?php echo $spec_key-1; ?>][is_upload_video]" value="<?php echo $goods_type_spec['is_upload_video']; ?>">
+                                        <?php if($goods_type_spec['is_upload_video'] == 1): ?>
+                                            <span class="yes is_upload_video"><i class="fa fa-check-circle"></i>是</span>
+                                            <?php else: ?>
+                                            <span class="no is_upload_video"><i class="fa fa-ban"></i>否</span>
+                                        <?php endif; ?>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div style="text-align: center; width: 100px;">
+                                        <input type="hidden" name="spec[<?php echo $spec_key-1; ?>][is_upload_audio]" value="<?php echo $goods_type_spec['is_upload_audio']; ?>">
+                                        <?php if($goods_type_spec['is_upload_audio'] == 1): ?>
+                                            <span class="yes is_upload_audio"><i class="fa fa-check-circle"></i>是</span>
+                                            <?php else: ?>
+                                            <span class="no is_upload_audio"><i class="fa fa-ban"></i>否</span>
+                                        <?php endif; ?>
+                                    </div>
+                                </td>
                                 <td>
                                     <div style="text-align: left;width: 575px;display: inline-block;padding-right: 35px;">
                                         <?php if(is_array($goods_type_spec['spec_item']) || $goods_type_spec['spec_item'] instanceof \think\Collection || $goods_type_spec['spec_item'] instanceof \think\Paginator): $spec_item_key = 0; $__LIST__ = $goods_type_spec['spec_item'];if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$spec_item): $mod = ($spec_item_key % 2 );++$spec_item_key;?>
@@ -431,8 +456,8 @@
     $(document).on('click', '#add_spec', function () {
         var spec_list = $('#spec_list');
         var spec_length = spec_list.find('tr').length;
-        if(spec_length >= 4){
-            layer.open({icon: 2, content: '规格最多可添加4个'});
+        if(spec_length >= 1){
+            layer.open({icon: 2, content: '规格最多可添加1个'});
             return;
         }
         var spec_item_div = '<tr data-index='+spec_length+'> <td> <div style="width: 100px;"><input type="text" class="w80" name="spec['+spec_length+'][name]" value=""></div> </td> ' +
@@ -440,7 +465,14 @@
                 '<input type="text" name="spec['+spec_length+'][order]" value="" class="w40" onKeyUp="this.value=this.value.replace(/[^\\d.]/g,\'\')"></div> </td> ' +
                 '<td> <div style="text-align: center; width: 100px;"> <input type="hidden" name="spec['+spec_length+'][is_upload_image]" value="">' +
                 '<span class="is_upload_image no"><i class="fa fa-ban"></i>否</span></div> </td> ' +
-                '<td> <div style="text-align: left; width: 575px;display: inline-block;padding-right: 35px;"> ' +
+                '<td>' +
+            '<td> <div style="text-align: center; width: 100px;"> <input type="hidden" name="spec['+spec_length+'][is_upload_video]" value="">' +
+            '<span class="is_upload_video no"><i class="fa fa-ban"></i>否</span></div> </td> ' +
+            '<td>'+
+            '<td> <div style="text-align: center; width: 100px;"> <input type="hidden" name="spec['+spec_length+'][is_upload_audio]" value="">' +
+            '<span class="is_upload_audio no"><i class="fa fa-ban"></i>否</span></div> </td> ' +
+            '<td>'+
+            ' <div style="text-align: left; width: 575px;display: inline-block;padding-right: 35px;"> ' +
                 '<input type="text" maxlength="20" placeholder="规格值名称" class="spec_item_name" autocomplete="off" style="margin-top: 5px; margin-left: 8px; width:80px;vertical-align: middle;">' +
                 '<a href="javascript:void(0);" class="add_spec_item" style="margin-left: 2px;display: inline-block;">添加</a> </div> </td> <td class="handle-s"> <div style="text-align: center; width: 60px;">' +
                 '<a href="javascript:void(0);" class="btn red delete_spec" ><i class="fa fa-trash-o"></i>删除</a></div> </td></tr>';
@@ -524,8 +556,8 @@
             return;
         }
         var spec_item_length = $(this).parent().find('.spec_item_button_div').length;
-        if(spec_item_length >= 15){
-            layer.open({icon: 2, content: '规格值最多可添加15个'});
+        if(spec_item_length >= 5){
+            layer.open({icon: 2, content: '规格值最多可添加5个'});
             return;
         }
         var spec_index = $(this).parents('tr').data('index');
@@ -614,6 +646,34 @@
     $(document).on('click', '.is_upload_image', function () {
         if($(this).hasClass('no')){
             $('.is_upload_image').each(function(i,o){
+                $(o).removeClass('yes').addClass('no').html("<i class='fa fa-ban'></i>否");
+                $(o).parent().find('input').val(0);
+            })
+            $(this).removeClass('no').addClass('yes').html("<i class='fa fa-check-circle'></i>是");
+            $(this).parent().find('input').val(1);
+        }else{
+            $(this).removeClass('yes').addClass('no').html("<i class='fa fa-ban'></i>否");
+            $(this).parent().find('input').val(0);
+        }
+    });
+    //是否上传视频
+    $(document).on('click', '.is_upload_video', function () {
+        if($(this).hasClass('no')){
+            $('.is_upload_video').each(function(i,o){
+                $(o).removeClass('yes').addClass('no').html("<i class='fa fa-ban'></i>否");
+                $(o).parent().find('input').val(0);
+            })
+            $(this).removeClass('no').addClass('yes').html("<i class='fa fa-check-circle'></i>是");
+            $(this).parent().find('input').val(1);
+        }else{
+            $(this).removeClass('yes').addClass('no').html("<i class='fa fa-ban'></i>否");
+            $(this).parent().find('input').val(0);
+        }
+    });
+    //是否上传音频
+    $(document).on('click', '.is_upload_audio', function () {
+        if($(this).hasClass('no')){
+            $('.is_upload_audio').each(function(i,o){
                 $(o).removeClass('yes').addClass('no').html("<i class='fa fa-ban'></i>否");
                 $(o).parent().find('input').val(0);
             })

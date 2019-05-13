@@ -74,23 +74,23 @@ class UsersLogic extends Model
      */
     public function app_login($username, $password, $capache, $push_id=0)
     {
-    	$result = array();
+        $result = array();
         if(!$username || !$password)
-           $result= array('status'=>0,'msg'=>'请填写账号或密码');
+            $result= array('status'=>0,'msg'=>'请填写账号或密码');
         $user = M('users')->where("mobile|email","=",$username)->find();
         if(!$user){
-           $result = array('status'=>-1,'msg'=>'账号不存在!');
+            $result = array('status'=>-1,'msg'=>'账号不存在!');
         }elseif($password != $user['password']){
-           $result = array('status'=>-2,'msg'=>'密码错误!');
+            $result = array('status'=>-2,'msg'=>'密码错误!');
         }elseif($user['is_lock'] == 1){
-           $result = array('status'=>-3,'msg'=>'账号异常已被锁定！！！');
+            $result = array('status'=>-3,'msg'=>'账号异常已被锁定！！！');
         }else{
             //是否清空积分           zengmm          2018/06/11
             $this->isEmptyingIntegral($user);
             //查询用户信息之后, 查询用户的登记昵称
             $levelId = $user['level'];
             $levelName = M("user_level")->where("level_id", $levelId)->getField("level_name");
-            $user['level_name'] = $levelName;            
+            $user['level_name'] = $levelName;
             $user['token'] = md5(time().mt_rand(1,999999999));
             $data = ['token' => $user['token'], 'last_login' => time()];
             $push_id && $data['push_id'] = $push_id;
@@ -153,24 +153,24 @@ class UsersLogic extends Model
         //绑定账号
         return Db::name('OauthUsers')->save(array('oauth' => $data['oauth'], 'openid' => $data['openid'], 'user_id' => $user['user_id'], 'unionid' => $data['unionid'], 'oauth_child' => $data['oauth_child']));
     }
-    
+
     //绑定账号
     public function oauth_bind_new($user = array())
     {
         $thirdOauth = session('third_oauth');
-        
+
         $thirdName = ['weixin'=>'微信' , 'qq'=>'QQ' , 'alipay'=>'支付宝', 'miniapp' => '微信小程序'];
-        
+
         //1.检查账号密码是否正确
         $ruser = M('Users')->where(array('mobile'=>$user['mobile']))->find();
         if(empty($ruser)){
             return array('status'=>-1,'msg'=>'账号不存在','result'=>'');
         }
-        
+
         if($ruser['password'] != $user['password']){
             return array('status'=>-1,'msg'=>'账号或密码错误','result'=>'');
         }
-    
+
         //2.检查第三方信息是否完整
         $openid = $thirdOauth['openid'];   //第三方返回唯一标识
         $unionid = $thirdOauth['unionid'];   //第三方返回唯一标识
@@ -179,41 +179,41 @@ class UsersLogic extends Model
         if((empty($unionid) || empty($openid)) && empty($oauth)){
             return array('status'=>-1,'msg'=>'第三方平台参数有误[openid:'.$openid.' , unionid:'.$unionid.', oauth:'.$oauth.']','result'=>'');
         }
-    
+
         //3.检查当前当前账号是否绑定过开放平台账号
         //1.判断一个账号绑定多个QQ
         //2.判断一个QQ绑定多个账号
-        if($unionid){ 
+        if($unionid){
             //如果有 unionid
-            
+
             //1.1此oauth是否已经绑定过其他账号
             $thirdUser = M('OauthUsers')->where(['unionid'=>$unionid, 'oauth'=> $oauth])->find();
-            if($thirdUser && $ruser['user_id'] != $thirdUser['user_id'] ){ 
+            if($thirdUser && $ruser['user_id'] != $thirdUser['user_id'] ){
                 return array('status'=>-1,'msg'=>'此'.$oauthCN.'已绑定其它账号','result'=>'');
-            } 
-            
+            }
+
             //1.2此账号是否已经绑定过其他oauth
             $thirdUser = M('OauthUsers')->where(['user_id'=>$ruser['user_id'], 'oauth'=> $oauth])->find();
-            if($thirdUser && $thirdUser['unionid'] != $unionid){         
+            if($thirdUser && $thirdUser['unionid'] != $unionid){
                 return array('status'=>-1,'msg'=>'此'.$oauthCN.'已绑定其它账号','result'=>'');
             }
-         
+
         }else{
             //如果没有unionid
-            
+
             //2.1此oauth是否已经绑定过其他账号
             $thirdUser = M('OauthUsers')->where(['openid'=>$openid, 'oauth'=> $oauth])->find();
-            if($thirdUser){ 
+            if($thirdUser){
                 return array('status'=>-1,'msg'=>'此'.$oauthCN.'已绑定其它账号','result'=>'');
             }
-            
+
             //2.2此账号是否已经绑定过其他oauth
             $thirdUser = M('OauthUsers')->where(['user_id'=>$ruser['user_id'], 'oauth'=> $oauth])->find();
             if($thirdUser){
                 return array('status'=>-1,'msg'=>'此账号已绑定其它'.$oauthCN.'账号','result'=>'');
-            } 
+            }
         }
-       
+
         if(!isset($thirdOauth['oauth_child'])){
             $thirdOauth['oauth_child'] = '';
         }
@@ -221,12 +221,12 @@ class UsersLogic extends Model
         M('OauthUsers')->save(array('oauth'=>$oauth , 'openid'=>$openid ,'user_id'=>$ruser['user_id'] , 'unionid'=>$unionid, 'oauth_child'=>$thirdOauth['oauth_child']));
         $ruser['token'] = md5(time().mt_rand(1,999999999));
         $ruser['last_login'] = time();
-        
+
         M('Users')->where('user_id' , $ruser['user_id'])->save(array('token'=>$ruser['token'] , 'last_login'=>$ruser['last_login']));
-        
+
         return array('status'=>1,'msg'=>'绑定成功','result'=>$ruser);
-       
-         
+
+
     }
 
     /**
@@ -245,12 +245,12 @@ class UsersLogic extends Model
             if ($data['unionid']) {
                 $thirdUser = Db::name('oauth_users')->where(['unionid' => $data['unionid']])->find();
                 if ($thirdUser) {
-                	$data['user_id'] = $thirdUser['user_id'];
-                	Db::name('oauth_users')->insert($data);//补充其他第三方登录方式
+                    $data['user_id'] = $thirdUser['user_id'];
+                    Db::name('oauth_users')->insert($data);//补充其他第三方登录方式
                 }
             }
         }
-        
+
         if ($thirdUser) {
             $user = Db::name('users')->where('user_id', $thirdUser['user_id'])->find();
             if (!$user) {
@@ -281,7 +281,7 @@ class UsersLogic extends Model
         $data['push_id'] && $map['push_id'] = $data['push_id'];
         $map['token'] = md5(time() . mt_rand(1, 999999999));
         $map['last_login'] = time();
-        
+
         $user = $this->getThirdUser($data);
         if(!$user){
             //账户不存在 注册一个
@@ -312,15 +312,15 @@ class UsersLogic extends Model
             $distribut_condition = tpCache('distribut.condition');
             if($distribut_condition == 0){    // 直接成为分销商, 每个人都可以做分销
                 $map['is_distribut']  = 1;
-            } 
+            }
             $row_id = Db::name('users')->add($map);
 
             $user = Db::name('users')->where(array('user_id'=>$row_id))->find();
-            
+
             if (!isset($data['oauth_child'])) {
                 $data['oauth_child'] = '';
             }
-            
+
             //不存在则创建个第三方账号
             $data['user_id'] = $user['user_id'];
             $user_level =Db::name('user_level')->where('amount = 0')->find(); //折扣
@@ -333,7 +333,7 @@ class UsersLogic extends Model
                 if(!$user['xcx_qrcode'])
                     $user['xcx_qrcode'] = $qrcode;
             }
-            
+
         } else {
             //兼容以前登录的小程序用户没有获取到openid
             if(!$user['openid']){
@@ -344,10 +344,10 @@ class UsersLogic extends Model
             $user['token'] = $map['token'];
             $user['last_login'] = $map['last_login'];
         }
-    
+
         return array('status'=>1,'msg'=>'登陆成功','result'=>$user);
     }
-    
+
     /*
      * 第三方登录(第二种方式:第三方账号登录必须绑定账号)
      */
@@ -390,7 +390,7 @@ class UsersLogic extends Model
      * @return array
      */
     public function reg($username,$password,$password2,$push_id = 0,$invite=array(),$nickname="",$head_pic=""){
-    	$is_validated = 0 ;
+        $is_validated = 0 ;
         if(check_email($username)){
             $is_validated = 1;
             $map['email_validated'] = 1;
@@ -405,7 +405,7 @@ class UsersLogic extends Model
         if($is_validated != 1)
             return array('status'=>-1,'msg'=>'请用手机号或邮箱注册','result'=>'');
         $map['nickname'] = $nickname ? $nickname : $username;
-        
+
         if(!empty($head_pic)){
             $map['head_pic'] = $head_pic;
         }else{
@@ -435,28 +435,28 @@ class UsersLogic extends Model
             Db::name('users')->where(array('user_id' => $map['second_leader']))->setInc('underling_number');
             Db::name('users')->where(array('user_id' => $map['third_leader']))->setInc('underling_number');
         }else
-		{
-			$map['first_leader'] = 0;
-		}
-		if(is_array($invite) && !empty($invite)){
-			$map['first_leader'] = $invite['user_id'];
-			$map['second_leader'] = $invite['first_leader'];
-			$map['third_leader'] = $invite['second_leader'];
+        {
+            $map['first_leader'] = 0;
+        }
+        if(is_array($invite) && !empty($invite)){
+            $map['first_leader'] = $invite['user_id'];
+            $map['second_leader'] = $invite['first_leader'];
+            $map['third_leader'] = $invite['second_leader'];
             //需要给推荐人送积分
             $integral = tpCache('integral');
             $invite_integral =$integral['invite_integral'];
             if($invite_integral > 0 && $integral['invite']){
                 accountLog($invite['user_id'], 0,$invite_integral, '邀请会员注册赠送积分'); // 记录日志流水
             }
-		}/*  else if(tpCache('basic.invite') ==1 && empty($invite)){
+        }/*  else if(tpCache('basic.invite') ==1 && empty($invite)){
 		    return array('status'=>-1,'msg'=>'请填写正确的推荐人手机号');
 		} */
 
-        // 成为分销商条件  
-        $distribut_condition = tpCache('distribut.condition'); 
-        if($distribut_condition == 0)  // 直接成为分销商, 每个人都可以做分销        
-            $map['is_distribut']  = 1;        
-        
+        // 成为分销商条件
+        $distribut_condition = tpCache('distribut.condition');
+        if($distribut_condition == 0)  // 直接成为分销商, 每个人都可以做分销
+            $map['is_distribut']  = 1;
+
         $map['push_id'] = $push_id; //推送id
         $map['token'] = md5(time().mt_rand(1,999999999));
         $map['last_login'] = time();
@@ -498,9 +498,9 @@ class UsersLogic extends Model
         }
         return $user;
     }
-     /*
-      * 获取当前登录用户信息
-      */
+    /*
+     * 获取当前登录用户信息
+     */
     public function get_info($user_id)
     {
         if (!$user_id) {
@@ -515,21 +515,21 @@ class UsersLogic extends Model
             $level_name=M('user_level')->field(['level_name'])->where(['level_id'=>$user['level']])->find();
             $user['level_name']=$level_name['level_name'];
         }
-      //  $activityLogic = new \app\common\logic\ActivityLogic;             //获取能使用优惠券个数
-      //  $user['coupon_count'] = $activityLogic->getUserCouponNum($user_id, 0);
-       // $user['collect_count'] = Db::name('goods_collect')->where('user_id', $user_id)->count(); //获取商品收藏数量
-       // $user['return_count'] = Db::name('return_goods')->where(['user_id'=>$user_id,'status'=>['in', '0,1,2,3']])->count();   //退换货数量
+        //  $activityLogic = new \app\common\logic\ActivityLogic;             //获取能使用优惠券个数
+        //  $user['coupon_count'] = $activityLogic->getUserCouponNum($user_id, 0);
+        // $user['collect_count'] = Db::name('goods_collect')->where('user_id', $user_id)->count(); //获取商品收藏数量
+        // $user['return_count'] = Db::name('return_goods')->where(['user_id'=>$user_id,'status'=>['in', '0,1,2,3']])->count();   //退换货数量
         //不统计虚拟的
-      //  $user['waitPay'] = Db::name('order')->where("prom_type < 5 and user_id = $user_id " . C('WAITPAY'))->count(); //待付款数量
-       // $user['waitSend'] = Db::name('order')->where("prom_type < 5 and user_id = $user_id " . C('WAITSEND'))->count(); //待发货数量
-      //  $user['waitReceive'] = Db::name('order')->where("prom_type < 5 and user_id = $user_id " . C('WAITRECEIVE'))->count(); //待收货数量
-     //   $user['order_count'] = $user['waitPay'] + $user['waitSend'] + $user['waitReceive'];
-     //   $commentLogic = new CommentLogic;
-      //  $user['uncomment_count'] = $commentLogic->getCommentNum($user_id, 0); //待评论数
-      //  $user['comment_count'] = $commentLogic->getCommentNum($user_id, 1); //已评论数
+        //  $user['waitPay'] = Db::name('order')->where("prom_type < 5 and user_id = $user_id " . C('WAITPAY'))->count(); //待付款数量
+        // $user['waitSend'] = Db::name('order')->where("prom_type < 5 and user_id = $user_id " . C('WAITSEND'))->count(); //待发货数量
+        //  $user['waitReceive'] = Db::name('order')->where("prom_type < 5 and user_id = $user_id " . C('WAITRECEIVE'))->count(); //待收货数量
+        //   $user['order_count'] = $user['waitPay'] + $user['waitSend'] + $user['waitReceive'];
+        //   $commentLogic = new CommentLogic;
+        //  $user['uncomment_count'] = $commentLogic->getCommentNum($user_id, 0); //待评论数
+        //  $user['comment_count'] = $commentLogic->getCommentNum($user_id, 1); //已评论数
         return ['status' => 1, 'msg' => '获取成功', 'result' => $user];
-     }
-     
+    }
+
     /*
       * 获取当前登录用户信息
       */
@@ -546,7 +546,7 @@ class UsersLogic extends Model
 
         $activityLogic = new \app\common\logic\ActivityLogic;             //获取能使用优惠券个数
         $user['coupon_count'] = $activityLogic->getUserCouponNum($user_id, 0);
-        
+
         $user['collect_count'] = Db::name('goods_collect')->where('user_id', $user_id)->count();//获取收藏数量
         $user['visit_count']   = M('goods_visit')->where('user_id', $user_id)->count();   //商品访问记录数
         $user['return_count'] = M('return_goods')->where("user_id=$user_id and status<2")->count();   //退换货数量
@@ -556,20 +556,20 @@ class UsersLogic extends Model
         $user['waitReceive'] = M('order')->where($order_where.C('WAITRECEIVE'))->count(); //待收货数量
         $user['waitSend'] = M('order')->where($order_where.C('WAITSEND'))->count(); //待发货数量
         $user['order_count'] = $user['waitPay'] + $user['waitSend'] + $user['waitReceive'] + $user['finish'];
-        
+
         $messageLogic = new \app\common\logic\Message();
         $user['message_count'] = $messageLogic->getUserMessageNoReadCount();
-        
+
         $commentLogic = new CommentLogic;
         $user['uncomment_count'] = $commentLogic->getCommentNum($user_id, 0);; //待评论数
         $user['comment_count'] = $commentLogic->getCommentNum($user_id, 1); //已评论数
         $cartLogic = new CartLogic();
         $cartLogic->setUserId($user_id);
         $user['cart_goods_num'] = $cartLogic->getUserCartGoodsNum();
-            
-         return ['status' => 1, 'msg' => '获取成功', 'result' => $user];
-     }
-     
+
+        return ['status' => 1, 'msg' => '获取成功', 'result' => $user];
+    }
+
     /*
      * 获取最近一笔订单
      */
@@ -684,7 +684,7 @@ class UsersLogic extends Model
     {
         $activityLogic = new \app\common\logic\ActivityLogic;
         $count = $activityLogic->getUserCouponNum($user_id, $type, $orderBy,$order_money );
-        
+
         $page = new Page($count, $p);
         $list = $activityLogic->getUserCouponList($page->firstRow, $page->listRows, $user_id, $type, $orderBy,$order_money);
         $return['status'] = 1;
@@ -725,7 +725,7 @@ class UsersLogic extends Model
         $return['status'] = 1;
         $return['msg'] = '获取成功';
         $return['result'] = $result;
-        $return['show'] = $show;        
+        $return['show'] = $show;
         return $return;
     }
 
@@ -770,11 +770,11 @@ class UsersLogic extends Model
         }
         $show = $page->show();
         if($comment_list){
-        	$return['result'] = $comment_list;
-        	$return['show'] = $show; //分页
-        	return $return;
+            $return['result'] = $comment_list;
+            $return['show'] = $show; //分页
+            return $return;
         }else{
-        	return array();
+            return array();
         }
     }
 
@@ -784,7 +784,7 @@ class UsersLogic extends Model
      * @return array
      */
     public function add_comment($add){
-        if(!$add['order_id'] || !$add['goods_id']) 
+        if(!$add['order_id'] || !$add['goods_id'])
             return array('status'=>-1,'msg'=>'非法操作','result'=>'');
         //检查订单是否已完成
         $order = M('order')->field('order_status')->where("order_id", $add['order_id'])->where('user_id', $add['user_id'])->find();
@@ -852,7 +852,7 @@ class UsersLogic extends Model
         $model = M('users')->where("user_id", $user_id);
         $row = $model->setField($post);
         if($row === false)
-           return false;
+            return false;
         return true;
     }
 
@@ -897,23 +897,23 @@ class UsersLogic extends Model
         }
         //添加模式
         $post['user_id'] = $user_id;
-        
+
         // 如果目前只有一个收货地址则改为默认收货地址
         $c = M('user_address')->where("user_id", $post['user_id'])->count();
         if($c == 0)  $post['is_default'] = 1;
-        
+
         $address_id = M('user_address')->add($post);
         //如果设为默认地址
         $insert_id = DB::name('user_address')->getLastInsID();
         $map['user_id'] = $user_id;
         $map['address_id'] = array('neq',$insert_id);
-               
+
         if($post['is_default'] == 1)
             M('user_address')->where($map)->save(array('is_default'=>0));
         if(!$address_id)
             return array('status'=>-1,'msg'=>'添加失败','result'=>'');
-        
-        
+
+
         return array('status'=>1,'msg'=>'添加成功','result'=>$address_id);
     }
 
@@ -943,7 +943,7 @@ class UsersLogic extends Model
     public function password($user_id,$new_password,$confirm_password,$code,$mobile,$is_update=true){
         $user = M('users')->where('user_id', $user_id)->find();
         if(empty($mobile)|| !check_mobile($mobile) ){
-            //return ['status'=>-1,'msg'=>'手机号不能为空或不合规则'];
+            // return ['status'=>-1,'msg'=>'手机号不能为空或不合规则'];
         }
         if ($new_password != $confirm_password)
             return ['status'=>-1,'msg'=>'请输入相同的新密码'];
@@ -954,9 +954,9 @@ class UsersLogic extends Model
 //                return returnBad('验证码不正确！', 308);
 //               }
         $data=[
-          'password' => $new_password,
-          'password2' => $confirm_password,
-          'code' => $code,
+            'password' => $new_password,
+            'password2' => $confirm_password,
+            'code' => $code,
         ];
         $UserRegvalidate = Loader::validate('User');
         if(!$UserRegvalidate->scene('set_pwd')->check($data)){
@@ -1048,10 +1048,10 @@ class UsersLogic extends Model
         }
         $url = session('payPriorUrl') ? session('payPriorUrl'): U('User/userinfo');
         session('payPriorUrl',null);
-    	return array('status'=>1,'msg'=>'修改成功','url'=>$url);
+        return array('status'=>1,'msg'=>'修改成功','url'=>$url);
     }
     /**
-     * 绑定手机号
+     * 设置支付密码
      * @param $user_id
      * @param $mobile  手机号
      * @param $code 验证码
@@ -1059,31 +1059,31 @@ class UsersLogic extends Model
      */
     public function bandMobile($user_id,$mobile,$code){
 
-      if(!check_mobile($mobile)){
+        if(!check_mobile($mobile)){
             return array('status' => -1, 'msg' => '手机号不合规则', 'result' => '');
         }
-       if(empty($code)){
-           return array('status' => -1, 'msg' => '验证码不能为空', 'result' => '');
-       }
-       //校验验证码
+        if(empty($code)){
+            return array('status' => -1, 'msg' => '验证码不能为空', 'result' => '');
+        }
+        //校验验证码
         $getphonecode=M('sms_log')->where(['mobile'=>$mobile,'status'=>1,'code'=>$code])->order("add_time desc")->find();
-       if ($getphonecode){
-           if ((time()-$getphonecode['add_time'])>1800){
-               //M('sms_log')->where(['mobile'=>$mobile,'status'=>1,'code'=>$code])->delete();
-               M('sms_log')->where(['mobile'=>$mobile,'status'=>1,'code'=>$code])->save(['status'=>2]);
-               return array('status' => -1, 'msg' => '验证码已失效，30分钟之内有效', 'code' => 308);
-           }
+        if ($getphonecode){
+            if ((time()-$getphonecode['add_time'])>1800){
+                //M('sms_log')->where(['mobile'=>$mobile,'status'=>1,'code'=>$code])->delete();
+                M('sms_log')->where(['mobile'=>$mobile,'status'=>1,'code'=>$code])->save(['status'=>2]);
+                return array('status' => -1, 'msg' => '验证码已失效，30分钟之内有效', 'code' => 308);
+            }
 
-       }else{
-           return array('status' => -1, 'msg' => '验证码不正确', 'code' => 308);
-       }
+        }else{
+            return array('status' => -1, 'msg' => '验证码不正确', 'code' => 308);
+        }
         $res =M('users')->where(['user_id'=>$user_id])->save(['mobile'=>$mobile]);
-       if(!$res){
-           return array('status' => -1, 'msg' => '绑定失败', 'result' => '');
-       }else{
-           //M('sms_log')->where(['mobile'=>$mobile,'status'=>1,'code'=>$code])->delete();
-           M('sms_log')->where(['mobile'=>$mobile,'status'=>1,'code'=>$code])->save(['status'=>2]);
-       }
+        if(!$res){
+            return array('status' => -1, 'msg' => '绑定失败', 'result' => '');
+        }else{
+            //M('sms_log')->where(['mobile'=>$mobile,'status'=>1,'code'=>$code])->delete();
+            M('sms_log')->where(['mobile'=>$mobile,'status'=>1,'code'=>$code])->save(['status'=>2]);
+        }
         return array('status' => true, 'code' => 200, 'data' => '绑定成功');
     }
     /**
@@ -1111,33 +1111,33 @@ class UsersLogic extends Model
      * @return json
      */
     public function send_email_code($sender){
-    	$sms_time_out = tpCache('sms.sms_time_out');
-    	$sms_time_out = $sms_time_out ? $sms_time_out : 180;
-    	//获取上一次的发送时间
-    	$send = session('validate_code');
-    	if(!empty($send) && $send['time'] > time() && $send['sender'] == $sender){
-    		//在有效期范围内 相同号码不再发送
-    		$res = array('status'=>-1,'msg'=>'规定时间内,不要重复发送验证码');
+        $sms_time_out = tpCache('sms.sms_time_out');
+        $sms_time_out = $sms_time_out ? $sms_time_out : 180;
+        //获取上一次的发送时间
+        $send = session('validate_code');
+        if(!empty($send) && $send['time'] > time() && $send['sender'] == $sender){
+            //在有效期范围内 相同号码不再发送
+            $res = array('status'=>-1,'msg'=>'规定时间内,不要重复发送验证码');
             return $res;
-    	}
-    	$code =  mt_rand(1000,9999);
-		//检查是否邮箱格式
-		if(!check_email($sender)){
-			$res = array('status'=>-1,'msg'=>'邮箱码格式有误');
+        }
+        $code =  mt_rand(1000,9999);
+        //检查是否邮箱格式
+        if(!check_email($sender)){
+            $res = array('status'=>-1,'msg'=>'邮箱码格式有误');
             return $res;
-		}
-		$send = send_email($sender,tpCache('shop_info.store_name'),'您好，你的验证码是：'.$code);
-    	if($send['status'] == 1){
-    		$info['code'] = $code;
-    		$info['sender'] = $sender;
-    		$info['is_check'] = 0;
-    		$info['time'] = time() + $sms_time_out; //有效验证时间
-    		session('validate_code',$info);
-    		$res = array('status'=>1,'msg'=>'验证码已发送，请注意查收');
-    	}else{
-    		$res = $send;
-    	}
-    	return $res;
+        }
+        $send = send_email($sender,tpCache('shop_info.store_name'),'您好，你的验证码是：'.$code);
+        if($send['status'] == 1){
+            $info['code'] = $code;
+            $info['sender'] = $sender;
+            $info['is_check'] = 0;
+            $info['time'] = time() + $sms_time_out; //有效验证时间
+            session('validate_code',$info);
+            $res = array('status'=>1,'msg'=>'验证码已发送，请注意查收');
+        }else{
+            $res = $send;
+        }
+        return $res;
     }
 
     /**
@@ -1150,7 +1150,7 @@ class UsersLogic extends Model
      * @return array
      */
     public function check_validate_code($code, $sender, $type ='email', $session_id=0 ,$scene = -1){
-    	
+
         $timeOut = time();
         $inValid = true;  //验证码失效
 
@@ -1161,22 +1161,22 @@ class UsersLogic extends Model
 
         //邮件证码是否开启
         $reg_smtp_enable = tpCache('smtp.regis_smtp_enable');
-        
-        if($type == 'email'){            
+
+        if($type == 'email'){
             if(!$reg_smtp_enable){//发生邮件功能关闭
                 $validate_code = session('validate_code');
                 $validate_code['sender'] = $sender;
                 $validate_code['is_check'] = 1;//标示验证通过
                 session('validate_code',$validate_code);
                 return array('status'=>1,'msg'=>'邮件验证码功能关闭, 无需校验验证码');
-            }            
-            if(!$code)return array('status'=>-1,'msg'=>'请输入邮件验证码');                
+            }
+            if(!$code)return array('status'=>-1,'msg'=>'请输入邮件验证码');
             //邮件
             $data = session('validate_code');
             $timeOut = $data['time'];
             if($data['code'] != $code || $data['sender']!=$sender){
-            	$inValid = false;
-            }  
+                $inValid = false;
+            }
         }else{
             if($scene == -1){
                 return array('status'=>-1,'msg'=>'参数错误, 请传递合理的scene参数');
@@ -1185,8 +1185,8 @@ class UsersLogic extends Model
                 $data['is_check'] = 1; //标示验证通过
                 session('validate_code',$data);
                 return array('status'=>1,'msg'=>'短信验证码功能关闭, 无需校验验证码');
-            } 
-            
+            }
+
             if(!$code)return array('status'=>-1,'msg'=>'请输入短信验证码');
             //短信
             $sms_time_out = tpCache('sms.sms_time_out');
@@ -1194,29 +1194,29 @@ class UsersLogic extends Model
             $data = M('sms_log')->where(array('mobile'=>$sender,'session_id'=>$session_id , 'status'=>1))->order('id DESC')->find();
             //file_put_contents('./test.log', json_encode(['mobile'=>$sender,'session_id'=>$session_id, 'data' => $data]));
             if(is_array($data) && $data['code'] == $code){
-            	$data['sender'] = $sender;
-            	$timeOut = $data['add_time']+ $sms_time_out;
+                $data['sender'] = $sender;
+                $timeOut = $data['add_time']+ $sms_time_out;
             }else{
-            	$inValid = false;
-            }           
+                $inValid = false;
+            }
         }
-        
-       if(empty($data)){
-           $res = array('status'=>-1,'msg'=>'请先获取验证码');
-       }elseif($timeOut < time()){
-           $res = array('status'=>-1,'msg'=>'验证码已超时失效');
-       }elseif(!$inValid)
-       {
-           $res = array('status'=>-1,'msg'=>'验证失败,验证码有误');
-       }else{
+
+        if(empty($data)){
+            $res = array('status'=>-1,'msg'=>'请先获取验证码');
+        }elseif($timeOut < time()){
+            $res = array('status'=>-1,'msg'=>'验证码已超时失效');
+        }elseif(!$inValid)
+        {
+            $res = array('status'=>-1,'msg'=>'验证失败,验证码有误');
+        }else{
             $data['is_check'] = 1; //标示验证通过
             session('validate_code',$data);
             $res = array('status'=>1,'msg'=>'验证成功');
         }
         return $res;
     }
-     
-    
+
+
     /**
      * @time 2016/09/01
      * 设置用户系统消息已读
@@ -1285,7 +1285,7 @@ class UsersLogic extends Model
 
         return $visit_list;
     }
-    
+
     /**
      * 上传头像
      */
@@ -1311,57 +1311,57 @@ class UsersLogic extends Model
         }
         return ['status' => 1, 'msg' => '上传成功', 'result' => $pic_path];
     }
-    
+
     /**
      * 账户明细
      */
     public function account($user_id, $type='all'){
-    	if($type == 'all'){
-    		$count = M('account_log')->where("user_money!=0 and user_id=" . $user_id)->count();
-    		$page = new Page($count, 16);
-    		$account_log = M('account_log')->field("user_money,from_unixtime(change_time,'%Y-%m-%d %H:%i:%s') AS change_data,desc,log_id")->where("user_money!=0 and user_id=" . $user_id)
+        if($type == 'all'){
+            $count = M('account_log')->where("user_money!=0 and user_id=" . $user_id)->count();
+            $page = new Page($count, 16);
+            $account_log = M('account_log')->field("user_money,from_unixtime(change_time,'%Y-%m-%d %H:%i:%s') AS change_data,desc,log_id")->where("user_money!=0 and user_id=" . $user_id)
                 ->order('log_id desc')->limit($page->firstRow . ',' . $page->listRows)->select();
-    	}else{
-    		$where = $type=='plus' ? " and user_money>0 " : " and user_money<0 ";
-    		$count = M('account_log')->where("user_id=" . $user_id.$where)->count();
-    		$page = new Page($count, 16);
-    		$account_log = Db::name('account_log')->field("*,from_unixtime(change_time,'%Y-%m-%d %H:%i:%s') AS change_data")->where("user_id=" . $user_id.$where)
+        }else{
+            $where = $type=='plus' ? " and user_money>0 " : " and user_money<0 ";
+            $count = M('account_log')->where("user_id=" . $user_id.$where)->count();
+            $page = new Page($count, 16);
+            $account_log = Db::name('account_log')->field("*,from_unixtime(change_time,'%Y-%m-%d %H:%i:%s') AS change_data")->where("user_id=" . $user_id.$where)
                 ->order('log_id desc')->limit($page->firstRow . ',' . $page->listRows)->select();
-    	}
-    	$result['account_log'] = $account_log;
-    	$result['page'] = $page;
-    	return $result;
+        }
+        $result['account_log'] = $account_log;
+        $result['page'] = $page;
+        return $result;
     }
-    
+
     /**
      * 积分明细
      */
     public function points($user_id, $type='all')
     {
- 		 if($type == 'all'){
-    		$count = M('user_integral')->where("ui_uid=" . $user_id)->count();
-    		$page = new Page($count, 10);
-    		$account_log = M('user_integral')->where("ui_uid=" . $user_id)->order('ui_id desc')->limit($page->firstRow . ',' . $page->listRows)->select();
- 		 }else{
-    		$where = array('ui_deal_type'=>$type);
-    		$count = M('user_integral')->where("ui_uid=" . $user_id)->where($where)->count();
-    		$page = new Page($count, 16);
-    		$account_log = M('user_integral')->where("ui_uid=" . $user_id)->where($where)->order('ui_id desc')->limit($page->firstRow . ',' . $page->listRows)->select();
-    	}
+        if($type == 'all'){
+            $count = M('user_integral')->where("ui_uid=" . $user_id)->count();
+            $page = new Page($count, 10);
+            $account_log = M('user_integral')->where("ui_uid=" . $user_id)->order('ui_id desc')->limit($page->firstRow . ',' . $page->listRows)->select();
+        }else{
+            $where = array('ui_deal_type'=>$type);
+            $count = M('user_integral')->where("ui_uid=" . $user_id)->where($where)->count();
+            $page = new Page($count, 16);
+            $account_log = M('user_integral')->where("ui_uid=" . $user_id)->where($where)->order('ui_id desc')->limit($page->firstRow . ',' . $page->listRows)->select();
+        }
         $result['account_log'] = $account_log;
         $result['page'] = $page;
         return $result;
     }
     /**提现添加
-    */
+     */
     public function withdrawals_add($uid,$data){
-       $result=Db::name('withdrawals')->where(['user_id'=>$uid])->add($data);
-      if($result){
-          $res['msg'] = "提现申请通过,等待审核";
-          return $res;
-      }else{
-          return "添加失败";
-      }
+        $result=Db::name('withdrawals')->where(['user_id'=>$uid])->add($data);
+        if($result){
+            $res['msg'] = "提现申请通过,等待审核";
+            return $res;
+        }else{
+            return "添加失败";
+        }
     }
     /**
      * 提现记录列表
@@ -1494,20 +1494,20 @@ class UsersLogic extends Model
             }
         }
     }
-    
+
     /**
      * 判断是虚拟商品可获取赠送的积分
-     * 
+     *
      */
-    public function receiveGoodsGiftIntegral($order_goods){ 
-       $check =  Db::name('order')->where(array('order_id'=>$order_goods['order_id']))->find();
-       //虚拟订单
-       if($check['prom_type'] == 5){
-           $integral = Db::name('order_goods')->where(array('rec_id'=>$order_goods['rec_id'],'order_id'=>$order_goods['order_id']))->find();
-           $msg = '购买虚拟商品赠送' . $integral['give_integral'] . '积分';
-           accountLog($check['user_id'], 0, $integral['give_integral'], $msg);
-       }
-      
+    public function receiveGoodsGiftIntegral($order_goods){
+        $check =  Db::name('order')->where(array('order_id'=>$order_goods['order_id']))->find();
+        //虚拟订单
+        if($check['prom_type'] == 5){
+            $integral = Db::name('order_goods')->where(array('rec_id'=>$order_goods['rec_id'],'order_id'=>$order_goods['order_id']))->find();
+            $msg = '购买虚拟商品赠送' . $integral['give_integral'] . '积分';
+            accountLog($check['user_id'], 0, $integral['give_integral'], $msg);
+        }
+
     }
 
     /**
@@ -1544,9 +1544,81 @@ class UsersLogic extends Model
         }
         return $qrcode;
     }
+    ////////小龙新增
+    /**
+     * 检查该用户是否存在小程序专属收款码二维码
+     * @param $user 用户id
+     * @return array|mixed|string
+     */
+    public function checkUserSkQrcode($uid){
+        $qrcode = Db::name('users')->where('user_id',$uid)->value('getmoney_qrcode');
+        if(!$qrcode){
+            $path="/pages/index/payment?uid=".$uid;
+            $post_data = json_encode(["path" => $path,"width" => 430]);
+            $minapp = new \app\common\logic\wechat\MiniAppUtil();
+            $assecc_token = $minapp->getMinAppAccessToken();
+            if($assecc_token == false){
+                return ['status'=>0,'msg'=>$minapp->getError()];
+            }
+            $result = $minapp->getWecatCreateQrcode($assecc_token,$post_data);
+            if($result == false){
+                return ['status'=>0,'msg'=>$minapp->getError()];
+            }
+
+            $dir = 'public/images/minapp/user';
+            !is_dir($dir) && mkdir($dir, 0777, true);   // 如果文件夹不存在，将以递归方式创建该文件夹
+            $newFilePath = $dir . '/sfk_qrcode_'.$uid.'_'.date("YmdHis").'.jpg';
+            $newFile = fopen($newFilePath,"w");//打开文件准备写入
+            fwrite($newFile,$result);//写入二进制流到文件
+            fclose($newFile);//关闭文件
+
+            $rs = Db::name("users")->where(array('user_id'=>$uid))->setField("getmoney_qrcode",'/'.$newFilePath);
+            if($rs)
+                $qrcode  = '/'.$newFilePath;
+        }
+        return $qrcode;
+    }
+    //绑定关系逻辑
+    public function bangRelation($uid,$pid){
+        //判断用户是否已绑定
+        $sql='select user_id from kc_users where find_in_set('.$uid.',cidone)';
+        $issave=Db::query($sql);
+        if ($issave){
+            //已绑定
+            return 1;
+        }else{
+            //绑定上级关系
+            $bangpid=Db::name("users")->where(array('user_id'=>$uid))->setField("first_leader",$pid);
+            //绑定上级中的一级团队
+            $getcidone=Db::name('users')->where('user_id',$pid)->value('cidone');
+
+            if (empty($getcidone)){
+                $savacidonere=Db::name("users")->where(array('user_id'=>$pid))->setField("cidone",$uid);
+
+            }else{
+                $va=$getcidone.','.$uid;
+                $savacidonere=Db::name("users")->where(array('user_id'=>$pid))->setField("cidone",$va);
+            }
+
+            //绑定上级中的二级团队
+            $ppid=Db::name('users')->where('user_id',$pid)->value('first_leader');
+            $getcidtwo=Db::name('users')->where('user_id',$ppid)->value('cidtwo');
+            if (empty($getcidtwo)){
+                $savacidtwo=Db::name("users")->where(array('user_id'=>$ppid))->setField("cidtwo",$uid);
+            }else{
+                $savacidtwo=Db::name("users")->where(array('user_id'=>$ppid))->setField("cidtwo",$getcidtwo.','.$uid);
+            }
+
+            if (empty($savacidtwo)&&empty($savacidonere)){
+                return -2;
+            }else{
+                return 2;
+            }
 
 
 
+        }
+    }
 
     /**
      * gd流合成用户专属推广海报

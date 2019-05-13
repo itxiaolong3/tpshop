@@ -1,0 +1,96 @@
+<include file="public/layout" />
+<body style="background-color: #FFF; overflow: auto;">
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>新分销设置</h3>
+                <h5>分销基本配置</h5>
+            </div>
+        </div>
+    </div>
+    <!-- 操作说明 -->
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom"><i class="fa fa-lightbulb-o"></i>
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示"></span> </div>
+        <ul>
+            <li>这里的设置会影响到所有分销比例分佣，请勿随便修改</li>
+        </ul>
+    </div>
+    <form method="post" id="handlepost" >
+        <input type="hidden" name="form_submit" value="ok" />
+        <input type="hidden" name="inc_type" value="cash">
+        <div class="ncap-form-default">
+            <div id="switch_on_off">
+            <dl class="row"><dt class="tit"><label><b>默认返佣规则</b></label></dt></dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label>VIP价格</label>
+                </dt>
+                <dd class="opt">
+                    <input name="vip_price" id="distribut_first_rate" value="{$config.vip_price}"onpaste="this.value=this.value.replace(/[^\d]/g,'')" onkeyup="this.value=this.value.replace(/[^\d]/g,'')" class="input-txt" type="text">
+                    <p class="notic">升级为vip的价格</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label>推广人</label>
+                </dt>
+                <dd class="opt">
+                    <input name="tg_price" id="distribut_second_rate" value="{$config.tg_price}"onpaste="this.value=this.value.replace(/[^\d]/g,'')" onkeyup="this.value=this.value.replace(/[^\d]/g,'')" class="input-txt" type="text">
+                    <p class="notic">升级为推广人的价格</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label>代言人</label>
+                </dt>
+                <dd class="opt">
+                    <input name="dy_price" id="distribut_third_rate" value="{$config.dy_price}"onpaste="this.value=this.value.replace(/[^\d]/g,'')" onkeyup="this.value=this.value.replace(/[^\d]/g,'')" class="input-txt" type="text">
+                    <p class="notic">升级为代言人的价格</p>
+                </dd>
+            </dl>
+            </div>
+            <div class="bot">
+                <a href="JavaScript:void(0);" class="ncap-btn-big ncap-btn-green" onclick="adsubmit()">确认提交</a>
+            </div>
+        </div>
+    </form>
+</div>
+<div id="goTop"> <a href="JavaScript:void(0);" id="btntop"><i class="fa fa-angle-up"></i></a><a href="JavaScript:void(0);" id="btnbottom"><i class="fa fa-angle-down"></i></a></div>
+<script>
+    function adsubmit(){
+        var distribut_first_rate  = $.trim($('#distribut_first_rate').val());
+        var distribut_second_rate = $.trim($('#distribut_second_rate').val());
+        var distribut_third_rate  = $.trim($('#distribut_third_rate').val());
+
+        var rate = parseInt(distribut_first_rate) + parseInt(distribut_second_rate) + parseInt(distribut_third_rate);
+        if(distribut_first_rate==''||distribut_second_rate==''||distribut_third_rate=='')
+        {
+            layer.msg('价格不可为空', {icon: 2,time: 2000});//alert('少年，邮箱不能为空！');
+            // alert('三个分销商比例总和不得超过100%');
+            return false;
+        }
+        $.post("{:U('mySystem/dealFenxiao')}",{
+            vip_price:distribut_first_rate,
+            tg_price:distribut_second_rate,
+            dy_price:distribut_third_rate
+        },function (e) {
+            console.log(e)
+            var e=JSON.parse(e);
+            if (e.code==200){
+                layer.msg('提交成功');
+                setTimeout(function () {
+                    window.location.reload();
+                },1000)
+
+            }
+        })
+       // $('#handlepost').submit();
+    }
+</script>
+</body>
+</html>

@@ -192,7 +192,52 @@ class User extends Base{
         ];
         return returnOk($data);
     }
+//我的团队列表
+    public function teamlist(){
+        $level=I('get.level',1);
+        $page=I('post.page',1);
+        $uid=$this->user_id;
+        $teaminfo=M('users')->where("user_id",$uid)->field('user_id,cidone,cidtwo')->find();
+        $oneteamid=array();
+        $twoteamid=array();
+        if (strstr($teaminfo['cidone'],',')){
+            $oneteamid=explode(',',$teaminfo['cidone']);
+        }else{
+            array_push($oneteamid,$teaminfo['cidone']);
+        }
+        if (strstr($teaminfo['cidtwo'],',')){
+            $twoteamid=explode(',',$teaminfo['cidtwo']);
+        }else{
+            array_push($twoteamid,$teaminfo['cidtwo']);
+        }
 
+        $oneteamsizse=count($oneteamid);
+        $twoteamsizse=count($twoteamid);
+        $oneteam=array();
+        $twoteam=array();
+        if ($level==1){
+            for ($i=($page-1)*10; $i<=$oneteamsizse; $i++) {
+                $userinfo=M('users')->where("user_id",$oneteamid[$i])->field('user_id,head_pic,nickname,mylevel,isserver,dlevel')->find();
+                if ($userinfo){
+                    array_push($oneteam,$userinfo);
+                }
+
+            }
+
+        }else{
+            for ($i=($page-1)*10; $i<=$twoteamsizse; $i++) {
+                $userinfo=M('users')->where("user_id",$twoteamid[$i])->field('user_id,head_pic,nickname,mylevel,isserver,dlevel')->find();
+                if ($userinfo){
+                    array_push($twoteam,$userinfo);
+                }
+
+            }
+        }
+        $data=array('code'=>200,'msg'=>'团队列表','data'=>
+            array('oneteamsize'=>$oneteamsizse,'twoteamsize'=>$twoteamsizse,'oneteamlist'=>$oneteam,'twoteamlist'=>$twoteam));
+        echo json_encode($data);
+
+    }
     /**
      * 下线订单列表（分销订单）
      */
@@ -608,7 +653,7 @@ class User extends Base{
                         }else{
                             $result= M('goods_collect')->add(array('user_id'=>$this->user_id,'shop_id'=>$shop_id,'add_time'=>time()));
                             if($result){
-                                return  returnOk(['status' => 1, 'msg' => '商品收藏成功']);
+                                return  returnOk(['status' => 1, 'msg' => '店铺收藏成功']);
                             }
                         }
                     }else{
@@ -1173,6 +1218,44 @@ class User extends Base{
         $user = new UsersLogic();
         $qrcode = $user->checkUserQrcode($this->user_id);
         return returnOk(url_add_domain($qrcode));
+    }
+    ///小龙新增
+    //获取个人内部收款码
+    public function userPayQrcode(){
+        $user=new UsersLogic();
+        $qrcode=$user->checkUserSkQrcode($this->user_id);
+        return returnOk(url_add_domain($qrcode));
+
+    }
+    //绑定关系
+    public function bangRela(){
+        $uid=I('uid',''); //用户id
+        $pid=I('first_leader',''); //推荐人
+
+        if (empty($uid)){
+            return json(array('code'=>0,'msg'=>'用户id不可为空'));
+        }else if (empty($pid)){
+            return json(array('code'=>0,'msg'=>'推荐人id不可为空'));
+        }else if ($uid==$pid){
+            return json(array('code'=>0,'msg'=>'不可自我推荐'));
+        }
+        $user=new UsersLogic();
+        $re=$user->bangRelation($uid,$pid);
+
+        switch ($re){
+            case 0:
+                return json(array('code'=>0,'msg'=>'绑定关系失败'));
+                break;
+            case 1:
+                return json(array('code'=>200,'msg'=>'已被推荐'));
+                break;
+            case 2:
+                return json(array('code'=>200,'msg'=>'推荐成功'));
+                break;
+            case -2:
+                return json(array('code'=>0,'msg'=>'团队关系绑定失败'));
+                break;
+        }
     }
 
     /**

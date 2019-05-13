@@ -40,7 +40,7 @@ class Order extends Base{
         $type = input('type');//类型 all 所有订单 order_status_desc waitpay 待支付 waitsend 待发货 WAITCCOMMENT  waitccomment待评价 finish 已完成
        // $type=input('type')?input('type'):'';
        //var_dump(C(strtoupper($type)));die;
-        $this->user_id=207;
+        //$this->user_id=207;
         $order = new OrderModel();
         $where_arr = [
             'user_id'=>$this->user_id,
@@ -85,7 +85,7 @@ class Order extends Base{
     public function order_detail()
     {
         $id = input('id/d', 0);
-        $this->user_id=207;
+        //$this->user_id=207;
         $Order = new OrderModel();
         $order = $Order::get(['order_id' => $id, 'user_id' => $this->user_id]);
         if (!$order) {
@@ -145,7 +145,7 @@ class Order extends Base{
      */
     public function cancel_order()
     {
-        $this->user_id=207;
+        //$this->user_id=207;
         $id = I('get.order_id/d');//订单id、
         //检查是否有积分，余额支付
         $logic = new OrderLogic();
@@ -164,7 +164,7 @@ class Order extends Base{
         $id = I('order_id/d', 0); //订单id
         $data = confirm_order($id, $this->user_id);
         if ($data['status'] != 1) {
-            return returnBad($data['msg'], 308);
+            return json(['code' => 308, 'status' => false, 'data' => $data['msg']]);
         } else {
             $model = new UsersLogic();
             $order_goods = $model->get_order_goods($id);
@@ -182,9 +182,9 @@ class Order extends Base{
         $mobile     =  I('post.mobile', '');
         $logic = new \app\common\logic\OrderLogic;
         $return = $logic->recordRefundOrder($this->user_id, $order_id, $user_note, $consignee, $mobile);
-        var_dump($return);die;
+        //var_dump($return);die;
         // $this->ajaxReturn($return)
-        returnOk($return);
+        return json($return);
     }
 
     /**

@@ -174,22 +174,29 @@ class GoodsLogic extends Model
         $filter_spec = array();
         if ($keys) {
             $specImage = M('SpecImage')->where(['goods_id'=>$goods_id,'src'=>['<>','']])->getField("spec_image_id,src");// 规格对应的 图片表， 例如颜色
+            $specVideo = M('SpecImage')->where(['goods_id'=>$goods_id,'videosrc'=>['<>','']])->getField("spec_image_id,videosrc");
+            $specAudio = M('SpecImage')->where(['goods_id'=>$goods_id,'audiosrc'=>['<>','']])->getField("spec_image_id,audiosrc");
             $keys = str_replace('_', ',', $keys);
             $sql = "SELECT a.name,a.order,b.* FROM __PREFIX__spec AS a INNER JOIN __PREFIX__spec_item AS b ON a.id = b.spec_id WHERE b.id IN($keys) ORDER BY a.order desc,b.order_index asc";
             $filter_spec2 = \think\Db::query($sql);
+
             foreach ($filter_spec2 as $key => $val) {
                 if($terminal=="pc") {
                     $filter_spec[$val['name']][] = array(
                         'item_id' => $val['id'],
                         'item' => $val['item'],
-                        'src' => $specImage[$val['id']],
+                        'src' => $specImage[$val['id']]?url_add_domain($specImage[$val['id']]):'',
+                        'videosrc' => $specVideo[$val['id']]?url_add_domain($specVideo[$val['id']]):'',
+                        'audiosrc' => $specAudio[$val['id']]?url_add_domain($specAudio[$val['id']]):'',
                     );
                 }else{
                     $filter_spec[$val['name']]["spec_name"] = $val['name'];
                     $filter_spec[$val['name']]["spec_value"][] = array(
                         'item_id' => $val['id'],
                         'item' => $val['item'],
-                        'src' => $specImage[$val['id']],
+                        'src' => $specImage[$val['id']]?url_add_domain($specImage[$val['id']]):'',
+                        'videosrc' => $specVideo[$val['id']]?url_add_domain($specVideo[$val['id']]):'',
+                        'audiosrc' => $specAudio[$val['id']]?url_add_domain($specAudio[$val['id']]):'',
                     );
                 }
             }
@@ -729,9 +736,9 @@ class GoodsLogic extends Model
         $start_time = strtotime(date('Y-m-d H:00:00'));
         $end_time = strtotime(date('Y-m-d H:00:00'));
         $adv = M("ad")->field(array('ad_link','ad_name','ad_code'))
-        ->where("pid=9 and enabled=1 and start_time< $start_time and end_time > $end_time")
-        ->order("orderby desc")->cache(true,3600)
-        ->limit(5)->select(); 
+            ->where("pid=9 and enabled=1 and start_time< $start_time and end_time > $end_time")
+            ->order("orderby desc")->cache(true,3600)
+            ->limit(5)->select();
         //广告地址转换
         foreach($adv as $k=>$v){
             if(!strstr($v['ad_link'],'http')){
@@ -741,7 +748,7 @@ class GoodsLogic extends Model
         }
         return $adv;
     }
-    
+
     /**
      * 获取首页轮播图片
      * @return mixed
@@ -755,15 +762,15 @@ class GoodsLogic extends Model
         }else{
             $where = "pid > 500 AND pid < 520";
         }
-    
+
         $adv = M("ad")->field(array('ad_link','ad_name','ad_code','media_type,pid'))
-        ->where(" enabled=1 and start_time< $start_time and end_time > $end_time")->where($where)
-        ->order("orderby desc")//->fetchSql(true)//->cache(true,3600)
-        ->limit(20)->select();
-         
+            ->where(" enabled=1 and start_time< $start_time and end_time > $end_time")->where($where)
+            ->order("orderby desc")//->fetchSql(true)//->cache(true,3600)
+            ->limit(20)->select();
+
         return $adv;
     }
-    
+
     /**
      * 获取秒杀商品
      * @return mixed
@@ -785,8 +792,8 @@ class GoodsLogic extends Model
             ->select();
         return $flash_sale_goods;
     }
-    
-     /**
+
+    /**
      * 找相似
      */
     public function getSimilar($goods_id, $p, $count)
@@ -797,12 +804,12 @@ class GoodsLogic extends Model
         }
 
         $where = ['goods_id' => ['<>', $goods_id], 'cat_id' => $goods['cat_id']];
-    	$goods_list = M('goods')->field("goods_id,goods_name,shop_price,is_virtual")
-                ->where($where)->page($p, $count)->select();
+        $goods_list = M('goods')->field("goods_id,goods_name,shop_price,is_virtual")
+            ->where($where)->page($p, $count)->select();
 
-    	return $goods_list;
+        return $goods_list;
     }
-    
+
     /**
      * 积分商城
      */
@@ -832,17 +839,17 @@ class GoodsLogic extends Model
         $goods_where['exchange_integral'] =  $exchange_integral_where_array;  //拼装条件
         $goods_list_count = M('goods')->where($goods_where)->count();   //总数
         $goods_list = M('goods')->field('goods_id,goods_name,shop_price,market_price,exchange_integral,is_virtual')
-                ->where($goods_where)->order($ranktype ,'desc')->page($p, 15)->select();
-        
+            ->where($goods_where)->order($ranktype ,'desc')->page($p, 15)->select();
+
         $result = [
             'goods_list' => $goods_list,
             'goods_list_count' => $goods_list_count,
             'point_rate' => $point_rate,
         ];
-        
+
         return $result;
     }
-    
+
     /**
      *  获取排好序的品牌列表
      */
@@ -867,7 +874,7 @@ class GoodsLogic extends Model
 
         return $brandList;
     }
-    
+
     /**
      * 获取商品促销简单信息
      * @param array $goods
@@ -878,66 +885,66 @@ class GoodsLogic extends Model
     {
         //prom_type: 0默认 1抢购 2团购 3优惠促销 4预售(不考虑)
         $activity['prom_type'] = 0;
-    
+
         $goodsPromFactory = new \app\common\logic\GoodsPromFactory;
         if (!$goodsPromFactory->checkPromType($goods['prom_type'])
             || !$goodsPromLogic || !$goodsPromLogic->checkActivityIsAble()) {
-                return $activity;
-            }
-    
-            // 1抢购 2团购
-            $prom = $goodsPromLogic->getPromModel()->getData();
-            if (in_array($goods['prom_type'], [1, 2])) {
-                $info = $goodsPromLogic->getActivityGoodsInfo();
-                $activity = [
-                    'prom_type' => $goods['prom_type'],
-                    'prom_price' => $prom['price'],
-                    'prom_store_count' => $info['store_count'],
-                    'virtual_num' => $info['virtual_num']
-                ];
-                if($prom['start_time']){
-                    $activity['prom_start_time'] = $prom['start_time'];
-                }
-                if($prom['end_time']) {
-                    $activity['prom_end_time'] = $prom['end_time'];
-                }
-                return $activity;
-            }
-    
-            // 3优惠促销
-            // type:0直接打折,1减价优惠,2固定金额出售,3买就赠优惠券
-            if ($prom['type'] == 0) {
-                $expression = round($prom['expression']/10,2);
-                $activityData[] = ['title' => '折扣', 'content' => "指定商品立打{$expression}折"];
-            } elseif ($prom['type'] == 1) {
-                $activityData[] = ['title' => '直减', 'content' => "指定商品立减{$prom['expression']}元"];
-            } elseif ($prom['type'] == 2) {
-                $activityData[] = ['title' => '促销', 'content' => "促销价{$prom['expression']}元"];
-            } elseif ($prom['type'] == 3) {
-                $couponLogic = new \app\common\logic\CouponLogic;
-                $money = $couponLogic->getSendValidCouponMoney($prom['expression'], $goods['goods_id'], $goods['store_id'], $goods['cat_id']);
-                if ($money !== false) {
-                    $activityData[] = ['title' => '送券', 'content' => "买就送代金券{$money}元"];
-                }
-            }
-            if ($activityData) {
-                $activityInfo = $goodsPromLogic->getActivityGoodsInfo();
-                $activity = [
-                    'prom_type' => $goods['prom_type'],
-                    'prom_price' => $activityInfo['shop_price'],
-                    'data' => $activityData
-                ];
-                if($prom['start_time']){
-                    $activity['prom_start_time'] = $prom['start_time'];
-                }
-                if($prom['end_time']) {
-                    $activity['prom_end_time'] = $prom['end_time'];
-                }
-            }
-    
             return $activity;
+        }
+
+        // 1抢购 2团购
+        $prom = $goodsPromLogic->getPromModel()->getData();
+        if (in_array($goods['prom_type'], [1, 2])) {
+            $info = $goodsPromLogic->getActivityGoodsInfo();
+            $activity = [
+                'prom_type' => $goods['prom_type'],
+                'prom_price' => $prom['price'],
+                'prom_store_count' => $info['store_count'],
+                'virtual_num' => $info['virtual_num']
+            ];
+            if($prom['start_time']){
+                $activity['prom_start_time'] = $prom['start_time'];
+            }
+            if($prom['end_time']) {
+                $activity['prom_end_time'] = $prom['end_time'];
+            }
+            return $activity;
+        }
+
+        // 3优惠促销
+        // type:0直接打折,1减价优惠,2固定金额出售,3买就赠优惠券
+        if ($prom['type'] == 0) {
+            $expression = round($prom['expression']/10,2);
+            $activityData[] = ['title' => '折扣', 'content' => "指定商品立打{$expression}折"];
+        } elseif ($prom['type'] == 1) {
+            $activityData[] = ['title' => '直减', 'content' => "指定商品立减{$prom['expression']}元"];
+        } elseif ($prom['type'] == 2) {
+            $activityData[] = ['title' => '促销', 'content' => "促销价{$prom['expression']}元"];
+        } elseif ($prom['type'] == 3) {
+            $couponLogic = new \app\common\logic\CouponLogic;
+            $money = $couponLogic->getSendValidCouponMoney($prom['expression'], $goods['goods_id'], $goods['store_id'], $goods['cat_id']);
+            if ($money !== false) {
+                $activityData[] = ['title' => '送券', 'content' => "买就送代金券{$money}元"];
+            }
+        }
+        if ($activityData) {
+            $activityInfo = $goodsPromLogic->getActivityGoodsInfo();
+            $activity = [
+                'prom_type' => $goods['prom_type'],
+                'prom_price' => $activityInfo['shop_price'],
+                'data' => $activityData
+            ];
+            if($prom['start_time']){
+                $activity['prom_start_time'] = $prom['start_time'];
+            }
+            if($prom['end_time']) {
+                $activity['prom_end_time'] = $prom['end_time'];
+            }
+        }
+
+        return $activity;
     }
-    
+
     /**
      * 获取
      * @param type $user_level
@@ -948,7 +955,7 @@ class GoodsLogic extends Model
     public function getOrderPromSimpleInfo($goods)
     {
         $cur_time = time();
-       
+
         $data = [];
         $po = M('prom_order')->where(['start_time' => ['<=', $cur_time], 'end_time' => ['>', $cur_time], 'is_close' => 0])->select();
         if (!empty($po)) {
@@ -969,7 +976,7 @@ class GoodsLogic extends Model
                 }
             }
         }
-    
+
         return $data;
     }
 

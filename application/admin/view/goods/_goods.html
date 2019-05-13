@@ -164,6 +164,7 @@
             <span id="explanationZoom" title="收起提示"></span></div>
         <ul>
             <li>请务必正确填写商品信息</li>
+            <li>规格价格注意是否有效，否则无法正常保存价格。显示文字为点击后的结果。显示无效表示可输入</li>
         </ul>
     </div>
     <!--表单数据-->
@@ -929,7 +930,7 @@
         var goods_id = $("input[name='goods_id']").val();
         var is_virtual;
         if (goods_id > 0) {
-            is_virtual = $("input[name='is_virtual']").val();
+            is_virtual = $("input[name='is_virtual']:checked").val();
         } else {
             is_virtual = $("input[name='is_virtual']:checked").val();
         }

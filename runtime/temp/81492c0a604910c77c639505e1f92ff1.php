@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:42:"./application/admin/view/goods\_goods.html";i:1557124873;s:51:"E:\tpshop\application\admin\view\public\layout.html";i:1540260088;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:42:"./application/admin/view/goods\_goods.html";i:1557561596;s:51:"E:\tpshop\application\admin\view\public\layout.html";i:1540260088;}*/ ?>
 <!doctype html>
 <html>
 <head>
@@ -344,6 +344,7 @@
             <span id="explanationZoom" title="收起提示"></span></div>
         <ul>
             <li>请务必正确填写商品信息</li>
+            <li>规格价格注意是否有效，否则无法正常保存价格。显示文字为点击后的结果。显示无效表示可输入</li>
         </ul>
     </div>
     <!--表单数据-->
@@ -1109,7 +1110,7 @@
         var goods_id = $("input[name='goods_id']").val();
         var is_virtual;
         if (goods_id > 0) {
-            is_virtual = $("input[name='is_virtual']").val();
+            is_virtual = $("input[name='is_virtual']:checked").val();
         } else {
             is_virtual = $("input[name='is_virtual']:checked").val();
         }

@@ -344,6 +344,7 @@ class Goods extends Base {
     //商品保存
     public function save(){
         $data = input('post.');
+        //var_dump($data);die();
         $spec_item = input('item/a');
         $validate = Loader::validate('Goods');// 数据验证
         if (!$validate->batch()->check($data)) {
@@ -678,7 +679,11 @@ class Goods extends Base {
         // 获取商品规格图片
         if ($goods_id) {
             $specImageList = db('spec_image')->where("goods_id", $goods_id)->getField('spec_image_id,src');
+            $specvideoList = db('spec_image')->where("goods_id", $goods_id)->getField('spec_image_id,videosrc');
+            $specaudioList = db('spec_image')->where("goods_id", $goods_id)->getField('spec_image_id,audiosrc');
             $this->assign('specImageList', $specImageList);
+            $this->assign('specVideoList', $specvideoList);
+            $this->assign('specAudioList', $specaudioList);
         }
         $this->assign('items_ids', $items_ids);
         $this->assign('specList', $specList);

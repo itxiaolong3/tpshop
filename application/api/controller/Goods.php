@@ -159,6 +159,8 @@ class Goods extends Base{
         }
         //商品规格
         $filter_spec = $goodsLogic->get_spec($goods_id);
+        //处理图片
+
 //        $item_id=M('spec_goods_price')->where('key','88')->field('item_id')->find();
 //        var_dump($item_id);die;
 //        if(!empty($filter_spec)){

@@ -1,5 +1,5 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:52:"./application/admin/view/goods\ajax_spec_select.html";i:1540260088;}*/ ?>
-<table class="table table-bordered" id="goods_spec_table1">                                
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:52:"./application/admin/view/goods\ajax_spec_select.html";i:1557561511;}*/ ?>
+<table class="table table-bordered" id="goods_spec_table1" xmlns="http://www.w3.org/1999/html">
     <tr>
         <td colspan="2"><b>商品规格:</b></td>
     </tr>
@@ -24,7 +24,26 @@
                         <span class="" onclick="deleteItemImage('<?php echo $k2; ?>');">×</span>
                     <?php endif; endif; ?>
                 </span>
-            <?php endforeach; endif; else: echo "" ;endif; ?>         
+                <span data-video_id="<?php echo $k2; ?>" style="margin-left: 15px;">
+                <?php if($vo['is_upload_video'] == 1): ?>
+                    <input style="width: 51px;border-radius: 8px;padding: 6px;height: 17px;background-color: #4FC0E8;border: none;color: white;" id="item_video_<?php echo $k2; ?>"  onclick="GetUploadify4('<?php echo $k2; ?>');" value="<?php echo $specVideoList[$k2]==''?'上传视频':'已上传'; ?>" />
+                    <input type="hidden" name="item_video[<?php echo $k2; ?>]" value="<?php echo $specVideoList[$k2]; ?>" />
+                    <?php if($specVideoList[$k2]): ?>
+                        <span class="" onclick="deleteItemVideo('<?php echo $k2; ?>');">×</span>
+                    <?php endif; endif; ?>
+                </span>
+                <span data-audio_id="<?php echo $k2; ?>" style="margin-left: 15px;">
+                <?php if($vo['is_upload_audio'] == 1): ?>
+                    <input style="width: 51px;border-radius: 8px;padding: 6px;height: 17px;background-color: #4FC0E8;border: none;color: white;" id="item_audio_<?php echo $k2; ?>"  onclick="GetUploadify5('<?php echo $k2; ?>');" value="<?php echo $specAudioList[$k2]==''?'上传音频':'已上传'; ?>" />
+                    <input type="hidden" name="item_audio[<?php echo $k2; ?>]" value="<?php echo $specAudioList[$k2]; ?>" />
+                    <?php if($specAudioList[$k2]): ?>
+                        <span class="" onclick="deleteItemAudio('<?php echo $k2; ?>');">×</span>
+                    <?php endif; endif; ?>
+                </span>
+               <div id="videopath<?php echo $k2; ?>" style="padding: 6px 0px"><?php echo $specVideoList[$k2]; ?></div>
+                <div id="audiopath<?php echo $k2; ?>" style="padding: 6px 0px"><?php echo $specAudioList[$k2]; ?></div>
+            <?php endforeach; endif; else: echo "" ;endif; ?>
+
         </td>
     </tr>                                    
     <?php endforeach; endif; else: echo "" ;endif; ?>    
@@ -32,15 +51,40 @@
 <div id="goods_spec_table2"> <!--ajax 返回 规格对应的库存--> </div>
 
 <script>
+    //删除图片
     function deleteItemImage(cur_item_id) {
         var html = " <img width=\"35\" height=\"35\" src=\"/public/images/add-button.jpg\" id=\"item_img_"+cur_item_id+"\" onclick=\"GetUploadify3('"+cur_item_id+"');\"/>\n" +
             "             <input type=\"hidden\" name=\"item_img["+cur_item_id+"]\" value=\"<?php echo $specImageList["+cur_item_id+"]; ?>\" />";
         $("span[data-img_id="+cur_item_id+"]").html(html)
     }
+    //删除视频
+    function deleteItemVideo(cur_item_id) {
+        var html = "<input style=\"width: 51px;border-radius: 8px;padding: 6px;height: 17px;background-color: #4FC0E8;border: none;color: white;\" id=\"item_video_"+cur_item_id+"\"  onclick=\"GetUploadify4('"+cur_item_id+"');\" value=\"上传视频\" />" +
+            "                    <input type=\"hidden\" name=\"item_video["+cur_item_id+"]\" value=\"<?php echo $specVideoList["+cur_item_id+"]; ?>\" />";
+        $("span[data-video_id="+cur_item_id+"]").html(html)
+        $("#videopath"+cur_item_id+"").html('')
+    }
+    //删除音频
+    function deleteItemAudio(cur_item_id) {
+        var html = "<input style=\"width: 51px;border-radius: 8px;padding: 6px;height: 17px;background-color: #4FC0E8;border: none;color: white;\" id=\"item_audio_"+cur_item_id+"\"  onclick=\"GetUploadify5('"+cur_item_id+"');\" value=\"上传音频\" />" +
+            "                    <input type=\"hidden\" name=\"item_audio["+cur_item_id+"]\" value=\"<?php echo $specAudioList["+cur_item_id+"]; ?>\" />";
+        $("span[data-audio_id="+cur_item_id+"]").html(html)
+        $("#audiopath"+cur_item_id+"").html('')
+    }
     // 上传规格图片
     function GetUploadify3(k){        
         cur_item_id = k; //当前规格图片id 声明成全局 供后面回调函数调用
         GetUploadify(1,'','goods','call_back3');
+    }
+    // 上传规格视频
+    function GetUploadify4(k){
+        cur_item_id_video = k; //当前规格视频id 声明成全局 供后面回调函数调用
+        GetUploadify(1,'','goods','call_back4','Flash');
+    }
+    // 上传规格音频
+    function GetUploadify5(k){
+        cur_item_id_audio = k; //当前规格音频id 声明成全局 供后面回调函数调用
+        GetUploadify(1,'','goods','call_back5','Music');
     }
     
     
@@ -54,9 +98,27 @@
             "\n" +
             "                        <input type=\"hidden\" name=\"item_img["+cur_item_id+"]\" value=\""+fileurl_tmp+"\" />";
         $("span[data-img_id="+cur_item_id+"]").html(html)
-    }    
-    
-   // 规格按钮切换 class
+    }
+    // 上传规格视频成功回调函数
+    function call_back4(fileurl_tmp){
+        $("#item_video_"+cur_item_id_video).val(fileurl_tmp); //  修改图片的路径
+        $("input[name='item_video["+cur_item_id_video+"]']").val(fileurl_tmp); // 输入框保存一下 方便提交
+        var html = "<input id=\"item_video_"+cur_item_id_video+"\" style=\"width: 51px;border-radius: 8px;padding: 6px;height: 17px;background-color: #4FC0E8;border: none;color: white;\"  onclick=\"GetUploadify4('"+cur_item_id_video+"');\" value=\"已上传\" />" +
+            "                    <input type=\"hidden\" name=\"item_video["+cur_item_id_video+"]\" value=\""+fileurl_tmp+"\" />"+
+            "                            <span class=\"\" onclick=\"deleteItemVideo('"+cur_item_id_video+"');\"\">×</span>\n" ;
+        $("span[data-video_id="+cur_item_id_video+"]").html(html)
+        $("#videopath"+cur_item_id_video+"").html(fileurl_tmp)
+    }
+    function call_back5(fileurl_tmp){
+        $("#item_audio_"+cur_item_id_audio).val(fileurl_tmp); //  修改图片的路径
+        $("input[name='item_audio["+cur_item_id_audio+"]']").val(fileurl_tmp); // 输入框保存一下 方便提交
+        var html = "<input id=\"item_audio_"+cur_item_id_audio+"\" style=\"width: 51px;border-radius: 8px;padding: 6px;height: 17px;background-color: #4FC0E8;border: none;color: white;\" onclick=\"GetUploadify4('"+cur_item_id_audio+"');\" value=\"已上传\" />" +
+            "                    <input type=\"hidden\" name=\"item_audio["+cur_item_id_audio+"]\" value=\""+fileurl_tmp+"\" />"+
+            "                            <span class=\"\" onclick=\"deleteItemAudio('"+cur_item_id_audio+"');\"\">×</span>\n" ;
+        $("span[data-audio_id="+cur_item_id_audio+"]").html(html)
+        $("#audiopath"+cur_item_id_audio+"").html(fileurl_tmp)
+    }
+    // 规格按钮切换 class
    $("#ajax_spec_data button").click(function(){
 	   if($(this).hasClass('btn-success'))
 	   {
