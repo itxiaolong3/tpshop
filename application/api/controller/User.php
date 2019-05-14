@@ -20,6 +20,8 @@ use think\Db;
 use think\Loader;
 use think\Page;
 use plugins\Qrcode;
+use think\response\Json;
+
 //defined('URL',"12342344353545");
 define('ECODE','http://crm.miraclife.com/customer/apt/getOpenDoorCode.do', true);
 
@@ -237,6 +239,11 @@ class User extends Base{
             array('oneteamsize'=>$oneteamsizse,'twoteamsize'=>$twoteamsizse,'oneteamlist'=>$oneteam,'twoteamlist'=>$twoteam));
         echo json_encode($data);
 
+    }
+    //充值金额列表
+    public function vipmoney(){
+        $userlevel=Db::name('user_level')->where('level','>',0)->select();
+        echo json_encode(array('code'=>200,'msg'=>'金额列表','list'=>$userlevel));
     }
     /**
      * 下线订单列表（分销订单）

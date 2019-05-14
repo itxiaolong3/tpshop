@@ -28,12 +28,75 @@
             </dl>
             <dl class="row">
                 <dt class="tit">
+                    <label for="level_name"><em>*</em>用户身份</label>
+                </dt>
+                <dd class="opt">
+                    <select name="level" id="suppliers_id" class="small form-control">
+                        <option value="0" <if condition="$info.level eq 0 ">selected="selected"</if>>普通用户</option>
+                        <option value="1" <if condition="$info.level eq 1 ">selected="selected"</if>>vip会员</option>
+                        <option value="2" <if condition="$info.level eq 2 ">selected="selected"</if>>推广人</option>
+                        <option value="3" <if condition="$info.level eq 3">selected="selected"</if>>代言人</option>
+                    </select>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
                     <label for="amount">消费金额</label>
                 </dt>
                 <dd class="opt">
                     <input type="text" name="amount" value="{$info.amount}" id="amount" class="input-txt" onkeyup="this.value=/^\d+\.?\d{0,2}$/.test(this.value) ? this.value : ''">
                     <span class="err" id="err_amount"></span>
                     <p class="notic">达到该等级，会员一次性需充值金额,单位：元</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label for="amount">配卡数量</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" name="cardnum" value="{$info.cardnum}" id="cardnum" class="input-txt" onkeyup="this.value=/^\d+\.?\d{0,2}$/.test(this.value) ? this.value : ''">
+                    <span class="err" id="err_cardnum"></span>
+                    <p class="notic">该等级所配送的卡数量</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label for="amount">分享有礼一级分佣比例(%)</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" name="shareone" value="{$info.shareone}" id="shareone" class="input-txt" onkeyup="this.value=/^\d+\.?\d{0,2}$/.test(this.value) ? this.value : ''">
+                    <span class="err" id="err_shareone"></span>
+                    <p class="notic">一级分佣比例</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label for="amount">分享有礼二级分佣比例(%)</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" name="sharetwo" value="{$info.sharetwo}" id="sharetwo" class="input-txt" onkeyup="this.value=/^\d+\.?\d{0,2}$/.test(this.value) ? this.value : ''">
+                    <span class="err" id="err_sharetwo"></span>
+                    <p class="notic">二级分佣比例</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label for="amount">零售有礼一级分佣比例(%)</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" name="goodone" value="{$info.goodone}" id="goodone" class="input-txt" onkeyup="this.value=/^\d+\.?\d{0,2}$/.test(this.value) ? this.value : ''">
+                    <span class="err" id="err_goodone"></span>
+                    <p class="notic">一级分佣比例</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label for="amount">零售有礼二级分佣比例(%)</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" name="goodtwo" value="{$info.goodtwo}" id="goodtwo" class="input-txt" onkeyup="this.value=/^\d+\.?\d{0,2}$/.test(this.value) ? this.value : ''">
+                    <span class="err" id="err_goodtwo"></span>
+                    <p class="notic">二级分佣比例</p>
                 </dd>
             </dl>
             <!--<dl class="row">-->

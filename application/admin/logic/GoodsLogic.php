@@ -557,18 +557,23 @@ class GoodsLogic extends Model
                     M('SpecImage')->insert(array('goods_id'=>$goods_id ,'spec_image_id'=>$key,'src'=>$val));
                 //}
             }
-            foreach (I('item_video/a') as $key => $val)
-            {
-                if($val != '') {
-                    M('SpecImage')->where(array('goods_id' => $goods_id, 'spec_image_id' => $key))->save(array('goods_id' => $goods_id, 'spec_image_id' => $key, 'videosrc' => $val));
+            if (I('item_video/a')){
+                foreach (I('item_video/a') as $key => $val)
+                {
+                    if($val != '') {
+                        M('SpecImage')->where(array('goods_id' => $goods_id, 'spec_image_id' => $key))->save(array('goods_id' => $goods_id, 'spec_image_id' => $key, 'videosrc' => $val));
+                    }
                 }
             }
-            foreach (I('item_audio/a') as $key => $val)
-            {
-                if($val != '') {
-                    M('SpecImage')->where(array('goods_id' => $goods_id, 'spec_image_id' => $key))->save(array('goods_id'=>$goods_id ,'spec_image_id'=>$key,'audiosrc'=>$val));
+            if (I('item_audio/a')){
+                foreach (I('item_audio/a') as $key => $val)
+                {
+                    if($val != '') {
+                        M('SpecImage')->where(array('goods_id' => $goods_id, 'spec_image_id' => $key))->save(array('goods_id'=>$goods_id ,'spec_image_id'=>$key,'audiosrc'=>$val));
+                    }
                 }
             }
+
         }else{
             M('SpecImage')->where("goods_id = $goods_id")->delete();
         }

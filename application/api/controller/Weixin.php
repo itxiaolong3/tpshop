@@ -106,7 +106,8 @@ class Weixin extends Controller{
 //                if ((string)($order_amount * 100) != (string)$attr['total_fee']) {
 //                    return false; //验证失败
 //                }
-                update_pay_status($order_sn, array('transaction_id' => $attr["transaction_id"])); // 修改订单支付状态
+                //update_pay_status($order_sn, array('transaction_id' => $attr["transaction_id"])); // 修改订单支付状态
+                update_pay_status_my($order_sn, array('transaction_id' => $attr["transaction_id"]),$attr["total_fee"]/100);
             }
             $return_xml='<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>';
             return $return_xml;

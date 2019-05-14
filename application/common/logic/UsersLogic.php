@@ -1599,7 +1599,7 @@ class UsersLogic extends Model
                 $va=$getcidone.','.$uid;
                 $savacidonere=Db::name("users")->where(array('user_id'=>$pid))->setField("cidone",$va);
             }
-
+            $this->findpidtoadd($uid,$pid);
             //绑定上级中的二级团队
             $ppid=Db::name('users')->where('user_id',$pid)->value('first_leader');
             $getcidtwo=Db::name('users')->where('user_id',$ppid)->value('cidtwo');
@@ -1619,7 +1619,24 @@ class UsersLogic extends Model
 
         }
     }
+    //不断向上添加用户id
+    public function findpidtoadd($uid,$pid){
 
+        if ($pid){
+            $getcidall=Db::name('users')->where('user_id',$pid)->value('cidall');
+            if (empty($getcidall)){
+                Db::name("users")->where(array('user_id'=>$pid))->setField("cidall",$uid);
+            }else{
+                $va=$getcidall.','.$uid;
+                Db::name("users")->where(array('user_id'=>$pid))->setField("cidall",$va);
+            }
+            $ppid=Db::name('users')->where('user_id',$pid)->value('first_leader');
+            //if ($ppid){
+                $this->findpidtoadd($uid,$ppid);
+           // }
+
+        }
+    }
     /**
      * gd流合成用户专属推广海报
      */

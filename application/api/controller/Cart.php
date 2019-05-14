@@ -56,7 +56,8 @@ class Cart extends Base
     {
         $goods_id = I("goods_id/d"); // 商品id
         $goods_num = intval(I("goods_num/d"));// 商品数量
-        $item_id = I("item_id/d"); // 商品规格id spec_goods_price 表id、  385
+        $item_id_key = I("item_id/d"); // 商品规格id spec_goods_price 表id、  385,传来的又key
+        $item_id=M('spec_goods_price')->where(["key"=>$item_id_key])->field(['item_id'])->find();
        // echo $item_id."+".$goods_num."+".$goods_id;die;
         if(empty($goods_id)){
             return returnBad('请选择要购买的商品',303);
@@ -263,6 +264,15 @@ class Cart extends Base
             $error = $cart_validate->getError();
             return returnBad($error,304);
         }
+        $ordertype=input("ordertype/d",0);
+        $levelid=input("level_id/d",0);
+        if (empty($ordertype)){
+            return returnBad("请传订单类型");
+        }else if ($ordertype==3){
+            if (empty($levelid)){
+                return returnBad("请传等级id");
+            }
+        }
         $address = Db::name('user_address')->where("address_id", $address_id)->find();
         if(empty($address)){
             return returnBad("没有获取到地址详细信息，请去个人中心去设置");
@@ -326,9 +336,18 @@ class Cart extends Base
             //$cartLogic->clearById($cart_ids);//清理购物车
             $order = $placeOrder->getOrder();//获取订单号
             if($order['order_amount'] >0 ){
+                //更新订单类型
+                M('order')->where("order_sn", $order['order_sn'])->save(array('order_type'=>$ordertype));
+                if ($ordertype==3){
+                    //保存会员等级id
+                    M('order')->where("order_sn", $order['order_sn'])->save(array('levelid'=>$levelid));
+                    $getvipmoney=M('user_level')->where('level_id',$levelid)->field('amount')->find();
+                    $order['order_amount']=$getvipmoney['amount'];
+                }
                 switch ($pay_type){
                     case 1 :
-                        $order['order_amount'] = 1 / 100;
+                        //$order['order_amount'] = 1 / 100;
+                        //如果是会员充值订单，则赠送的商品的价格就为0，前端需要传的参数需要另加 level
                         //订单支付
                         $pay = new PayLogic($this->user['openid'],$order['order_sn'],$order['order_amount']*100);
                         $parameters=$pay->weixinapp();

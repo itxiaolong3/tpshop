@@ -1000,6 +1000,122 @@ function update_pay_status($order_sn,$ext=array())
 
 }
 
+//支付完成修改订单状态和添加分销记录--小龙
+function update_pay_status_my($order_sn,$ext=array(),$paymoeny)
+{
+    $time=time();
+    // 如果这笔订单已经处理过了
+    $count = M('order')->master()->where("order_sn = :order_sn and pay_status = 2")->bind(['order_sn'=>$order_sn])->count();   // 看看有没已经处理过这笔订单  支付宝返回不重复处理操作
+    if($count > 0){
+        return false;
+    }
+    // 找出对应的订单
+    $Order = new \app\common\model\Order();
+    $order = $Order->master()->where("order_sn",$order_sn)->find();
+
+    // 修改支付状态  已支付
+    $update = array('pay_status'=>1,'pay_time'=>$time);
+    if(isset($ext['transaction_id'])) $update['transaction_id'] = $ext['transaction_id']; //第三方平台支付流水号
+    M('order')->where("order_sn", $order_sn)->save($update);
+    //更新个人销售额，即消费金额
+    M('users')->where(['user_id'=>$order['user_id']])->setInc('total_amount', $paymoeny);
+    // 减少对应商品的库存.注：拼团类型为抽奖团的，先不减库存
+    if(tpCache('shopping.reduce') == 2) {
+        if ($order['prom_type'] == 6) { //prom_type 订单类型：0普通订单4预售订单5虚拟订单6拼团订单
+            $team = \app\common\model\TeamActivity::get($order['prom_id']);
+            if ($team['team_type'] != 2) {
+                minus_stock($order);
+            }
+        } else {
+            minus_stock($order); //减少库存
+        }
+    }
+
+    $User =new \app\common\logic\User();
+    $User->setUserById($order['user_id']);
+    // 记录订单操作日志
+    $commonOrder = new \app\common\logic\Order();
+    $commonOrder->setOrderById($order['order_id']);
+
+    if(array_key_exists('admin_id',$ext)){
+        $commonOrder->orderActionLog($ext['note'],'付款成功',$ext['admin_id']);
+    }else{
+
+        $commonOrder->orderActionLog('订单付款成功','付款成功');
+    }
+    //分销逻辑开始（分享有礼，零售有礼，服务佣金，挑战佣金，辅导佣金）
+    $useinfo= M('users')->where(['user_id'=>$order['user_id']])->field(['first_leader,mylevel,cardnum,dlevel,isserver,nickname,cardmoney'])->find();
+    //1，分享有礼，分两级，会员充值走该条规则
+    if ($order['order_type']==3){
+        //更新用户身份
+        $getlevel=M('user_level')->where(['level_id'=>$order['levelid']])->field(['level','shareone','sharetwo','goodone','goodtwo'])->find();
+        M('users')->where(['user_id'=>$order['user_id']])->save(array('mylevel'=>$getlevel['level']));
+        //保存分佣最多金额数。充值金额*6
+        M('users')->where(['user_id'=>$order['user_id']])->setInc('cardmoney', $paymoeny*6);
+        if ($useinfo['first_leader']){
+            $onepidlevel=Db::name('users')->where('user_id',$useinfo['first_leader'])->value('mylevel');
+            //查询分佣对象的等级对的分佣数据
+            $levelinfo=M('user_level')->where('level',$onepidlevel)->field(['level','shareone','sharetwo','goodone','goodtwo'])->find();
+            $onedata['rtype']=1;
+            $onedata['rstate']=0;
+            $onedata['ruid']=$useinfo['first_leader'];
+            $onedata['rbuyername']=$useinfo['nickname'];
+            $onedata['rordernumber']=$order_sn;
+            $onedata['raddtime']=date('Y-m-d H:i:s',time());
+            $onedata['rmoney']=$paymoeny*($levelinfo['shareone']/100);
+            $onedata['rcomment']="分享有礼一级分佣";
+            //正式分佣，先判断是否符合分佣条件。最高分佣金额
+            $cardmoneyone=Db::name('users')->where('user_id',$useinfo['first_leader'])->value('cardmoney');
+            if ($cardmoneyone>0){
+                $oneaddre=M('record')->add($onedata);
+            }else{
+                $oneaddre=0;
+            }
+            if ($oneaddre){
+                //分佣成功，减少分佣最高金额数目
+                M('users')->where(['user_id'=>$useinfo['first_leader']])->setDec('cardmoney', $paymoeny*($levelinfo['shareone']/100));
+            }
+            //二级分销
+            $userinfotwo= M('users')->where(['user_id'=>$useinfo['first_leader']])->field(['first_leader,second_leader,third_leader,nickname,level'])->find();
+            if ($userinfotwo['first_leader']){
+                //二级分销
+                $twopidlevel=Db::name('users')->where('user_id',$userinfotwo['first_leader'])->value('mylevel');
+                //查询分佣对象的等级对的分佣数据
+                $levelinfotwo=M('user_level')->where('level',$twopidlevel)->field(['level','shareone','sharetwo','goodone','goodtwo'])->find();
+                $twodata['rtype']=1;
+                $twodata['rstate']=0;
+                $twodata['ruid']=$userinfotwo['first_leader'];
+                $twodata['rbuyername']=$useinfo['nickname'];
+                $twodata['rordernumber']=$order_sn;
+                $twodata['raddtime']=date('Y-m-d H:i:s',time());
+                $twodata['rmoney']=$paymoeny*($levelinfotwo['sharetwo']/100);
+                $twodata['rcomment']="分享有礼二级分佣";
+                if ($twopidlevel>1){
+                    //推广人以上才有二级分佣
+                    $cardmoneytwo=Db::name('users')->where('user_id',$userinfotwo['first_leader'])->value('cardmoney');
+                    if ($cardmoneytwo>0){
+                        $twoaddre=M('record')->add($twodata);
+                    }else{
+                        $twoaddre=0;
+                    }
+                    if ($twoaddre){
+                        //分佣成功，减少分佣最高金额数目
+                        M('users')->where(['user_id'=>$userinfotwo['first_leader']])->setDec('cardmoney', $twodata['rmoney']);
+                    }
+                }
+            }
+
+        }
+    }
+
+
+    //2,零售有礼
+    //3,服务佣金
+    //4,挑战佣金
+    //5,辅导佣金
+
+}
+
 /**
  * 订单确认收货
  * @param $id 订单id

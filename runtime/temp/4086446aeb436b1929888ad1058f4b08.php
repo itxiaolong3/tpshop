@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:40:"./application/admin/view/goods\type.html";i:1557537643;s:51:"E:\tpshop\application\admin\view\public\layout.html";i:1540260088;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:40:"./application/admin/view/goods\type.html";i:1557726251;s:51:"E:\tpshop\application\admin\view\public\layout.html";i:1540260088;}*/ ?>
 <!doctype html>
 <html>
 <head>
@@ -463,8 +463,8 @@
         var spec_item_div = '<tr data-index='+spec_length+'> <td> <div style="width: 100px;"><input type="text" class="w80" name="spec['+spec_length+'][name]" value=""></div> </td> ' +
                 '<td> <div style="text-align: center; width: 60px;">' +
                 '<input type="text" name="spec['+spec_length+'][order]" value="" class="w40" onKeyUp="this.value=this.value.replace(/[^\\d.]/g,\'\')"></div> </td> ' +
-                '<td> <div style="text-align: center; width: 100px;"> <input type="hidden" name="spec['+spec_length+'][is_upload_image]" value="">' +
-                '<span class="is_upload_image no"><i class="fa fa-ban"></i>否</span></div> </td> ' +
+                '<td> <div style="text-align: center; width: 100px;"> <input type="hidden" name="spec['+spec_length+'][is_upload_image]" value="1">' +
+                '<span class="is_upload_image yes"><i class="fa fa-ban"></i>是</span></div> </td> ' +
                 '<td>' +
             '<td> <div style="text-align: center; width: 100px;"> <input type="hidden" name="spec['+spec_length+'][is_upload_video]" value="">' +
             '<span class="is_upload_video no"><i class="fa fa-ban"></i>否</span></div> </td> ' +
@@ -644,6 +644,7 @@
     });
     //是否上传规格图
     $(document).on('click', '.is_upload_image', function () {
+        return '';
         if($(this).hasClass('no')){
             $('.is_upload_image').each(function(i,o){
                 $(o).removeClass('yes').addClass('no').html("<i class='fa fa-ban'></i>否");
