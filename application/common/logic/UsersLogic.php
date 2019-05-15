@@ -1591,14 +1591,21 @@ class UsersLogic extends Model
             $bangpid=Db::name("users")->where(array('user_id'=>$uid))->setField("first_leader",$pid);
             //绑定上级中的一级团队
             $getcidone=Db::name('users')->where('user_id',$pid)->value('cidone');
-
             if (empty($getcidone)){
                 $savacidonere=Db::name("users")->where(array('user_id'=>$pid))->setField("cidone",$uid);
-
             }else{
                 $va=$getcidone.','.$uid;
                 $savacidonere=Db::name("users")->where(array('user_id'=>$pid))->setField("cidone",$va);
             }
+            //绑定上级id关系
+            $getpidall=Db::name('users')->where('user_id',$pid)->value('pidall');
+            if (empty($getpidall)){
+                Db::name("users")->where(array('user_id'=>$uid))->setField("pidall",$pid);
+            }else{
+                $va=$getpidall.'-'.$pid;
+                $savacidonere=Db::name("users")->where(array('user_id'=>$uid))->setField("pidall",$va);
+            }
+            //不断给上级添加所属下级id
             $this->findpidtoadd($uid,$pid);
             //绑定上级中的二级团队
             $ppid=Db::name('users')->where('user_id',$pid)->value('first_leader');
@@ -1619,7 +1626,7 @@ class UsersLogic extends Model
 
         }
     }
-    //不断向上添加用户id
+    //不断向上添加下级用户id
     public function findpidtoadd($uid,$pid){
 
         if ($pid){

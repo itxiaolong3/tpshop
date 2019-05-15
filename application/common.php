@@ -1053,6 +1053,8 @@ function update_pay_status_my($order_sn,$ext=array(),$paymoeny)
         //保存分佣最多金额数。充值金额*6
         M('users')->where(['user_id'=>$order['user_id']])->setInc('cardmoney', $paymoeny*6);
         if ($useinfo['first_leader']){
+            //添加推荐人数量
+            M('users')->where(['user_id'=>$useinfo['first_leader']])->setInc('tjnum',1);
             $onepidlevel=Db::name('users')->where('user_id',$useinfo['first_leader'])->value('mylevel');
             //查询分佣对象的等级对的分佣数据
             $levelinfo=M('user_level')->where('level',$onepidlevel)->field(['level','shareone','sharetwo','goodone','goodtwo'])->find();
@@ -1062,19 +1064,22 @@ function update_pay_status_my($order_sn,$ext=array(),$paymoeny)
             $onedata['rbuyername']=$useinfo['nickname'];
             $onedata['rordernumber']=$order_sn;
             $onedata['raddtime']=date('Y-m-d H:i:s',time());
-            $onedata['rmoney']=$paymoeny*($levelinfo['shareone']/100);
             $onedata['rcomment']="分享有礼一级分佣";
-            //正式分佣，先判断是否符合分佣条件。最高分佣金额
-            $cardmoneyone=Db::name('users')->where('user_id',$useinfo['first_leader'])->value('cardmoney');
-            if ($cardmoneyone>0){
-                $oneaddre=M('record')->add($onedata);
-            }else{
-                $oneaddre=0;
+            if ($onepidlevel>0){//普通用户不能分佣
+                $onedata['rmoney']=$paymoeny*($levelinfo['shareone']/100);
+                //正式分佣，先判断是否符合分佣条件。最高分佣金额
+                $cardmoneyone=Db::name('users')->where('user_id',$useinfo['first_leader'])->value('cardmoney');
+                if ($cardmoneyone>0){
+                    $oneaddre=M('record')->add($onedata);
+                }else{
+                    $oneaddre=0;
+                }
+                if ($oneaddre){
+                    //分佣成功，减少分佣最高金额数目
+                    M('users')->where(['user_id'=>$useinfo['first_leader']])->setDec('cardmoney', $paymoeny*($levelinfo['shareone']/100));
+                }
             }
-            if ($oneaddre){
-                //分佣成功，减少分佣最高金额数目
-                M('users')->where(['user_id'=>$useinfo['first_leader']])->setDec('cardmoney', $paymoeny*($levelinfo['shareone']/100));
-            }
+
             //二级分销
             $userinfotwo= M('users')->where(['user_id'=>$useinfo['first_leader']])->field(['first_leader,second_leader,third_leader,nickname,level'])->find();
             if ($userinfotwo['first_leader']){
@@ -1106,10 +1111,68 @@ function update_pay_status_my($order_sn,$ext=array(),$paymoeny)
             }
 
         }
+    }else{
+        //2,零售有礼
+        //实物，虚物走零售有礼规则
+        if ($useinfo['first_leader']){
+            $onepidlevel=Db::name('users')->where('user_id',$useinfo['first_leader'])->value('mylevel');
+            //查询分佣对象的等级对的分佣数据
+            $levelinfo=M('user_level')->where('level',$onepidlevel)->field(['level','shareone','sharetwo','goodone','goodtwo'])->find();
+            $onedata['rtype']=2;
+            $onedata['rstate']=0;
+            $onedata['ruid']=$useinfo['first_leader'];
+            $onedata['rbuyername']=$useinfo['nickname'];
+            $onedata['rordernumber']=$order_sn;
+            $onedata['raddtime']=date('Y-m-d H:i:s',time());
+            $onedata['rcomment']="零售有礼一级分佣";
+            if ($onepidlevel>0){//普通用户不能分佣
+                $onedata['rmoney']=$paymoeny*($levelinfo['goodone']/100);
+                //正式分佣，先判断是否符合分佣条件。最高分佣金额
+                $cardmoneyone=Db::name('users')->where('user_id',$useinfo['first_leader'])->value('cardmoney');
+                if ($cardmoneyone>0){
+                    $oneaddre=M('record')->add($onedata);
+                }else{
+                    $oneaddre=0;
+                }
+                if ($oneaddre){
+                    //分佣成功，减少分佣最高金额数目
+                    M('users')->where(['user_id'=>$useinfo['first_leader']])->setDec('cardmoney', $onedata['rmoney']);
+                }
+            }
+
+            //二级分销
+            $userinfotwo= M('users')->where(['user_id'=>$useinfo['first_leader']])->field(['first_leader,second_leader,third_leader,nickname,level'])->find();
+            if ($userinfotwo['first_leader']){
+                //二级分销
+                $twopidlevel=Db::name('users')->where('user_id',$userinfotwo['first_leader'])->value('mylevel');
+                //查询分佣对象的等级对的分佣数据
+                $levelinfotwo=M('user_level')->where('level',$twopidlevel)->field(['level','shareone','sharetwo','goodone','goodtwo'])->find();
+                $twodata['rtype']=2;
+                $twodata['rstate']=0;
+                $twodata['ruid']=$userinfotwo['first_leader'];
+                $twodata['rbuyername']=$useinfo['nickname'];
+                $twodata['rordernumber']=$order_sn;
+                $twodata['raddtime']=date('Y-m-d H:i:s',time());
+                $twodata['rmoney']=$paymoeny*($levelinfotwo['goodtwo']/100);
+                $twodata['rcomment']="零售有礼二级分佣";
+                if ($twopidlevel>1){
+                    //推广人以上才有二级分佣
+                    $cardmoneytwo=Db::name('users')->where('user_id',$userinfotwo['first_leader'])->value('cardmoney');
+                    if ($cardmoneytwo>0){
+                        $twoaddre=M('record')->add($twodata);
+                    }else{
+                        $twoaddre=0;
+                    }
+                    if ($twoaddre){
+                        //分佣成功，减少分佣最高金额数目
+                        M('users')->where(['user_id'=>$userinfotwo['first_leader']])->setDec('cardmoney', $twodata['rmoney']);
+                    }
+                }
+            }
+
+        }
     }
 
-
-    //2,零售有礼
     //3,服务佣金
     //4,挑战佣金
     //5,辅导佣金
