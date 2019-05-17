@@ -1562,5 +1562,35 @@ class User extends Base{
         session('code',$code);
         return returnOk(["msg"=>"请求成功"]);
     }
+    public function test(){
+        $arrcidone=explode(',','4,5,6');
+        if ($arrcidone){
+            $childarr=array();
+            foreach ($arrcidone as $k=>$v){
+                $getchildcid=Db::name('users')->where('user_id',$v)->value('cidall');
+                if ($getchildcid){
+                    array_push($childarr,$getchildcid);
+                }
+            }
+            $totallistarr=[];
+            foreach ($childarr as $k=>$v){
+                $totallistarr[]=explode(',',$v);
+            }
+            //dump($totallistarr);die();
+            $totalarr=[];
+            foreach ($totallistarr as $k=>$v){
+                $onearr=[];
+                foreach ($v as $kk=>$vv){
+                    $total_amount=Db::name('users')->where('user_id',$vv)->value('total_amount');
+                    if ($total_amount){
+                        array_push($onearr,$total_amount);
+                    }
+                }
+                array_push($totalarr,array_sum($onearr));
+            }
+
+            return array_sum($totalarr)-max($totalarr);
+        }
+    }
 }
     

