@@ -1,4 +1,0 @@
-<?php
-//000000000001
- exit();?>
-[{"level_id":8,"level_name":"vip","amount":"200.00","discount":0,"describe":"\u4f1a\u5458\u5361\u4e00\u5f20","fixed_amount":null,"deposit":null,"level":1},{"level_id":9,"level_name":"\u63a8\u5e7f\u4eba","amount":"1000.00","discount":0,"describe":"\u53ef\u5f9715\u5f20\u5361","fixed_amount":null,"deposit":null,"level":2},{"level_id":10,"level_name":"\u4ee3\u8a00\u4eba","amount":"5000.00","discount":0,"describe":"\u53ef\u5f97100\u5f20\uff0c200\/\u5f20","fixed_amount":null,"deposit":null,"level":3},{"level_id":11,"level_name":"\u666e\u901a\u7528\u6237","amount":"0.00","discount":0,"describe":"\u666e\u901a\u7528\u6237","fixed_amount":null,"deposit":null,"level":0}]

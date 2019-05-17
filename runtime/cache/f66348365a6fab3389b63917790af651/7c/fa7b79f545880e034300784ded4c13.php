@@ -1,0 +1,4 @@
+<?php
+//000000000000
+ exit();?>
+[{"id":30,"name":"\u6f14\u8bb2","mobile_name":"\u6f14\u8bb2","parent_id":0,"parent_id_path":"0_30","level":1,"sort_order":1,"is_show":1,"image":"","is_hot":0,"cat_group":0,"commission_rate":0},{"id":31,"name":"\u53e3\u624d","mobile_name":"\u53e3\u624d","parent_id":0,"parent_id_path":"0_31","level":1,"sort_order":2,"is_show":1,"image":"","is_hot":0,"cat_group":0,"commission_rate":0},{"id":32,"name":"\u7ecf\u6d4e\u5b66","mobile_name":"\u7ecf\u6d4e\u5b66","parent_id":0,"parent_id_path":"0_32","level":1,"sort_order":3,"is_show":1,"image":"","is_hot":0,"cat_group":0,"commission_rate":0}]

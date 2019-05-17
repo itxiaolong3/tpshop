@@ -84,8 +84,8 @@ return	array(
 //					array('name' => '添加订单', 'act'=>'add_order', 'op'=>'Order'),
 					array('name' => '订单日志','act'=>'order_log','op'=>'Order'),
 //					array('name' => '发票管理','act'=>'index', 'op'=>'Invoice'),
-//			        array('name' => '拼团列表','act'=>'team_list','op'=>'Team'),
-//			        array('name' => '拼团订单','act'=>'order_list','op'=>'Team'),
+			        array('name' => '拼团列表','act'=>'team_list','op'=>'Team'),
+			        array('name' => '拼团订单','act'=>'order_list','op'=>'Team'),
 //			        array('name' => '上门自提','act'=>'index','op'=>'ShopOrder'),
 			)),
 
@@ -118,7 +118,7 @@ return	array(
 					//array('name' => '优惠促销', 'act'=>'prom_goods_list', 'op'=>'Promotion'),
 					array('name' => '优惠促销', 'act'=>'prom_order_list', 'op'=>'Promotion'),
 //					array('name' => '预售管理','act'=>'index', 'op'=>'PreSell'),
-//					array('name' => '拼团管理','act'=>'index', 'op'=>'Team'),
+					array('name' => '拼团管理','act'=>'index', 'op'=>'Team'),
 //					array('name' => '搭配购管理','act'=>'index', 'op'=>'Combination'),
 			)),
 			array('name' => '优惠积分','child' => array(

@@ -25,7 +25,7 @@
 		<div class="mDiv">
 			<div class="ftitle">
 				<h3>拼团活动列表</h3>
-				<h5>(共{$page->totalRows}条记录)</h5>
+				<h5>(共{$pager->totalRows}条记录)</h5>
                 <!--<div class="fbutton" style="margin-left: 30px;">-->
                     <!--<a href="http://help.tp-shop.cn/Index/Help/info/cat_id/5/id/496.html" target="_blank">-->
                         <!--<div class="" title="帮助">-->
@@ -104,13 +104,11 @@
 								<div style="text-align: left; width: 50px;">{$team.team_id}</div>
 							</td>
 							<td align="left" class="">
-								<div style="text-align: left; width: 100px;"><a href="{:U('Mobile/Team/info',['team_id'=>$team.team_id, 'item_id'=>$team['team_goods_item'][0]['item_id']])}" target="_blank" >{$team.act_name|getSubstr=0,20}</a></div>
+								<div style="text-align: left; width: 100px;">{$team.act_name|getSubstr=0,20}</div>
 							</td>
 							<td align="left" class="">
 								<div style="text-align: center; width: 240px;">
-									<a href="{:U('Mobile/Goods/goodsInfo',['id'=>$team.goods_id, 'item_id'=>$team['team_goods_item'][0]['item_id']])}" target="_blank">
 										{$team.goods_name|getSubstr=0,20}
-									</a>
 								</div>
 							</td>
 							<td align="left" class="">
@@ -158,7 +156,7 @@
 			<div class="iDiv" style="display: none;"></div>
 		</div>
 		<!--分页位置-->
-		{$page->show()} </div>
+		{$page} </div>
 </div>
 <script>
 	$(document).ready(function(){

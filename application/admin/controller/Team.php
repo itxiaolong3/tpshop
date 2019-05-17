@@ -22,6 +22,7 @@ use app\common\model\TeamActivity;
 use app\common\model\TeamFollow;
 use app\common\model\TeamFound;
 use app\common\logic\MessageFactory;
+use think\AjaxPage;
 use think\Loader;
 use think\Db;
 use think\Page;
@@ -30,8 +31,25 @@ class Team extends Base
 {
 	public function index()
 	{
-	header("Content-type: text/html; charset=utf-8");
-exit("请联系客服查看是否支持此功能");
+        $team_activityModel=Db::name('team_activity');
+        $count=$team_activityModel->count();
+        $Page = new AjaxPage($count, 10);
+        $List = $team_activityModel->limit($Page->firstRow . ',' . $Page->listRows)->select();
+        $show = $Page->show();
+        foreach ($List as $k=>$v){
+            if ($v['team_type']==0){
+                $List[$k]['team_type_desc']='分享团';
+            }else if($v['team_type']==1){
+                $List[$k]['team_type_desc']='佣金团';
+            }else if ($v['team_type']==2){
+                $List[$k]['team_type_desc']='抽奖团';
+            }
+            $List[$k]['team_type']=$v['team_type'];
+        }
+        $this->assign('list', $List);
+        $this->assign('page', $show);// 赋值分页输出
+        $this->assign('pager', $Page);
+        return $this->fetch();
 	}
 
 	/**
@@ -40,8 +58,14 @@ exit("请联系客服查看是否支持此功能");
 	 */
 	public function info()
 	{
-	header("Content-type: text/html; charset=utf-8");
-exit("请联系客服查看是否支持此功能");
+	    $getid=I('GET.team_id',0);
+        $info = array();
+        if($getid){
+            $info = M('team_activity')->where('team_id='.$getid)->find();
+            $this->assign('teamActivity',$info);
+        }
+
+        return $this->fetch();
 	}
 
 	/**
@@ -49,8 +73,32 @@ exit("请联系客服查看是否支持此功能");
 	 * @throws \think\Exception
 	 */
 	public function save(){
-	header("Content-type: text/html; charset=utf-8");
-exit("请联系客服查看是否支持此功能");
+        $data = I('post.');
+        $team_activityValidate = Loader::validate('team');
+        if (empty($data['team_id'])) {
+            if (!$team_activityValidate->batch()->check($data)) {
+                $return = ['status' => 0, 'msg' => '添加失败', 'result' => $team_activityValidate->getError()];
+            } else {
+                $r = D('team_activity')->add($data);
+                if ($r !== false) {
+                    $return = ['status' => 1, 'msg' => '添加成功', 'result' => $team_activityValidate->getError()];
+                } else {
+                    $return = ['status' => 0, 'msg' => '添加失败，数据库未响应', 'result' => ''];
+                }
+            }
+        }else{
+            if (!$team_activityValidate->scene('edit')->batch()->check($data)) {
+                $return = ['status' => 0, 'msg' => '编辑失败', 'result' => $team_activityValidate->getError()];
+            } else {
+                $r = D('team_activity')->where('team_id=' . $data['team_id'])->save($data);
+                if ($r !== false) {
+                    $return = ['status' => 1, 'msg' => '编辑成功', 'result' => $team_activityValidate->getError()];
+                } else {
+                    $return = ['status' => 0, 'msg' => '编辑失败，数据库未响应', 'result' => ''];
+                }
+            }
+        }
+        $this->ajaxReturn($return);
 	}
 
 	/**
