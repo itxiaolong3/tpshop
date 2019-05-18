@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:40:"./application/admin/view/team\index.html";i:1558086222;s:51:"E:\tpshop\application\admin\view\public\layout.html";i:1540260088;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:40:"./application/admin/view/team\index.html";i:1558143453;s:51:"E:\tpshop\application\admin\view\public\layout.html";i:1540260088;}*/ ?>
 <!doctype html>
 <html>
 <head>
@@ -351,7 +351,7 @@
 	});
 
 	function delfun(obj) {
-		layer.confirm('确认删除？', {
+		layer.confirm('确认删除？有关拼团将会失效', {
 					btn: ['确定', '取消'] //按钮
 				}, function () {
 					$.ajax({

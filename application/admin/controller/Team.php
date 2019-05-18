@@ -34,7 +34,7 @@ class Team extends Base
         $team_activityModel=Db::name('team_activity');
         $count=$team_activityModel->count();
         $Page = new AjaxPage($count, 10);
-        $List = $team_activityModel->limit($Page->firstRow . ',' . $Page->listRows)->select();
+        $List = $team_activityModel->where('deleted',0)->limit($Page->firstRow . ',' . $Page->listRows)->select();
         $show = $Page->show();
         foreach ($List as $k=>$v){
             if ($v['team_type']==0){
@@ -105,8 +105,18 @@ class Team extends Base
 	 * 删除拼团
 	 */
 	public function delete(){
-	header("Content-type: text/html; charset=utf-8");
-exit("请联系客服查看是否支持此功能");
+        $getid=I('GET.team_id',0);
+        if (empty($getid)){
+            $return = ['status' => 0, 'msg' => '请选择删除记录', 'result' => ''];
+        }else{
+            $delre=D('team_activity')->where('team_id',$getid)->save(array('deleted'=>1));
+            if ($delre){
+                $return = ['status' => 1, 'msg' => '删除成功', 'result' => ''];
+            }else{
+                $return = ['status' => 0, 'msg' => '删除失败', 'result' => ''];
+            }
+        }
+        $this->ajaxReturn($return);
 	}
 
 	/**

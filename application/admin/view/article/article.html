@@ -20,7 +20,8 @@ html, body {overflow: visible;}
       </div>
     </div>
   </div>
-  <form class="form-horizontal" action="{:U('Article/aticleHandle')}" id="add_post" method="post">    
+  <form class="form-horizontal" action="{:U('Article/aticleHandle')}" id="add_post" method="post">
+      <input type="hidden" id="goods_id" name="gid" value="{$info.gid}" autocomplete="off">
     <div class="ncap-form-default">
       <dl class="row">
         <dt class="tit">
@@ -100,6 +101,23 @@ html, body {overflow: visible;}
           <p class="notic"></p>
         </dd>
       </dl>
+        <div class="row">
+            <dt class="tit">推文绑定的商品</dt>
+            <dd class="opt">
+                <a onclick="selectGoods()">
+                    <div class="fbutton">
+                        <div title="添加商品" class="add">
+                            <span><i class="fa fa-plus"></i>添加商品</span>
+                        </div>
+                    </div>
+                </a>
+            </dd>
+        </div>
+        <div class="row">
+            <dd style="margin-left: 15%;">
+                <input type="text" id="goods_name" name="gname" readonly="readonly" value="{$info.gname}" class="input-txt" autocomplete="off">
+            </dd>
+        </div>
       <dl class="row">
         <dt class="tit">
           <label><em>*</em>文章内容</label>
@@ -186,8 +204,24 @@ html, body {overflow: visible;}
             }
         });
     }
-
-
+    function selectGoods(){
+        var url = "{:U('Promotion/search_goods',array('tpl'=>'select_goods_item','prom_type'=>6,'prom_id'=>$teamActivity.team_id))}";
+        layer.open({
+            type: 2,
+            title: '选择商品',
+            shadeClose: true,
+            shade: 0.2,
+            area: ['75%', '75%'],
+            content: url,
+        });
+    }
+    //选择商品的回调
+    function call_back(goodsItem){
+        var html = '';
+        $('#goods_id').val(goodsItem.goods_id);
+        $('#goods_name').val(goodsItem.goods_name);
+        layer.closeAll('iframe');
+    }
     function img_call_back(fileurl_tmp)
     {
         $("#thumb").val(fileurl_tmp);
