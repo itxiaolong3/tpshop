@@ -28,7 +28,7 @@
         <div class="mDiv">
             <div class="ftitle">
                 <h3>拼团拼单列表</h3>
-                <h5>(共{$page->totalRows}条记录)</h5>
+                <h5>(共{$pager->totalRows}条记录)</h5>
             </div>
             <div title="刷新数据" class="pReload"><i class="fa fa-refresh"></i></div>
             <form class="navbar-form form-inline" method="get" action="{:U('Team/team_list')}" target="_self">
@@ -51,9 +51,9 @@
                             <option value="3" <if condition='$Request.param.status eq 3'>selected="selected"</if>>未成团</option>
                         </select>
                     </div>
-                    <div class="sDiv2">
-                        <input type="text" size="30" name="order_sn" class="qsbox" value="{$Request.param.order_sn}" placeholder="拼主订单编号">
-                    </div>
+                    <!--<div class="sDiv2">-->
+                        <!--<input type="text" size="30" name="order_sn" class="qsbox" value="{$Request.param.order_sn}" placeholder="拼主订单编号">-->
+                    <!--</div>-->
                     <div class="sDiv2">
                         <input type="submit" class="btn" value="搜索">
                     </div>
@@ -123,13 +123,13 @@
                                         </a>
                                     </div>
                                 </td>
-                                <td align="center" axis="col5" class="">
-                                    <div style="text-align: center; width: 200px;" class="">
-                                        <a class="open" href="{:U('Mobile/Team/info',['team_id'=>$found[team_id]])}" target="blank">
-                                            {$found[order_goods][goods_name]}<i class="fa fa-external-link " title="手机拼团详情页"></i>
-                                        </a>
-                                    </div>
-                                </td>
+                                <!--<td align="center" axis="col5" class="">-->
+                                    <!--<div style="text-align: center; width: 200px;" class="">-->
+                                        <!--<a class="open" href="{:U('Mobile/Team/info',['team_id'=>$found[team_id]])}" target="blank">-->
+                                            <!--{$found[order_goods][goods_name]}<i class="fa fa-external-link " title="手机拼团详情页"></i>-->
+                                        <!--</a>-->
+                                    <!--</div>-->
+                                <!--</td>-->
                                 <td align="center" axis="col6" class="">
                                     <div style="text-align: center; width: 80px;" class="">{$found[team_activity][team_type_desc]}</div>
                                 </td>
@@ -186,12 +186,13 @@
                 </table>
                 <div class="row">
                     <div class="col-sm-6 text-left"></div>
-                    <div class="col-sm-6 text-right">{$page->show()}</div>
+                    <div class="col-sm-6 text-right">{$page}</div>
                 </div>
             </div>
             <div class="iDiv" style="display: none;"></div>
         </div>
         <!--分页位置-->
+
     </div>
 </div>
 <script type="text/javascript">

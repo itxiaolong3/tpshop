@@ -149,8 +149,15 @@ exit("请联系客服查看是否支持此功能");
 	 */
 	public function team_list()
 	{
-	header("Content-type: text/html; charset=utf-8");
-exit("请联系客服查看是否支持此功能");
+        $team_foundModel=Db::name('team_found');
+        $count=$team_foundModel->count();
+        $Page = new AjaxPage($count, 10);
+        $List = $team_foundModel->limit($Page->firstRow . ',' . $Page->listRows)->select();
+        $show = $Page->show();
+        $this->assign('teamFound', $List);
+        $this->assign('page', $show);// 赋值分页输出
+        $this->assign('pager', $Page);
+        return $this->fetch();
 	}
 
 	/**
@@ -165,8 +172,60 @@ exit("请联系客服查看是否支持此功能");
 
 	//拼团订单
 	public function order_list(){
-	header("Content-type: text/html; charset=utf-8");
-exit("请联系客服查看是否支持此功能");
+        $begin = $this->begin;
+        $end = $this->end;
+        // 搜索条件
+        $condition = array('shop_id'=>0);
+        $keyType = I("key_type");
+        $keywords = I('keywords','','trim');
+
+        $consignee =  ($keyType && $keyType == 'consignee') ? $keywords : I('consignee','','trim');
+        $consignee ? $condition['consignee'] = trim($consignee) : false;
+
+        if($begin && $end){
+            $condition['add_time'] = array('between',"$begin,$end");
+        }
+        $condition['prom_type'] = array('eq',6);
+        $order_sn = ($keyType && $keyType == 'order_sn') ? $keywords : I('order_sn') ;
+        $order_sn ? $condition['order_sn'] = trim($order_sn) : false;
+
+        I('order_status') != '' ? $condition['order_status'] = I('order_status') : false;
+        I('pay_status') != '' ? $condition['pay_status'] = I('pay_status') : false;
+        //I('pay_code') != '' ? $condition['pay_code'] = I('pay_code') : false;
+        if(I('pay_code')){
+            switch (I('pay_code')){
+                case '余额支付':
+                    $condition['pay_name'] = I('pay_code');
+                    break;
+                case '积分兑换':
+                    $condition['pay_name'] = I('pay_code');
+                    break;
+                case 'alipay':
+                    $condition['pay_code'] = ['in',['alipay','alipayMobile']];
+                    break;
+                case 'weixin':
+                    $condition['pay_code'] = ['in',['weixin','weixinH5','miniAppPay']];
+                    break;
+                case '其他方式':
+                    $condition['pay_name'] = '';
+                    $condition['pay_code'] = '';
+                    break;
+                default:
+                    $condition['pay_code'] = I('pay_code');
+                    break;
+            }
+        }
+
+        I('shipping_status') != '' ? $condition['shipping_status'] = I('shipping_status') : false;
+        I('user_id') ? $condition['user_id'] = trim(I('user_id')) : false;
+        $count = Db::name('order')->where($condition)->count();
+        $Page  = new AjaxPage($count,20);
+        $show = $Page->show();
+        $orderList = Db::name('order')->where($condition)->limit($Page->firstRow,$Page->listRows)->select();
+        $this->assign('orderList',$orderList);
+        $this->assign('page',$show);// 赋值分页输出
+        $this->assign('pager',$Page);
+        return $this->fetch();
 	}
 
 	/**
