@@ -66,7 +66,7 @@
                     <label><em>*</em>成团有效期</label>
                 </dt>
                 <dd class="opt">
-                    <input type="text" name="time_limit" value="{$teamActivity.time_limit_hours}" onpaste="this.value=this.value.replace(/[^\d.]/g,'')" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" class="input-txt">
+                    <input type="text" name="time_limit" value="{$teamActivity.time_limit}" onpaste="this.value=this.value.replace(/[^\d.]/g,'')" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" class="input-txt">
                     <span class="err" id="err_goods_num"></span>
                     <p class="notic">开团后有效时间范围(单位：小时)</p>
                 </dd>
@@ -174,8 +174,8 @@
                     <div class="tDiv2">
                         <a onclick="selectGoods()">
                             <div class="fbutton">
-                                <div title="添加商品" class="add">
-                                    <span><i class="fa fa-plus"></i>添加商品</span>
+                                <div title="添加/编辑商品" class="add">
+                                    <span><i class="fa fa-plus"></i>添加/编辑商品</span>
                                 </div>
                             </div>
                         </a>

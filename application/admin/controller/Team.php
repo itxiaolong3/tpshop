@@ -59,9 +59,15 @@ class Team extends Base
 	public function info()
 	{
 	    $getid=I('GET.team_id',0);
-        $info = array();
         if($getid){
             $info = M('team_activity')->where('team_id='.$getid)->find();
+            $info['team_goods_item']=Db::name('team_goods_item')->where('team_id',$getid)->select();
+            if ($info['team_goods_item']){
+                foreach ($info['team_goods_item'] as $k=>$v){
+                    $info['team_goods_item'][$k]['spec_goods_price']=Db::name('spec_goods_price')->where('item_id',$v['item_id'])->field('key_name,price,store_count')->find();
+                    $info['goods']=Db::name('goods')->where('goods_id',$v['goods_id'])->field('shop_price,store_count')->find();
+                }
+            }
             $this->assign('teamActivity',$info);
         }
 
@@ -74,29 +80,48 @@ class Team extends Base
 	 */
 	public function save(){
         $data = I('post.');
+        //var_dump($data['team_goods_item']);die();
         $team_activityValidate = Loader::validate('team');
         if (empty($data['team_id'])) {
             if (!$team_activityValidate->batch()->check($data)) {
                 $return = ['status' => 0, 'msg' => '添加失败', 'result' => $team_activityValidate->getError()];
             } else {
                 $r = D('team_activity')->add($data);
+                $getteamid=Db::name('team_activity')->getLastInsID();
                 if ($r !== false) {
+                    $team_goods_itemarr=$data['team_goods_item'];
+                    if ($team_goods_itemarr){
+                        foreach ($team_goods_itemarr as $k=>$v){
+                            $v['team_id']=$getteamid;
+                            D('team_goods_item')->add($v);
+                        }
+                    }
+
                     $return = ['status' => 1, 'msg' => '添加成功', 'result' => $team_activityValidate->getError()];
                 } else {
                     $return = ['status' => 0, 'msg' => '添加失败，数据库未响应', 'result' => ''];
                 }
             }
         }else{
-            if (!$team_activityValidate->scene('edit')->batch()->check($data)) {
-                $return = ['status' => 0, 'msg' => '编辑失败', 'result' => $team_activityValidate->getError()];
-            } else {
-                $r = D('team_activity')->where('team_id=' . $data['team_id'])->save($data);
-                if ($r !== false) {
-                    $return = ['status' => 1, 'msg' => '编辑成功', 'result' => $team_activityValidate->getError()];
-                } else {
-                    $return = ['status' => 0, 'msg' => '编辑失败，数据库未响应', 'result' => ''];
+            //if (!$team_activityValidate->scene('edit')->batch()->check($data)) {
+            //    $return = ['status' => 0, 'msg' => '编辑失败', 'result' => $team_activityValidate->getError()];
+            // } else {
+            $r = D('team_activity')->where('team_id=' . $data['team_id'])->save($data);
+            if ($r !== false) {
+                $team_goods_itemarr=$data['team_goods_item'];
+                //var_dump($team_goods_itemarr);die();
+                if ($team_goods_itemarr){
+                    D('team_goods_item')->where('team_id',$data['team_id'])->delete();
+                    foreach ($team_goods_itemarr as $k=>$v){
+                        $v['team_id']=$data['team_id'];
+                        D('team_goods_item')->add($v);
+                    }
                 }
+                $return = ['status' => 1, 'msg' => '编辑成功', 'result' => ''];
+            } else {
+                $return = ['status' => 0, 'msg' => '编辑失败，数据库未响应', 'result' => ''];
             }
+            // }
         }
         $this->ajaxReturn($return);
 	}

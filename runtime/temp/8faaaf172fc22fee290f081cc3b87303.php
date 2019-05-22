@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:40:"./application/admin/view/team\index.html";i:1558335815;s:51:"E:\tpshop\application\admin\view\public\layout.html";i:1540260088;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:41:"./application/admin/view/admin\index.html";i:1556441875;s:51:"E:\tpshop\application\admin\view\public\layout.html";i:1540260088;}*/ ?>
 <!doctype html>
 <html>
 <head>
@@ -186,8 +186,8 @@
 	<div class="fixed-bar">
 		<div class="item-title">
 			<div class="subject">
-				<h3>拼团管理</h3>
-				<h5>网站系统拼团活动审核与管理</h5>
+				<h3>管理员管理</h3>
+				<h5>网站系统管理员列表</h5>
 			</div>
 		</div>
 	</div>
@@ -198,23 +198,24 @@
 			<span title="收起提示" id="explanationZoom" style="display: block;"></span>
 		</div>
 		<ul>
-			<li>拼团管理, 由平台设置管理.</li>
+			<li>管理员列表管理, 可修改后台管理员登录密码和所属角色</li>
 		</ul>
 	</div>
 	<div class="flexigrid">
 		<div class="mDiv">
 			<div class="ftitle">
-				<h3>拼团活动列表</h3>
-				<h5>(共<?php echo $pager->totalRows; ?>条记录)</h5>
-                <!--<div class="fbutton" style="margin-left: 30px;">-->
-                    <!--<a href="http://help.tp-shop.cn/Index/Help/info/cat_id/5/id/496.html" target="_blank">-->
-                        <!--<div class="" title="帮助">-->
-                            <!--<span>帮助</span>-->
-                        <!--</div>-->
-                    <!--</a>-->
-                <!--</div>-->
+				<h3>权限资源列表</h3>
+				<h5>(共<?php echo count($list); ?>条记录)</h5>
 			</div>
-			<a href=""><div title="刷新数据" class="pReload"><i class="fa fa-refresh"></i></div></a>
+			<div title="刷新数据" class="pReload"><i class="fa fa-refresh"></i></div>
+			<form class="navbar-form form-inline" action="<?php echo U('Admin/index'); ?>" method="get">
+				<div class="sDiv">
+					<div class="sDiv2">
+						<input type="text" size="30" name="keywords" class="qsbox" placeholder="搜索相关数据...">
+						<input type="submit" class="btn" value="搜索">
+					</div>
+				</div>
+			</form>
 		</div>
 		<div class="hDiv">
 			<div class="hDivBox">
@@ -225,31 +226,25 @@
 							<div style="width: 24px;"><i class="ico-check"></i></div>
 						</th>
 						<th align="left" abbr="article_title" axis="col3" class="">
-							<div style="text-align: left; width: 50px;" class="">拼团ID</div>
+							<div style="text-align: left; width: 100px;" class="">ID</div>
 						</th>
 						<th align="left" abbr="ac_id" axis="col4" class="">
-							<div style="text-align: center; width: 100px;" class="">拼团标题</div>
+							<div style="text-align: left; width: 100px;" class="">用户名</div>
 						</th>
-						<th align="left" abbr="ac_id" axis="col4" class="">
-							<div style="text-align: center; width: 240px;" class="">拼团商品</div>
-						</th>
-						<th align="center" abbr="article_time" axis="col6" class="">
-							<div style="text-align: center; width: 80px;" class="">拼团类型</div>
+						<th align="center" abbr="article_show" axis="col5" class="">
+							<div style="text-align: left; width: 100px;" class="">所属角色</div>
 						</th>
 						<th align="center" abbr="article_time" axis="col6" class="">
-							<div style="text-align: center; width: 80px;" class="">成团有效期</div>
+							<div style="text-align: left; width: 200px;" class="">Email地址</div>
 						</th>
 						<th align="center" abbr="article_time" axis="col6" class="">
-							<div style="text-align: center; width: 80px;" class="">需要成团人数</div>
+							<div style="text-align: left; width: 200px;" class="">绑定店铺</div>
 						</th>
 						<th align="center" abbr="article_time" axis="col6" class="">
-							<div style="text-align: center; width: 80px;" class="">购买限制数</div>
+							<div style="text-align: left; width: 200px;" class="">加入时间</div>
 						</th>
-						<th align="center" abbr="article_time" axis="col6" class="">
-							<div style="text-align: center; width: 80px;" class="">是否启动</div>
-						</th>
-						<th align="left" axis="col1" class="handle">
-							<div style="text-align: center; width: 240px;">操作</div>
+						<th align="center" axis="col1" class="handle">
+							<div style="text-align: center; width: 150px;">操作</div>
 						</th>
 						<th style="width:100%" axis="col7">
 							<div></div>
@@ -261,13 +256,13 @@
 		</div>
 		<div class="tDiv">
 			<div class="tDiv2">
-				<a href="<?php echo U('Team/info'); ?>">
-					<div class="fbutton">
-						<div title="添加拼团" class="add">
-							<span><i class="fa fa-plus"></i>添加拼团</span>
+				<div class="fbutton">
+					<a href="<?php echo U('Admin/admin_info'); ?>">
+						<div class="add" title="添加管理员">
+							<span><i class="fa fa-plus"></i>添加管理员</span>
 						</div>
-					</div>
-				</a>
+					</a>
+				</div>
 			</div>
 			<div style="clear:both"></div>
 		</div>
@@ -275,53 +270,35 @@
 			<div id="flexigrid" cellpadding="0" cellspacing="0" border="0">
 				<table>
 					<tbody>
-					<?php if(is_array($list) || $list instanceof \think\Collection || $list instanceof \think\Paginator): $i = 0; $__LIST__ = $list;if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$team): $mod = ($i % 2 );++$i;?>
+					<?php if(is_array($list) || $list instanceof \think\Collection || $list instanceof \think\Paginator): if( count($list)==0 ) : echo "" ;else: foreach($list as $k=>$vo): ?>
 						<tr>
 							<td class="sign">
 								<div style="width: 24px;"><i class="ico-check"></i></div>
 							</td>
 							<td align="left" class="">
-								<div style="text-align: left; width: 50px;"><?php echo $team['team_id']; ?></div>
+								<div style="text-align: left; width: 100px;"><?php echo $vo['admin_id']; ?></div>
 							</td>
 							<td align="left" class="">
-								<div style="text-align: left; width: 100px;"><?php echo getSubstr($team['act_name'],0,20); ?></div>
+								<div style="text-align: left; width: 100px;"><?php echo $vo['user_name']; ?></div>
 							</td>
 							<td align="left" class="">
-								<div style="text-align: center; width: 240px;">
-										<?php echo getSubstr($team['goods_name'],0,20); ?>
-								</div>
+								<div style="text-align: left; width: 100px;"><?php echo $vo['role']; ?></div>
 							</td>
 							<td align="left" class="">
-								<div style="text-align: center; width: 80px;"><?php echo $team['team_type_desc']; ?></div>
+								<div style="text-align: left; width: 200px;"><?php echo $vo['email']; ?></div>
 							</td>
 							<td align="left" class="">
-								<div style="text-align: center; width: 80px;"><?php echo $team['time_limit']; ?>小时</div>
+								<div style="text-align: left; width: 200px;"><?php echo $vo['shopname']; ?></div>
 							</td>
 							<td align="left" class="">
-								<div style="text-align: center; width: 80px;"><?php echo $team['needer']; ?></div>
+								<div style="text-align: left; width: 200px;"><?php echo $vo['add_time']; ?></div>
 							</td>
-							<td align="left" class="">
-								<div style="text-align: center; width: 80px;"><?php echo $team['buy_limit']; ?></div>
-							</td>
-							<td align="left" class="">
-								<div style="text-align: center; width: 80px;">
-									<?php if($team[status] == 1): ?>
-										<span class="yes" onClick="changeTableVal('team_activity','team_id','<?php echo $team['team_id']; ?>','status',this,'是','否')" ><i class="fa fa-check-circle"></i>是</span>
-										<?php else: ?>
-										<span class="no" onClick="changeTableVal('team_activity','team_id','<?php echo $team['team_id']; ?>','status',this,'是','否')" ><i class="fa fa-ban"></i>否</span>
+							<td align="center" class="handle">
+								<div style="text-align: center; width: 170px; max-width:170px;">
+									<a href="<?php echo U('Admin/admin_info',array('admin_id'=>$vo['admin_id'])); ?>" class="btn blue"><i class="fa fa-pencil-square-o"></i>编辑</a>
+									<?php if($vo['admin_id'] > 1): ?>
+										<a class="btn red"  href="javascript:void(0)" data-url="<?php echo U('Admin/adminHandle'); ?>" data-id="<?php echo $vo['admin_id']; ?>" onClick="delfun(this)"><i class="fa fa-trash-o"></i>删除</a>
 									<?php endif; ?>
-								</div>
-							</td>
-							<td align="left" class="handle">
-								<div style="text-align: left; width: 240px; max-width:240px;">
-									<?php if($team[team_type] == 2 AND $team[is_lottery] == 0): ?>
-										<a class="btn blue gift_button" data-team-id="<?php echo $team['team_id']; ?>"><i class="fa fa-gift"></i>抽奖</a>
-									<?php endif; if($team[team_type] == 2 AND $team[is_lottery] == 1): ?>
-										<a class="btn blue" href="<?php echo U('Mobile/Team/lottery',['team_id'=>$team['team_id']]); ?>" ><i class="fa fa-file-text-o"></i>中奖名单</a>
-									<?php endif; ?>
-									<a class="btn blue" href="<?php echo U('Team/team_list',array('team_id'=>$team['team_id'])); ?>" ><i class="fa fa-list"></i>订单</a>
-									<a class="btn blue" href="<?php echo U('Team/info',array('team_id'=>$team['team_id'])); ?>"><i class="fa fa-pencil-square-o"></i>编辑</a>
-									<a class="btn red" data-url="<?php echo U('Team/delete'); ?>" data-id="<?php echo $team['team_id']; ?>" onclick="delfun(this)"><i class="fa fa-trash-o"></i>删除</a>
 								</div>
 							</td>
 							<td align="" class="" style="width: 100%;">
@@ -348,68 +325,33 @@
 		$('.fa-refresh').click(function(){
 			location.href = location.href;
 		});
+
 	});
 
-	function delfun(obj) {
-		layer.confirm('确认删除？有关拼团将会失效', {
-					btn: ['确定', '取消'] //按钮
-				}, function () {
-					$.ajax({
-						type: 'post',
-						url: $(obj).attr('data-url'),
-						data: {team_id: $(obj).attr('data-id')},
-						dataType: 'json',
-						success: function (data) {
-							layer.closeAll();
-							if (data.status == 1) {
-								layer.msg(data.msg, {icon: 1});
-								$(obj).parent().parent().parent().remove();
-							} else {
-								layer.msg(data.msg, {icon: 2, time: 2000});
-							}
-						}
-					})
-				}, function (index) {
-					layer.close(index);
-				}
-		);
-	}
 
-	//抽奖
-	$(function () {
-		$(document).on("click", '.gift_button', function (e) {
-			var team_id = $(this).data('team-id');
-			layer.open({
-				content: '确认抽奖将从该拼团活动下拼团成功的订单里抽取，并把中奖的订单确认，未中奖的订单都执行退款操作,并且结束该活动。该操作不可逆，确定要执行吗？'
-				,btn: ['确定', '取消']
-				,yes: function(index, layero){
-					layer.close(index);
-					$.ajax({
-						type: "POST",
-						url: "<?php echo U('Team/lottery'); ?>",//+tab,
-						data: {team_id: team_id},
-						dataType: 'json',
-						success: function (data) {
-							if (data.status == 1) {
-								layer.msg(data.msg, {icon: 1, time: 2000}, function(){
-									window.location.reload();
-								});
-							} else {
-								layer.msg(data.msg, {icon: 2, time: 2000});
-							}
-						}
-					});
+	function delfun(obj) {
+		// 删除按钮
+		layer.confirm('确认删除？', {
+			btn: ['确定', '取消'] //按钮
+		}, function () {
+			$.ajax({
+				type: 'post',
+				url: $(obj).attr('data-url'),
+				data : {act:'del',admin_id:$(obj).attr('data-id')},
+				dataType: 'json',
+				success: function (data) {
+					if (data.status == 1) {
+						layer.msg(data.msg,{icon: 1,time: 1000},function () {
+							$(obj).parent().parent().parent().remove();
+						})
+					} else {
+						layer.msg(data.msg,{icon: 2,time: 2000})
+					}
 				}
-				,btn2: function(index, layero){
-					layer.close(index);
-				}
-				,cancel: function(){
-					//右上角关闭回调
-					layer.close();
-				}
-			});
-		})
-	})
+			})
+		}, function () {
+		});
+	}
 </script>
 </body>
 </html>

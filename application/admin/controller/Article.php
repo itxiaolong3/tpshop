@@ -290,10 +290,10 @@ class Article extends Base {
         }else if (empty($data['b_img'])){
             $this->ajaxReturn(['status'=>-1,'msg'=>'请上传轮播图']);
         }
-        if($data['link_id']){
-            $link_id=$data['link_id'];
-            unset($data['link_id']);
-            $res = Db::name('banner')->where(['link_id'=>$link_id])->save($data);
+        if($data['b_id']){
+            $link_id=$data['b_id'];
+            unset($data['b_id']);
+            $res = Db::name('banner')->where(['b_id'=>$link_id])->save($data);
         }else{
             $res = Db::name('banner')->insert($data);
         }

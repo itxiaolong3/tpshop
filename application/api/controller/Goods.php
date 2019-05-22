@@ -24,6 +24,62 @@ use think\Page;
 use think\Request;
 
 class Goods extends Base{
+    //拼团商品列表
+    public function ptgood(){
+        $getpage=I('page',0);
+        $count=M('team_activity')->where('status',1)->count();
+        $page_count = C('PAGESIZE');
+        $page = new Page($count, $page_count);
+        $list=Db::name('team_activity')
+            ->alias('a')
+            ->join('goods g','a.goods_id=g.goods_id','left')
+//            ->join('team_goods_item it','a.team_id=it.team_id','left')
+            ->where('a.status',1)->field('a.team_id,a.needer,a.goods_id,a.buy_limit,g.goods_name,g.original_img,g.is_free_shipping')->limit( $page->listRows*$getpage. ',' . $page->listRows)->select();
+        if ($list){
+            foreach ($list as $k=>$v){
+                $list[$k]['original_img']=url_add_domain($v['original_img']);
+                $list[$k]['team_price']=Db::name('team_goods_item')->where('team_id',$v['team_id'])->value('team_price');
+            }
+        }
+        return returnOk($list);
+    }
+    //拼团活动详情
+    public function ptgood_detail(){
+        $teamid=I('team_id',0);
+        if (empty($teamid)){
+            return returnBad('拼团id不可为空');
+        }else{
+            $good=Db::name('team_activity')
+                ->alias('a')
+                ->join('goods g','a.goods_id=g.goods_id','left')
+                ->where(['a.status'=>1,'a.team_id'=>$teamid])->field('a.team_id,a.needer,a.goods_id,a.buy_limit,g.*')->find();
+            $good['original_img']=url_add_domain($good['original_img']);
+            //商品属性
+            $goodarr=Db::name('team_goods_item')->where('team_id',$teamid)->field('team_id,goods_id,team_price,item_id')->select();
+            if ($goodarr){
+                foreach ($goodarr as $k=>$v){
+                    if ($v['item_id']){
+                        $keyname=Db::name('spec_goods_price')->where('item_id',$v['item_id'])->value('key_name');
+                        $goodarr[$k]['arrname']=substr($keyname,strpos($keyname,":")+1);
+                    }
+                }
+            }
+            $good['attr']=$goodarr;
+            $tjgoods=Db::name('goods')->where('uid',$good['uid'])->field('uid as shopid,goods_id,original_img')->limit(0,3)->select();
+            if ($tjgoods){
+                foreach ($tjgoods as $k=>$v){
+                    $tjgoods[$k]['original_img']=url_add_domain($v['original_img']);
+                }
+            }
+            $good['shoptj']=$tjgoods;
+            //开团列表
+            $foundlist=Db::name('team_found')->field('found_end_time,user_id,team_id,nickname,head_pic,join,need')->limit(0,2)->select();
+            $good['openteamlist']=$foundlist;
+            $good['openteamcount']=Db::name('team_found')->count();
+            return returnOk($good);
+        }
+    }
+
    //商品分类
     public function index(){
         $filter_param = array(); // 帅选数组
@@ -35,7 +91,7 @@ class Goods extends Base{
         $price =  I('post.price'); // 价钱
         $price && ($filter_param['price'] = $price); //加入帅选条件中
         $keyword && ($filter_param['keyword'] = $keyword); //加入帅选条件中
-
+        $getpage=I('page',0);
         $goodsLogic = new GoodsLogic(); // 前台商品操作逻辑类
         // 分类菜单显示
         $goodsCate = M('GoodsCategory')->where("id", $id)->find();// 当前分类
@@ -78,7 +134,9 @@ class Goods extends Base{
             $sort_asc = $sort_asc == 'asc' ? 'desc' : 'asc'; // 防注入
             $sort_arr = ['sales_sum','shop_price','is_new','comment_count','sort'];
             if(!in_array($sort,$sort_arr)) $sort='sort'; // 防注入
-            $goods_list = M('goods')->field("goods_id,goods_name,shop_price,original_img,sales_sum,goods_remark,video,music")->where("goods_id", "in", implode(',', $filter_goods_id))->order([$sort => $sort_asc])->limit($page->firstRow . ',' . $page->listRows)->select();
+
+            $goods_list = M('goods')->field("goods_id,goods_name,shop_price,original_img,sales_sum,goods_remark,video,music,keywords as tab")->where("goods_id", "in", implode(',', $filter_goods_id))->order([$sort => $sort_asc])->limit( $page->listRows*$getpage. ',' . $page->listRows)->select();
+
             foreach ($goods_list as $k => $v){
                 if ($v['original_img']){
                     $goods_list[$k]['original_img'] = url_add_domain($v['original_img']);

@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:46:"./application/admin/view/article\category.html";i:1545824733;s:51:"E:\tpshop\application\admin\view\public\layout.html";i:1540260088;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:46:"./application/admin/view/admin\admin_info.html";i:1558514286;s:51:"E:\tpshop\application\admin\view\public\layout.html";i:1540260088;}*/ ?>
 <!doctype html>
 <html>
 <head>
@@ -180,119 +180,119 @@
 
 </head>
 <body style="background-color: #FFF; overflow: auto;">
+<div id="toolTipLayer" style="position: absolute; z-index: 9999; display: none; visibility: visible; left: 95px; top: 573px;"></div>
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
 <div class="page">
     <div class="fixed-bar">
-        <div class="item-title"><a class="back" href="javascript:history.back();" title="返回列表"><i
-                class="fa fa-arrow-circle-o-left"></i></a>
+        <div class="item-title"><a class="back" href="javascript:history.back();" title="返回列表"><i class="fa fa-arrow-circle-o-left"></i></a>
             <div class="subject">
-                <h3>文章分类</h3>
-                <h5>网站文章分类添加与管理</h5>
+                <h3>管理员 - 编辑管理员</h3>
+                <h5>网站系统管理员资料</h5>
             </div>
         </div>
     </div>
-    <form method="post" class="form-horizontal" id="category_form">
+    <form class="form-horizontal" id="adminHandle" method="post">
+        <input type="hidden" name="act" id="act" value="<?php echo $act; ?>">
+        <input type="hidden" name="admin_id" value="<?php echo $info['admin_id']; ?>">
+        <input type="hidden" name="auth_code" value="<?php echo \think\Config::get('AUTH_CODE'); ?>"/>
         <div class="ncap-form-default">
             <dl class="row">
                 <dt class="tit">
-                    <label><em>*</em>分类名称</label>
+                    <label for="user_name"><em>*</em>用户名</label>
                 </dt>
                 <dd class="opt">
-                    <input type="text" class="input-txt" name="cat_name" value="<?php echo $cat_info['cat_name']; ?>">
-                    <span class="err" id="err_cat_name"></span>
-                    <p class="notic"></p>
+                    <input type="text" name="user_name" value="<?php echo $info['user_name']; ?>" id="user_name" maxlength="20" class="input-txt">
+                    <span class="err" id="err_user_name"></span>
+                    <p class="notic">用户名</p>
                 </dd>
             </dl>
-            <!--<dl class="row">-->
-                <!--<dt class="tit">-->
-                    <!--<label for="parent_id">上级分类</label>-->
-                <!--</dt>-->
-                <!--<dd class="opt">-->
-                    <!--<select class="small form-control" style="width:200px" tabindex="1" name="parent_id" id="parent_id">-->
-                        <!--<option value="0">顶级分类</option>-->
-                        <!--<?php if(empty($cat_info[cat_type]) || (($cat_info[cat_type] instanceof \think\Collection || $cat_info[cat_type] instanceof \think\Paginator ) && $cat_info[cat_type]->isEmpty())): ?>-->
-                            <!--<?php echo $cat_select; ?>-->
-                        <!--<?php endif; ?>-->
-                    <!--</select>-->
-                    <!--<span class="err"></span>-->
-                    <!--<p class="notic">如果选择上级分类，那么新增的分类则为被选择上级分类的子分类</p>-->
-                <!--</dd>-->
-            <!--</dl>-->
-            <!--<dl class="row">-->
-            <!--<dt class="tit">-->
-            <!--<label>导航显示</label>-->
-            <!--</dt>-->
-            <!--<dd class="opt">-->
-            <!--<div class="onoff">-->
-            <!--<label for="article_show1" class="cb-enable <?php if($cat_info[show_in_nav] == 1): ?>selected<?php endif; ?>">是</label>-->
-            <!--<label for="article_show0" class="cb-disable <?php if($cat_info[show_in_nav] == 0): ?>selected<?php endif; ?>">否</label>-->
-            <!--<input id="article_show1" name="show_in_nav" value="1" type="radio" <?php if($cat_info[show_in_nav] == 1): ?> checked="checked"<?php endif; ?>>-->
-            <!--<input id="article_show0" name="show_in_nav" value="0" type="radio" <?php if($cat_info[show_in_nav] == 0): ?> checked="checked"<?php endif; ?>>-->
-            <!--</div>-->
-            <!--<p class="notic"></p>-->
-            <!--</dd>-->
-            <!--</dl>		       -->
             <dl class="row">
                 <dt class="tit">
-                    <label for="ac_sort">排序</label>
+                    <label for="email"><em>*</em>Email地址</label>
                 </dt>
                 <dd class="opt">
-                    <input type="text" placeholder="排序" name="sort_order" value="<?php echo $cat_info['sort_order']; ?>"
-                           class="input-txt" onKeyUp="this.value=this.value.replace(/[^\d]/g,'')">
-                    <span class="err"></span>
-                    <p class="notic"></p>
+                    <input type="text" name="email" value="<?php echo $info['email']; ?>" id="email" class="input-txt" maxlength="40">
+                    <span class="err" id="err_email"></span><p class="notic">Email地址</p>
                 </dd>
+
             </dl>
-            <!--<dl class="row">-->
-            <!--<dt class="tit">-->
-            <!--<label for="ac_sort">搜索关键字</label>-->
-            <!--</dt>-->
-            <!--<dd class="opt">-->
-            <!--<input type="text" placeholder="关键字" name="keywords" value="<?php echo $cat_info['keywords']; ?>" class="input-txt">-->
-            <!--<span class="err"></span>-->
-            <!--<p class="notic"></p>-->
-            <!--</dd>-->
-            <!--</dl>-->
-            <!--<dl class="row">-->
-            <!--<dt class="tit">-->
-            <!--<label for="ac_sort">搜索描述</label>-->
-            <!--</dt>-->
-            <!--<dd class="opt">-->
-            <!--<input type="text" placeholder="搜索描述" name="cat_desc" value="<?php echo $cat_info['cat_desc']; ?>" class="input-txt">-->
-            <!--<span class="err"></span>-->
-            <!--<p class="notic"></p>-->
-            <!--</dd>-->
-            <!--</dl>            -->
-            <div class="bot"><a href="JavaScript:void(0);" onClick="submitForm()" class="ncap-btn-big ncap-btn-green"
-                                id="submitBtn">确认提交</a></div>
+            <dl class="row">
+                <dt class="tit">
+                    <label for="password"><em>*</em>登陆密码</label>
+                </dt>
+                <dd class="opt">
+                    <input type="password" name="password" maxlength="18" value="<?php echo $info['password']; ?>" id="password" class="input-txt">
+                    <span class="err" id="err_password"></span><p class="notic">登陆密码</p>
+                </dd>
+
+            </dl>
+            <?php if(($act == 'add') OR ($info['admin_id'] > 1)): ?>
+                <dl class="row">
+                    <dt class="tit">
+                        <label><em>*</em>所属角色</label>
+                    </dt>
+                    <dd class="opt">
+                        <select name="role_id">
+                            <?php if(is_array($role) || $role instanceof \think\Collection || $role instanceof \think\Paginator): $i = 0; $__LIST__ = $role;if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$item): $mod = ($i % 2 );++$i;?>
+                                <option value="<?php echo $item['role_id']; ?>" <?php if($item[role_id] == $info[role_id]): ?> selected="selected"<?php endif; ?> ><?php echo $item['role_name']; ?></option>
+                            <?php endforeach; endif; else: echo "" ;endif; ?>
+                        </select>
+                        <span class="err" id="err_role_id"></span>
+                        <p class="notic">所属角色</p>
+                    </dd>
+                </dl>
+                <dl class="row">
+                    <dt class="tit">
+                        <label><em>*</em>绑定店铺</label>
+                    </dt>
+                    <dd class="opt">
+                        <select name="shop_id">
+
+                            <?php if(is_array($shop) || $shop instanceof \think\Collection || $shop instanceof \think\Paginator): $i = 0; $__LIST__ = $shop;if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$item): $mod = ($i % 2 );++$i;?>
+                                <option value="<?php echo $item['mechanism_id']; ?>" <?php if($item[mechanism_id] == $info[shop_id]): ?> selected="selected"<?php endif; ?> ><?php echo $item['company_name']; ?></option>
+
+                            <?php endforeach; endif; else: echo "" ;endif; ?>
+                        </select>
+                        <span class="err" id="err_shop_id"></span>
+                        <p class="notic">绑定店铺</p>
+                    </dd>
+                </dl>
+            <?php endif; ?>
+            <div class="bot"><a href="JavaScript:void(0);" onclick="adsubmit();" class="ncap-btn-big ncap-btn-green" id="submitBtn">确认提交</a></div>
         </div>
-        <input type="hidden" name="act" value="<?php echo $act; ?>">
-        <input type="hidden" name="cat_id" value="<?php echo $cat_info['cat_id']; ?>">
     </form>
 </div>
-<script>
-    function submitForm() {
-        $('span.err').hide();
+<script type="text/javascript">
+    // 判断输入框是否为空
+    function adsubmit(){
+        $('.err').show();
+        var password =$('#password').val();
+        var act =$('#act').val();
+        if((password.length < 6 || password.length>18) && act=='add'){
+            layer.msg('密码长度应该在6-18位！', {icon: 2,time: 1000});//alert('少年，密码不能为空！');
+            return false;
+        }
         $.ajax({
-            type: "POST",
-            url: "<?php echo U('Article/categoryHandle'); ?>",
-            data: $('#category_form').serialize(),
-            dataType: "json",
-            error: function () {
-                layer.alert("服务器繁忙, 请联系管理员!");
-            },
-            success: function (data) {
-                if (data.status === 1) {
-                    layer.msg(data.msg, {icon: 1, time: 1000}, function () {
-                        location.href = "<?php echo U('Article/categoryList'); ?>";
-                    });
-                } else if (data.status === 0) {
-                    layer.msg(data.msg, {icon: 2, time: 1000});
-                    $.each(data.result, function (index, item) {
-                        $('#err_' + index).text(item).show();
-                    });
-                } else {
-                    layer.msg(data.msg, {icon: 2, time: 1000});
+            async:false,
+            url:'/index.php?m=Admin&c=Admin&a=adminHandle&t='+Math.random(),
+            data:$('#adminHandle').serialize(),
+            type:'post',
+            dataType:'json',
+            success:function(data){
+                if(data.status != 1){
+                    layer.msg(data.msg,{icon: 2,time: 2000})
+                    $.each(data.result,function (index,item) {
+                        $('#err_'+index).text(item)
+                    })
+                }else{
+                    layer.msg(data.msg,{icon: 1,time: 1000},function () {
+                        window.location.href = data.url;
+                    })
                 }
+            },
+            error : function(XMLHttpRequest, textStatus, errorThrown) {
+                $('#error').html('<span class="error">网络失败，请刷新页面后重试!</span>');
             }
         });
     }

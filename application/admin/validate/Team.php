@@ -17,7 +17,7 @@ class Team extends Validate
         'virtual_num'               =>'number',
         'share_title'               =>'max:50',
         'share_desc'                =>'max:200',
-        'share_img'                 =>'require',
+        //'share_img'                 =>'require',
         'team_goods_item'           =>'require|checkTeamGoodsItem'
     ];
     //错误信息
@@ -38,7 +38,7 @@ class Team extends Validate
         'virtual_num.number'        => '虚拟销售基数格式错误',
         'share_title.max'           => '分享标题长度不得超过50字符',
         'share_desc.max'            => '分享描述长度不得超过200字符',
-        'share_img.require'         => '分享图片必须上传',
+        //'share_img.require'         => '分享图片必须上传',
         'team_goods_item.require'   => '请选择参与拼团的商品',
     ];
     protected function checkTeamGoodsItem($value, $rule ,$data){
